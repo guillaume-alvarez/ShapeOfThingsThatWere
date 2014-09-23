@@ -1,0 +1,35 @@
+
+uiskin.png
+size: 156,132
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+frame
+  rotate: false
+  xy: 132, 121
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+menuTexture
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+scrollBar
+  rotate: false
+  xy: 143, 129
+  size: 11, 1
+  orig: 11, 1
+  offset: 0, 0
+  index: -1
+scrollKnob
+  rotate: false
+  xy: 143, 126
+  size: 11, 1
+  orig: 11, 1
+  offset: 0, 0
+  index: -1

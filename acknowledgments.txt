@@ -1,0 +1,2 @@
+API: http://libgdx.badlogicgames.com/
+Initial code and some assets: http://javagamexyz.blogspot.fr/

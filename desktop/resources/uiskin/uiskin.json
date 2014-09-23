@@ -1,0 +1,40 @@
+{
+	com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: irisUPC.fnt } },
+	com.badlogic.gdx.graphics.Color: {
+		black: { a: 1, b: 0, g: 0, r: 0 },
+		gray:  { a: 1, b: 0.5, g: 0.5, r: 0.5 },
+    red: { a: 1, b: 0, g: 0, r: 1 }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+		default: { vScroll: scrollBar, vScrollKnob: scrollKnob }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+		default: { font: default-font,
+				   fontColor: black,
+				   pressedOffsetX: 1,
+				   pressedOffsetY: -1 },
+		inactive:{ font: default-font, fontColor: gray }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+		default: { font: default-font, fontColor: black },
+		inactive: { font: default-font, fontColor: gray }
+	},
+  com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+    default: { font: default-font, fontColor: black,
+      scrollStyle: default,
+      listStyle: { font: default-font, selection: menuTexture, background: menuTexture }
+      }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+    default: { font: default-font, fontColor: black, focusedFontColor: red }
+  },
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+		default: {	pressedOffsetX: 1,
+					pressedOffsetY: -1,
+					down: scrollBar}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+		default: {	titleFont: default-font,
+					background: menuTexture }
+	}
+}

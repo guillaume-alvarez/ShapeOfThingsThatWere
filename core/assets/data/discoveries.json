@@ -1,0 +1,171 @@
+[
+{
+  name: Grassland,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: Forest,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: Desert,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: Hill,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: Mountain,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: Sea,
+  previous: [],
+  groups: [TERRAIN]
+},
+{
+  name: River,
+  previous: [Mountain, Hill, Grassland],
+  groups: [TERRAIN]
+},
+{
+  name: Iron,
+  previous: [Mountain, Hill, Fire],
+  groups: [METAL]
+},
+{
+  name: Copper,
+  previous: [Mountain, Hill, Fire],
+  groups: [METAL]
+},
+{
+  name: Tin,
+  previous: [Mountain, Hill, Fire],
+  groups: [METAL]
+},
+{
+  name: Bronze,
+  previous: [Copper, Tin],
+  groups: [METAL]
+},
+{
+  name: Gold,
+  previous: [Mountain, Hill, River],
+  groups: [LUXURY]
+},
+{
+  name: Silver,
+  previous: [Mountain, Hill, River],
+  groups: [LUXURY]
+},
+{
+  name: Wood,
+  previous: [Forest],
+  groups: [MATERIAL]
+},
+{
+  name: Animal,
+  previous: [TERRAIN]
+},
+{
+  name: Hunt,
+  previous: [Animal, Wood]
+},
+{
+  name: Gathering,
+  previous: [Forest, Grassland]
+},
+{
+  name: Fishing,
+  previous: [Sea, River, Wood]
+},
+{
+  name: Knife,
+  previous: [Hunt, METAL],
+  groups: [WEAPON]
+},
+{
+  name: Stick,
+  previous: [Hunt, Wood, Fishing],
+  groups: [WEAPON]
+},
+{
+  name: Sword,
+  previous: [WEAPON, Bronze, Iron],
+  groups: [WEAPON]
+},
+{
+  name: Walk,
+  previous: [Hunt, Fishing, Gathering],
+  groups: [MOVE]
+},
+{
+  name: Agriculture,
+  previous: [Grassland, Gathering],
+},
+{
+  name: Breeding,
+  previous: [Agriculture, Animal],
+},
+{
+  name: Horse,
+  previous: [Breeding, Grassland],
+  groups: [FOOD, MOVE]
+},
+{
+  name: Goat,
+  previous: [Breeding, Grassland],
+  groups: [FOOD]
+},
+{
+  name: Dirt,
+  previous: [Hills, Desert],
+  groups: [MATERIAL]
+},
+{
+  name: Stone,
+  previous: [Hills, Mountain],
+  groups: [MATERIAL]
+},
+{
+  name: Clay,
+  previous: [Hills, River],
+  groups: [MATERIAL]
+},
+{
+  name: Fire,
+  previous: [Wood]
+},
+{
+  name: House,
+  previous: [MATERIAL, Fire, Wood]
+},
+{
+  name: Village,
+  previous: [House, Agriculture]
+},
+{
+  name: Chief,
+  previous: [Village, WEAPON],
+  groups: [GOVERNMENT]
+},
+{
+  name: "Elders Concil",
+  previous: [Village, Fire],
+  groups: [GOVERNMENT]
+},
+{
+  name: City,
+  previous: [Village, Agriculture, LUXURY]
+},
+{
+  name: King,
+  previous: [City, WEAPON, Chief]
+},
+]

@@ -1,0 +1,34 @@
+
+characters.png
+size: 160,71
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+click
+  rotate: false
+  xy: 2, 9
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 64, 30
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+cylinderwide
+  rotate: false
+  xy: 64, 2
+  size: 28, 26
+  orig: 28, 26
+  offset: 0, 0
+  index: -1
+flag
+  rotate: false
+  xy: 112, 30
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,125 @@
+
+maptiles.png
+size: 146,248
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+border_bottom
+  rotate: false
+  xy: 2, 207
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+border_bottom_left
+  rotate: false
+  xy: 2, 166
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+border_bottom_right
+  rotate: false
+  xy: 50, 207
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+border_top
+  rotate: false
+  xy: 2, 125
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+border_top_left
+  rotate: false
+  xy: 50, 166
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+border_top_right
+  rotate: false
+  xy: 98, 207
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+hex
+  rotate: false
+  xy: 2, 84
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 0
+hex
+  rotate: false
+  xy: 50, 125
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 1
+hex
+  rotate: false
+  xy: 98, 166
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 2
+hex
+  rotate: false
+  xy: 2, 43
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 3
+hex
+  rotate: false
+  xy: 50, 84
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 4
+hex
+  rotate: false
+  xy: 98, 125
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 5
+hex
+  rotate: false
+  xy: 2, 2
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 6
+hex
+  rotate: false
+  xy: 50, 43
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 7
+hex
+  rotate: false
+  xy: 98, 84
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: 8
+hex_blank
+  rotate: false
+  xy: 50, 2
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
+hex_template
+  rotate: false
+  xy: 98, 43
+  size: 46, 39
+  orig: 46, 39
+  offset: 0, 0
+  index: -1
