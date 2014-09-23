@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/things-that-were-desktop/src/com/galvarez/ttw/desktop/ImagePacker.java"/>
+<listEntry value="/ShapeOfThingsThatWere-desktop/src/com/galvarez/ttw/desktop/ImagePacker.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.galvarez.ttw.desktop.ImagePacker"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="things-that-were-desktop"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ShapeOfThingsThatWere-desktop"/>
 </launchConfiguration>
