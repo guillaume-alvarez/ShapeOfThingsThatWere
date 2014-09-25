@@ -12,8 +12,6 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.EntityProcessingSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.InfluenceSource;
-import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -21,7 +19,7 @@ import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 @Wire
-public final class AISystem extends EntityProcessingSystem {
+public final class AIInfluenceSystem extends EntityProcessingSystem {
 
   private final GameMap map;
 
@@ -35,10 +33,8 @@ public final class AISystem extends EntityProcessingSystem {
 
   private InfluenceSystem influenceSystem;
 
-  private DiscoverySystem discoverySystem;
-
   @SuppressWarnings("unchecked")
-  public AISystem(GameMap gameMap, OverworldScreen screen) {
+  public AIInfluenceSystem(GameMap gameMap, OverworldScreen screen) {
     super(Aspect.getAspectForAll(AIControlled.class, InfluenceSource.class));
     this.map = gameMap;
     this.screen = screen;
@@ -63,13 +59,6 @@ public final class AISystem extends EntityProcessingSystem {
     InfluenceSource source = sources.get(e);
 
     flagTile(e, ia, source);
-    chooseNextDiscovery(source.empire);
-  }
-
-  private void chooseNextDiscovery(Empire empire) {
-    List<Research> possible = discoverySystem.possibleDiscoveries(empire, 1);
-    if (!possible.isEmpty())
-      empire.setNextDiscovery(possible.get(0));
   }
 
   private void flagTile(Entity e, AIControlled ia, InfluenceSource source) {

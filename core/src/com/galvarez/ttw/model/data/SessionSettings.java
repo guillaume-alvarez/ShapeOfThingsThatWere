@@ -33,8 +33,6 @@ public final class SessionSettings {
 
   public final IntValue mapNoise, mapWidth, mapHeight;
 
-  public Empire player;
-
   public SessionSettings() {
     // init map parameters
     mapNoise = new IntValue(4);
@@ -47,7 +45,7 @@ public final class SessionSettings {
     this.discoveries = discoveries(json).stream().collect(Collectors.toMap(Discovery::getName, c -> c));
 
     // generate some default empires
-    empires.add(player = new Empire(Color.BLACK, cultures.get("Babylonian"), false));
+    empires.add(new Empire(Color.BLACK, cultures.get("Babylonian"), false));
     empires.add(new Empire(Color.BLUE, cultures.get("Greek"), true));
     empires.add(new Empire(Color.GREEN, cultures.get("Minoan"), true));
     empires.add(new Empire(Color.RED, cultures.get("Roman"), true));
@@ -63,7 +61,7 @@ public final class SessionSettings {
   private static List<Discovery> discoveries(Json json) {
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_Devil
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_God_2
-    // TODO The mythic discoveries could be used as 'totem' animals 
+    // TODO The mythic discoveries could be used as 'totem' animals
     return Arrays.asList(json.fromJson(Discovery[].class, Gdx.files.internal("data/discoveries.json")));
   }
 

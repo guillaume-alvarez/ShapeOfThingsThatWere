@@ -4,6 +4,9 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.ExpiringSystem.Expires;
+import com.galvarez.ttw.model.components.Capital;
+import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -63,6 +66,18 @@ public class EntityFactory {
     e.addComponent(new InfluenceSource(empire));
 
     e.addComponent(new Name(name));
+
+    return e;
+  }
+
+  public static Entity createEmpire(World world, Entity capital) {
+    Entity e = world.createEntity();
+
+    e.addComponent(new Discoveries());
+    e.addComponent(new Diplomacy());
+
+    e.addComponent(new Capital(capital));
+    e.addComponent(new Name(capital.getComponent(Name.class).name));
 
     return e;
   }

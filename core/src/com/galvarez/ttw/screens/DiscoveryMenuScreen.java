@@ -15,10 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiscoverySystem;
+import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Choice;
 import com.galvarez.ttw.model.data.Discovery;
-import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -32,12 +32,12 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
 
   private final FramedMenu topMenu, empireChoices, discoveryChoices;
 
-  private final Empire empire;
+  private final Discoveries empire;
 
   private final DiscoverySystem discoverySystem;
 
   public DiscoveryMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      Empire empire, DiscoverySystem discoverySystem) {
+      Discoveries empire, DiscoverySystem discoverySystem) {
     super(game, world, batch, gameScreen);
     this.empire = empire;
     this.discoverySystem = discoverySystem;
@@ -68,7 +68,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
           new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              empire.setNextDiscovery(next);
+              empire.nextDiscovery = next;
               resumeGame();
             }
           }, true);
@@ -105,7 +105,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     }
   }
 
-  private static List<Discovery> discoveries(Empire empire, Choice choice) {
-    return empire.discoveries.stream().filter(d -> d.groups.contains(choice.name())).collect(toList());
+  private static List<Discovery> discoveries(Discoveries empire, Choice choice) {
+    return empire.discovered.stream().filter(d -> d.groups.contains(choice.name())).collect(toList());
   }
 }

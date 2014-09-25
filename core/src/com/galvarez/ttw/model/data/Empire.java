@@ -1,15 +1,9 @@
 package com.galvarez.ttw.model.data;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.rendering.components.Name;
 
 /**
  * Represent an empire (and a player) in the game.
@@ -30,16 +24,6 @@ public final class Empire {
 
   private final boolean computer;
 
-  public final List<Discovery> discoveries = new ArrayList<>();
-
-  public final Map<Choice, Discovery> choices = new EnumMap<>(Choice.class);
-
-  private String name;
-
-  private Entity capital;
-
-  public Research nextDiscovery;
-
   public Empire(Color color, Culture culture, boolean computer) {
     this.id = COUNTER.getAndIncrement();
     this.color = color;
@@ -57,21 +41,6 @@ public final class Empire {
 
   public Culture getCulture() {
     return culture;
-  }
-
-  /** Get the empire name, depending on its government form and history. */
-  public String name() {
-    return name;
-  }
-
-  public void setCapital(Entity capital) {
-    this.capital = capital;
-    this.name = capital.getComponent(Name.class).name;
-  }
-
-  public void setNextDiscovery(Research research) {
-    System.out.println(this + " researches " + research.target);
-    this.nextDiscovery = research;
   }
 
   public String newCityName() {
@@ -95,7 +64,7 @@ public final class Empire {
 
   @Override
   public String toString() {
-    return culture.name + "(" + name() + ")";
+    return culture.name + "(ia=" + computer + ")";
   }
 
 }

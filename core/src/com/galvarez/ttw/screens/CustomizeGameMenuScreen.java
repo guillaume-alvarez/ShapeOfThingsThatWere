@@ -158,10 +158,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
       // can only have 1 player-controlled empire
       for (ListIterator<Empire> it = settings.empires.listIterator(); it.hasNext();) {
         Empire empire = it.next();
-        if (empire == e)
-          it.set(settings.player = new Empire(e.color, e.culture, false));
-        else
-          it.set(new Empire(empire.color, empire.culture, true));
+        it.set(new Empire(e.color, e.culture, empire != e));
       }
     } else
       settings.empires.set(settings.empires.indexOf(e), new Empire(e.color, e.culture, true));

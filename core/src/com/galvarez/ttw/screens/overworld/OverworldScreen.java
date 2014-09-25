@@ -1,6 +1,8 @@
 package com.galvarez.ttw.screens.overworld;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.artemis.Component;
@@ -15,10 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
-import com.galvarez.ttw.model.AISystem;
+import com.galvarez.ttw.model.AIDiscoverySystem;
+import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.Capital;
+import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
@@ -56,7 +61,9 @@ public final class OverworldScreen extends AbstractScreen {
 
   final InfluenceSystem influenceSystem;
 
-  private final AISystem iaSystem;
+  private final AIInfluenceSystem iaInfluence;
+
+  private final AIDiscoverySystem iaDiscovery;
 
   final MapRenderer mapRenderer;
 
@@ -85,6 +92,10 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final DiscoveryMenuScreen discoveryScreen;
 
+  private Entity player;
+
+  private final List<Entity> empires;
+
   public OverworldScreen(ThingsThatWereGame game, SpriteBatch batch, World world, SessionSettings settings) {
     super(game, world, batch);
 
@@ -105,9 +116,10 @@ public final class OverworldScreen extends AbstractScreen {
     mapHighlighter = new MapHighlighter(camera, batch, gameMap);
 
     world.setSystem(new NotificationsSystem(stage));
-    discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), settings.empires), true);
+    discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
-    iaSystem = world.setSystem(new AISystem(gameMap, this), true);
+    iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
+    iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
@@ -116,14 +128,15 @@ public final class OverworldScreen extends AbstractScreen {
     influenceRenderSystem.preprocess();
     System.out.println("The world is initialized");
 
-    fillWorldWithEntities();
+    empires = fillWorldWithEntities();
 
     renderMap = true;
     renderHighlighter = false;
 
     pauseScreen = new PauseMenuScreen(game, world, batch, this);
-    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, settings.empires);
-    discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, settings.player, discoverySystem);
+    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires);
+    discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player.getComponent(Discoveries.class),
+        discoverySystem);
   }
 
   @Override
@@ -193,21 +206,23 @@ public final class OverworldScreen extends AbstractScreen {
     stage.dispose();
   }
 
-  private void fillWorldWithEntities() {
+  private List<Entity> fillWorldWithEntities() {
     // add the entity for players cities
-    Entity city = null;
-    for (Empire empire : gameMap.empires) {
-      city = createCity(empire.newCityName(), empire);
-    }
-    selectedTile = city.getComponent(MapPosition.class);
+    List<Entity> list = new ArrayList<>();
+    for (Empire empire : gameMap.empires)
+      list.add(createEmpire(empire.newCityName(), empire));
+
+    selectedTile = player.getComponent(Capital.class).capital.getComponent(MapPosition.class);
 
     // You have to process the world once to get all the entities loaded up with
     // the "Stats" component - I'm not sure why, but if you don't, the bag of
     // entities that turnManagementSystem gets is empty?
     world.process();
+
+    return list;
   }
 
-  private Entity createCity(String name, Empire empire) {
+  private Entity createEmpire(String name, Empire empire) {
     int x, y;
     do {
       x = MathUtils.random(MapTools.width() - 4) + 2;
@@ -218,13 +233,20 @@ public final class OverworldScreen extends AbstractScreen {
         // or on neighbor tiles
         || hasNeighbourCity(x, y));
     Entity city = EntityFactory.createCity(world, x, y, name, empire);
-    if (empire.isComputerControlled())
+    Entity entity;
+
+    if (empire.isComputerControlled()) {
       city.addComponent(new AIControlled());
-    empire.setCapital(city);
+      entity = EntityFactory.createEmpire(world, city);
+      entity.addComponent(new AIControlled());
+    } else {
+      entity = player = EntityFactory.createEmpire(world, city);
+    }
     city.addToWorld();
+    entity.addToWorld();
     gameMap.addEntity(city, x, y);
     System.out.println("Created city " + name + " for empire " + empire);
-    return city;
+    return entity;
   }
 
   private boolean hasNeighbourCity(int x, int y) {
@@ -242,7 +264,8 @@ public final class OverworldScreen extends AbstractScreen {
     stage.setKeyboardFocus(null);
     stage.setScrollFocus(null);
 
-    iaSystem.process();
+    iaInfluence.process();
+    iaDiscovery.process();
     discoverySystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
@@ -254,19 +277,6 @@ public final class OverworldScreen extends AbstractScreen {
     InfluenceSource inf = source.getComponent(InfluenceSource.class);
     inf.target = new MapPosition(x, y);
     source.changedInWorld();
-  }
-
-  public void startMoving(int x, int y) {
-    cameraMovementSystem.move(x, y);
-    // Gdx.input.setInputProcessor(null);
-  }
-
-  public void stopMoving() {
-    // Gdx.input.setInputProcessor(inputSystem);
-  }
-
-  public boolean cameraMoving() {
-    return cameraMovementSystem.active;
   }
 
   public void setHighlightColor(float r, float g, float b, float a) {
