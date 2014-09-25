@@ -29,8 +29,15 @@ public class FramedDialog {
   public FramedDialog(Skin skin, String title, String message) {
     this.skin = skin;
 
+    frame = new Image(skin.getPatch("frame"));
+
     // TODO find why title is outside the box
-    dialog = new Dialog(title, skin);
+    dialog = new Dialog(title, skin) {
+      @Override
+      protected void result(Object object) {
+        frame.addAction(sequence(fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
+      }
+    };
     dialog.setBackground(skin.getTiledDrawable("menuTexture"));
     dialog.getContentTable().defaults().expandX().fillX();
     dialog.getButtonTable().defaults().width(128).fillX();
@@ -40,8 +47,6 @@ public class FramedDialog {
     label.setWrap(true);
 
     dialog.text(label);
-
-    frame = new Image(skin.getPatch("frame"));
   }
 
   public void setKey(int key, Object result) {
