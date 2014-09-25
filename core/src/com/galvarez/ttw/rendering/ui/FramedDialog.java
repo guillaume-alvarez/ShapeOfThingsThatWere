@@ -1,6 +1,5 @@
 package com.galvarez.ttw.rendering.ui;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static java.lang.Math.max;
 
@@ -35,7 +34,7 @@ public class FramedDialog {
     dialog = new Dialog(title, skin) {
       @Override
       protected void result(Object object) {
-        frame.addAction(sequence(fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
+        fadeOut();
       }
     };
     dialog.setBackground(skin.getTiledDrawable("menuTexture"));
@@ -60,7 +59,7 @@ public class FramedDialog {
     button.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        frame.addAction(sequence(fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
+        fadeOut();
       }
     });
     dialog.button(button);
@@ -70,7 +69,7 @@ public class FramedDialog {
     button.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        frame.addAction(sequence(fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
+        fadeOut();
       }
     });
     dialog.button(button);
@@ -94,5 +93,9 @@ public class FramedDialog {
     frame.setHeight(height + 4);
 
     frame.setTouchable(Touchable.disabled);
+  }
+
+  public void fadeOut() {
+    frame.addAction(sequence(Actions.fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
   }
 }
