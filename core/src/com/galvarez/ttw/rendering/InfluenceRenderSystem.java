@@ -30,8 +30,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
-  private ComponentMapper<MapPosition> positions;
-
   private final GameMap map;
 
   private final EnumMap<Border, Border> nextBorder = new EnumMap<>(Border.class);

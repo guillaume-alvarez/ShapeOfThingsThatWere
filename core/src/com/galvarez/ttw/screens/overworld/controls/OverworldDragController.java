@@ -1,11 +1,11 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 
-public class OverworldDragController implements InputProcessor {
+public class OverworldDragController extends InputAdapter {
 
   private boolean dragging;
 
@@ -34,26 +34,6 @@ public class OverworldDragController implements InputProcessor {
   }
 
   @Override
-  public boolean keyDown(int keycode) {
-    return false;
-  }
-
-  @Override
-  public boolean keyUp(int keycode) {
-    return false;
-  }
-
-  @Override
-  public boolean keyTyped(char character) {
-    return false;
-  }
-
-  @Override
-  public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    return false;
-  }
-
-  @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
     if (!dragging)
       return false;
@@ -61,8 +41,4 @@ public class OverworldDragController implements InputProcessor {
     return true;
   }
 
-  @Override
-  public boolean mouseMoved(int screenX, int screenY) {
-    return false;
-  }
 }

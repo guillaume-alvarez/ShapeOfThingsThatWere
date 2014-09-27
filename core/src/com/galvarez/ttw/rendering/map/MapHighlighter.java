@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.utils.FloatPair;
@@ -26,11 +25,8 @@ public class MapHighlighter extends AbstractRenderer {
 
   private final BitmapFont font;
 
-  private final GameMap map;
-
-  public MapHighlighter(OrthographicCamera camera, SpriteBatch batch, GameMap map) {
+  public MapHighlighter(OrthographicCamera camera, SpriteBatch batch) {
     super(camera, batch);
-    this.map = map;
 
     highlight = new Texture(Gdx.files.internal("textures/misc/hex_blank.png"));
     font = Font.IRIS_UPC.get();

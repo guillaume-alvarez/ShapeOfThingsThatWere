@@ -130,7 +130,7 @@ public final class OverworldScreen extends AbstractScreen {
     world.setManager(new PlayerManager());
 
     mapRenderer = new MapRenderer(camera, batch, gameMap);
-    mapHighlighter = new MapHighlighter(camera, batch, gameMap);
+    mapHighlighter = new MapHighlighter(camera, batch);
 
     renderMap = true;
     renderHighlighter = false;
