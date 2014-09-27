@@ -1,6 +1,6 @@
 package com.galvarez.ttw.model;
 
-import java.util.List;
+import java.util.Map;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
@@ -10,6 +10,7 @@ import com.artemis.systems.EntityProcessingSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.Research;
+import com.galvarez.ttw.model.data.Discovery;
 
 @Wire
 public final class AIDiscoverySystem extends EntityProcessingSystem {
@@ -32,9 +33,9 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   protected void process(Entity e) {
     Discoveries d = discoveries.get(e);
     if (d.next == null) {
-      List<Research> possible = discoverySystem.possibleDiscoveries(e, d, 1);
+      Map<Discovery, Integer> possible = discoverySystem.possibleDiscoveries(e, d, 1);
       if (!possible.isEmpty())
-        d.next = possible.get(0);
+        d.next = new Research(possible.keySet().iterator().next());
     }
   }
 

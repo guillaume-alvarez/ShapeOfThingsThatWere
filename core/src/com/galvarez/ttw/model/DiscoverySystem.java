@@ -1,9 +1,9 @@
 package com.galvarez.ttw.model;
 
 import static java.lang.Math.max;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,8 @@ import com.galvarez.ttw.rendering.components.Name;
  */
 @Wire
 public final class DiscoverySystem extends EntitySystem {
+
+  private static final int DISCOVERY_THRESHOLD = 100;
 
   private final Map<String, Discovery> discoveries;
 
@@ -78,8 +80,7 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   private boolean progressNext(Entity entity, Discoveries discovery) {
-    Entity capital = capitals.get(entity).capital;
-    InfluenceSource influence = influences.get(capital);
+    InfluenceSource influence = getInfluence(entity);
     int progress = 0;
     List<Terrain> terrains = discovery.next.target.terrains;
     if (terrains == null || terrains.isEmpty())
@@ -92,7 +93,13 @@ public final class DiscoverySystem extends EntitySystem {
       }
     }
     discovery.next.progress += max(1, progress);
-    return discovery.next.progress >= 100;
+    return discovery.next.progress >= DISCOVERY_THRESHOLD;
+  }
+
+  private InfluenceSource getInfluence(Entity empire) {
+    Entity capital = capitals.get(empire).capital;
+    InfluenceSource influence = influences.get(capital);
+    return influence;
   }
 
   private void discoverNext(Entity entity, Discoveries discovery) {
@@ -100,19 +107,23 @@ public final class DiscoverySystem extends EntitySystem {
     System.out.printf("%s discoved %s from %s.\n", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
       notifications.addNotification("Discovery!", "You discovered %s from %s.", next.target,
-          previousString(discovery, next));
+          previousString(discovery, next.target));
     discovery.done.add(next.target);
     discovery.next = null;
   }
 
-  public List<Research> possibleDiscoveries(Entity entity, Discoveries empire, int nb) {
+  /**
+   * Compute the 'nb' first possible discoveries for the empire, associated to
+   * the expected number of turns to get them.
+   */
+  public Map<Discovery, Integer> possibleDiscoveries(Entity entity, Discoveries empire, int nb) {
     Set<String> done = empire.done.stream().map(Discovery::getName).collect(toSet());
     empire.done.forEach(d -> done.addAll(d.groups));
 
     Predicate<Discovery> canBeDiscovered = d -> !done.contains(d.name) && done.containsAll(d.previous)
         && hasTerrain(entity, d.terrains);
     return discoveries.values().stream().filter(canBeDiscovered).limit(nb)
-        .collect(ArrayList<Research>::new, (l, d) -> l.add(new Research(d.previous, d)), ArrayList::addAll);
+        .collect(toMap(d -> d, d -> guessNbTurns(entity, d.terrains)));
   }
 
   private boolean hasTerrain(Entity entity, List<Terrain> terrains) {
@@ -120,8 +131,7 @@ public final class DiscoverySystem extends EntitySystem {
       return true;
 
     Set<Terrain> set = EnumSet.copyOf(terrains);
-    Entity capital = capitals.get(entity).capital;
-    InfluenceSource influence = influences.get(capital);
+    InfluenceSource influence = getInfluence(entity);
     for (MapPosition pos : influence.influencedTiles)
       if (set.contains(map.getTerrainAt(pos)))
         return true;
@@ -129,7 +139,23 @@ public final class DiscoverySystem extends EntitySystem {
     return false;
   }
 
-  public String previousString(Discoveries empire, Research next) {
+  private int guessNbTurns(Entity empire, List<Terrain> terrains) {
+    InfluenceSource influence = getInfluence(empire);
+
+    int progressPerTurn = 0;
+    if (terrains == null || terrains.isEmpty()) {
+      progressPerTurn = influence.influencedTiles.size();
+    } else {
+      Set<Terrain> set = EnumSet.copyOf(terrains);
+      for (MapPosition pos : influence.influencedTiles)
+        if (set.contains(map.getTerrainAt(pos)))
+          progressPerTurn++;
+    }
+
+    return DISCOVERY_THRESHOLD / max(1, progressPerTurn);
+  }
+
+  public String previousString(Discoveries empire, Discovery next) {
     if (next.previous.isEmpty())
       return "NOTHING";
 

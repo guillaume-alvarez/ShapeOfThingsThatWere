@@ -13,8 +13,8 @@ public class Research extends Component {
 
   public int progress = 0;
 
-  public Research(List<String> previous, Discovery target) {
-    this.previous = previous;
+  public Research(Discovery target) {
+    this.previous = target.previous;
     this.target = target;
   }
 

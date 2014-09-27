@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -69,19 +71,20 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     discoveryChoices.clear();
     if (empire.next != null) {
       discoveryChoices.addLabel("Progress toward new discovery from "
-          + discoverySystem.previousString(empire, empire.next) + ": " + empire.next.progress + "%");
+          + discoverySystem.previousString(empire, empire.next.target) + ": " + empire.next.progress + "%");
     } else {
-      List<Research> possible = discoverySystem.possibleDiscoveries(entity, empire, 5);
+      Map<Discovery, Integer> possible = discoverySystem.possibleDiscoveries(entity, empire, 5);
       if (possible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
         discoveryChoices.addLabel("Choose discoveries to combine:");
-        for (Research next : possible)
-          discoveryChoices.addButton("Combine: ", discoverySystem.previousString(empire, next), //
+        for (Entry<Discovery, Integer> next : possible.entrySet())
+          discoveryChoices.addButton("Combine: ",
+              discoverySystem.previousString(empire, next.getKey()) + " (" + next.getValue() + ")", //
               new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                  empire.next = next;
+                  empire.next = new Research(next.getKey());
                   resumeGame();
                 }
               }, true);
