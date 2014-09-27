@@ -16,6 +16,8 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -27,6 +29,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Name;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * For every empire, compute the new discovery.
@@ -41,6 +44,8 @@ import com.galvarez.ttw.rendering.components.Name;
 public final class DiscoverySystem extends EntitySystem {
 
   private static final int DISCOVERY_THRESHOLD = 100;
+
+  private final OverworldScreen screen;
 
   private final Map<String, Discovery> discoveries;
 
@@ -57,10 +62,11 @@ public final class DiscoverySystem extends EntitySystem {
   private ComponentMapper<AIControlled> ai;
 
   @SuppressWarnings("unchecked")
-  public DiscoverySystem(Map<String, Discovery> discoveries, GameMap map) {
+  public DiscoverySystem(Map<String, Discovery> discoveries, GameMap map, OverworldScreen screen) {
     super(Aspect.getAspectForAll(Discoveries.class, Capital.class));
     this.discoveries = discoveries;
     this.map = map;
+    this.screen = screen;
   }
 
   @Override
@@ -106,8 +112,12 @@ public final class DiscoverySystem extends EntitySystem {
     Research next = discovery.next;
     System.out.printf("%s discoved %s from %s.\n", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
-      notifications.addNotification("Discovery!", "You discovered %s from %s.", next.target,
-          previousString(discovery, next.target));
+      notifications.addNotification(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          screen.discoveryMenu();
+        }
+      }, "Discovery!", "You discovered %s from %s.", next.target, previousString(discovery, next.target));
     discovery.done.add(next.target);
     discovery.next = null;
   }

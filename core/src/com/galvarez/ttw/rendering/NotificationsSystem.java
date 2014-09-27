@@ -10,7 +10,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
 
 /**
@@ -20,9 +20,11 @@ import com.galvarez.ttw.rendering.ui.FramedDialog;
  */
 public final class NotificationsSystem extends VoidEntitySystem {
 
-  private final List<String> titles = new ArrayList<String>();
+  private final List<String> titles = new ArrayList<>();
 
-  private final List<String> notifications = new ArrayList<String>();
+  private final List<String> notifications = new ArrayList<>();
+
+  private final List<ChangeListener> listeners = new ArrayList<>();
 
   private final Stage stage;
 
@@ -38,7 +40,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
   protected void processSystem() {
     for (int i = 0; i < titles.size(); i++) {
       FramedDialog dialog = new FramedDialog(skin, titles.get(i), notifications.get(i));
-      dialog.addButton(new TextButton("OK", skin));
+      dialog.addButton("OK", listeners.get(i));
       dialog.setKey(Keys.ENTER, null);
       dialog.addToStage(stage, 256, 64);
     }
@@ -47,7 +49,12 @@ public final class NotificationsSystem extends VoidEntitySystem {
   }
 
   public void addNotification(String title, String msg, Object ... args) {
+    addNotification(null, title, msg, args);
+  }
+
+  public void addNotification(ChangeListener listener, String title, String msg, Object ... args) {
     titles.add(title);
+    listeners.add(listener);
     if (args == null || args.length == 0)
       notifications.add(msg);
     else

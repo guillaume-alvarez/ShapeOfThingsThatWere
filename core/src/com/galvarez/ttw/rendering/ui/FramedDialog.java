@@ -54,7 +54,9 @@ public class FramedDialog {
 
   public void addButton(String text, ChangeListener changeListener) {
     TextButton button = new TextButton(text, skin);
-    button.addListener(changeListener);
+
+    if (changeListener != null)
+      button.addListener(changeListener);
 
     button.addListener(new ChangeListener() {
       @Override
