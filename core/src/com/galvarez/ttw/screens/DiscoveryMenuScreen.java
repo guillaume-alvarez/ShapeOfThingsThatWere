@@ -63,7 +63,8 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     empireChoices.addToStage(stage, 30, topMenu.getY() - 30, false);
 
     discoveryChoices.clear();
-    for (Research next : discoverySystem.possibleDiscoveries(empire, 5))
+    List<Research> possible = discoverySystem.possibleDiscoveries(empire, 5);
+    for (Research next : possible)
       discoveryChoices.addButton("Combine: ", discoverySystem.previousString(empire, next), //
           new ChangeListener() {
             @Override
@@ -72,6 +73,8 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
               resumeGame();
             }
           }, true);
+    if (possible.isEmpty())
+      discoveryChoices.addLabel("No discoveries to combine!");
     discoveryChoices.addToStage(stage, 30, empireChoices.getY() - 30, false);
   }
 
