@@ -1,5 +1,7 @@
 package com.galvarez.ttw.rendering;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,11 @@ public final class NotificationsSystem extends VoidEntitySystem {
     notifications.clear();
   }
 
-  public void addNotification(String title, String msg) {
+  public void addNotification(String title, String msg, Object ... args) {
     titles.add(title);
-    notifications.add(msg);
+    if (args == null || args.length == 0)
+      notifications.add(msg);
+    else
+      notifications.add(format(msg, args));
   }
 }

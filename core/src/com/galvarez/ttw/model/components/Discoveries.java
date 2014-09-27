@@ -11,11 +11,11 @@ import com.galvarez.ttw.model.data.Discovery;
 
 public final class Discoveries extends Component {
 
-  public final List<Discovery> discovered = new ArrayList<>();
+  public final List<Discovery> done = new ArrayList<>();
 
   public final Map<Choice, Discovery> choices = new EnumMap<>(Choice.class);
 
-  public Research nextDiscovery;
+  public Research next;
 
   public Discoveries() {
   }

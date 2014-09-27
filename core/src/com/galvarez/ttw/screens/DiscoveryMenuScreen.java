@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -36,10 +37,13 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
 
   private final DiscoverySystem discoverySystem;
 
+  private final Entity entity;
+
   public DiscoveryMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      Discoveries empire, DiscoverySystem discoverySystem) {
+      Entity empire, DiscoverySystem discoverySystem) {
     super(game, world, batch, gameScreen);
-    this.empire = empire;
+    this.entity = empire;
+    this.empire = empire.getComponent(Discoveries.class);
     this.discoverySystem = discoverySystem;
 
     topMenu = new FramedMenu(skin, 800, 600);
@@ -63,18 +67,26 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     empireChoices.addToStage(stage, 30, topMenu.getY() - 30, false);
 
     discoveryChoices.clear();
-    List<Research> possible = discoverySystem.possibleDiscoveries(empire, 5);
-    for (Research next : possible)
-      discoveryChoices.addButton("Combine: ", discoverySystem.previousString(empire, next), //
-          new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-              empire.nextDiscovery = next;
-              resumeGame();
-            }
-          }, true);
-    if (possible.isEmpty())
-      discoveryChoices.addLabel("No discoveries to combine!");
+    if (empire.next != null) {
+      discoveryChoices.addLabel("Progress toward new discovery from "
+          + discoverySystem.previousString(empire, empire.next) + ": " + empire.next.progress + "%");
+    } else {
+      List<Research> possible = discoverySystem.possibleDiscoveries(entity, empire, 5);
+      if (possible.isEmpty()) {
+        discoveryChoices.addLabel("No discoveries to combine!");
+      } else {
+        discoveryChoices.addLabel("Choose discoveries to combine:");
+        for (Research next : possible)
+          discoveryChoices.addButton("Combine: ", discoverySystem.previousString(empire, next), //
+              new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                  empire.next = next;
+                  resumeGame();
+                }
+              }, true);
+      }
+    }
     discoveryChoices.addToStage(stage, 30, empireChoices.getY() - 30, false);
   }
 
@@ -109,6 +121,6 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
   }
 
   private static List<Discovery> discoveries(Discoveries empire, Choice choice) {
-    return empire.discovered.stream().filter(d -> d.groups.contains(choice.name())).collect(toList());
+    return empire.done.stream().filter(d -> d.groups.contains(choice.name())).collect(toList());
   }
 }

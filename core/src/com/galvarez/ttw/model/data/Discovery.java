@@ -3,10 +3,14 @@ package com.galvarez.ttw.model.data;
 import java.util.Collections;
 import java.util.List;
 
+import com.galvarez.ttw.model.map.Terrain;
+
 // TODO do not allow modification after loading
 public final class Discovery {
 
   public String name;
+
+  public List<Terrain> terrains;
 
   public List<String> groups = Collections.emptyList();
 

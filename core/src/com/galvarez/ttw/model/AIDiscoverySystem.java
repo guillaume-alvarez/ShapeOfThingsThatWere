@@ -31,10 +31,10 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   @Override
   protected void process(Entity e) {
     Discoveries d = discoveries.get(e);
-    if (d.nextDiscovery == null) {
-      List<Research> possible = discoverySystem.possibleDiscoveries(d, 1);
+    if (d.next == null) {
+      List<Research> possible = discoverySystem.possibleDiscoveries(e, d, 1);
       if (!possible.isEmpty())
-        d.nextDiscovery = possible.get(0);
+        d.next = possible.get(0);
     }
   }
 

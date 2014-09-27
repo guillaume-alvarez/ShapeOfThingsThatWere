@@ -2,72 +2,86 @@
 {
   name: Grassland,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Forest,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [FOREST]
 },
 {
   name: Desert,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [DESERT]
 },
 {
   name: Hill,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [HILLS]
 },
 {
   name: Mountain,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [MOUNTAIN]
 },
 {
   name: Sea,
   previous: [],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [DEEP_WATER, SHALLOW_WATER]
 },
 {
   name: River,
   previous: [Mountain, Hill, Grassland],
-  groups: [TERRAIN]
+  groups: [TERRAIN],
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN]
 },
 {
   name: Iron,
   previous: [Mountain, Hill, Fire],
-  groups: [METAL]
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Copper,
   previous: [Mountain, Hill, Fire],
-  groups: [METAL]
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Tin,
   previous: [Mountain, Hill, Fire],
-  groups: [METAL]
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Bronze,
   previous: [Copper, Tin],
-  groups: [METAL]
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Gold,
   previous: [Mountain, Hill, River],
-  groups: [LUXURY]
+  groups: [LUXURY],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Silver,
   previous: [Mountain, Hill, River],
-  groups: [LUXURY]
+  groups: [LUXURY],
+  terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Wood,
   previous: [Forest],
-  groups: [MATERIAL]
+  groups: [MATERIAL],
+  terrains: [FOREST]
 },
 {
   name: Animal,
@@ -75,15 +89,18 @@
 },
 {
   name: Hunt,
-  previous: [Animal, Wood]
+  previous: [Animal, Wood],
+  terrains: [GRASSLAND, PLAIN, FOREST]
 },
 {
   name: Gathering,
-  previous: [Forest, Grassland]
+  previous: [Forest, Grassland],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Fishing,
-  previous: [Sea, River, Wood]
+  previous: [Sea, River, Wood],
+  terrains: [DEEP_WATER, SHALLOW_WATER]
 },
 {
   name: Knife,
@@ -108,43 +125,52 @@
 {
   name: Agriculture,
   previous: [Grassland, Gathering],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Breeding,
   previous: [Agriculture, Animal],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Horse,
   previous: [Breeding, Grassland],
-  groups: [FOOD, MOVE]
+  groups: [FOOD, MOVE],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Goat,
   previous: [Breeding, Grassland],
-  groups: [FOOD]
+  groups: [FOOD],
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT]
 },
 {
   name: Dirt,
   previous: [Hills, Desert],
-  groups: [MATERIAL]
+  groups: [MATERIAL],
+  terrains: [HILLS, DESERT]
 },
 {
   name: Stone,
   previous: [Hills, Mountain],
-  groups: [MATERIAL]
+  groups: [MATERIAL],
+  terrains: [HILLS, MOUNTAIN]
 },
 {
   name: Clay,
   previous: [Hills, River],
-  groups: [MATERIAL]
+  groups: [MATERIAL],
+  terrains: [PLAIN, HILLS]
 },
 {
   name: Fire,
-  previous: [Wood]
+  previous: [Wood],
+  terrains: [GRASSLAND, FOREST]
 },
 {
   name: House,
-  previous: [MATERIAL, Fire, Wood]
+  previous: [MATERIAL, Fire, Wood],
+  terrains: [GRASSLAND, FOREST, PLAIN, HILLS]
 },
 {
   name: Village,
@@ -162,7 +188,8 @@
 },
 {
   name: City,
-  previous: [Village, Agriculture, LUXURY]
+  previous: [Village, Agriculture, LUXURY],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: King,

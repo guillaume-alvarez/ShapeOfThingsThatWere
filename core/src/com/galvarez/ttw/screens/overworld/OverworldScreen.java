@@ -23,7 +23,6 @@ import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
-import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
@@ -116,7 +115,7 @@ public final class OverworldScreen extends AbstractScreen {
     mapHighlighter = new MapHighlighter(camera, batch, gameMap);
 
     world.setSystem(new NotificationsSystem(stage));
-    discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries()), true);
+    discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
@@ -135,8 +134,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     pauseScreen = new PauseMenuScreen(game, world, batch, this);
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires);
-    discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player.getComponent(Discoveries.class),
-        discoverySystem);
+    discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
   }
 
   @Override
