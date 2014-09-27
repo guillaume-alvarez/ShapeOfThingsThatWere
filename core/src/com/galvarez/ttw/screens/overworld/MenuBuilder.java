@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.model.InfluenceSystem;
+import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -87,12 +88,15 @@ public class MenuBuilder {
     }, true);
 
     // here present a sub-menu to see current discovery and be able to change it
-    empireMenu.addButton("Discovery", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        menuProcessor.discoveryMenu();
-      }
-    }, true);
+    Discoveries discoveries = screen.player.getComponent(Discoveries.class);
+    empireMenu.addButton("Discovery "
+        + (discoveries != null && discoveries.next != null ? "(" + discoveries.next.progress + "%)" : "(NONE)"),
+        new ChangeListener() {
+          @Override
+          public void changed(ChangeEvent event, Actor actor) {
+            menuProcessor.discoveryMenu();
+          }
+        }, true);
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }

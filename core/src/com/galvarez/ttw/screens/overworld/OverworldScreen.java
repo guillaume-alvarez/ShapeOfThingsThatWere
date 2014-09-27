@@ -91,7 +91,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final DiscoveryMenuScreen discoveryScreen;
 
-  private Entity player;
+  public Entity player;
 
   private final List<Entity> empires;
 
@@ -100,19 +100,10 @@ public final class OverworldScreen extends AbstractScreen {
 
     cameraMovementSystem = new CameraMovementSystem(camera);
 
-    gameMap = new GameMap(new HexMapGenerator().getDiamondSquare(settings.mapNoise.get(), settings.mapWidth.get(),
-        settings.mapHeight.get()), settings.empires);
-
     stage = new Stage(new ScreenViewport(), new SpriteBatch());
 
-    inputManager = new InputManager(camera, world, this, stage, gameMap);
-    inputManager.menuBuilder.buildTurnMenu();
-    inputManager.menuBuilder.buildEmpireMenu();
-
-    world.setManager(new PlayerManager());
-
-    mapRenderer = new MapRenderer(camera, batch, gameMap);
-    mapHighlighter = new MapHighlighter(camera, batch, gameMap);
+    gameMap = new GameMap(new HexMapGenerator().getDiamondSquare(settings.mapNoise.get(), settings.mapWidth.get(),
+        settings.mapHeight.get()), settings.empires);
 
     world.setSystem(new NotificationsSystem(stage));
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap), true);
@@ -124,10 +115,22 @@ public final class OverworldScreen extends AbstractScreen {
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
 
     world.initialize();
+    empires = fillWorldWithEntities();
+    iaInfluence.process();
+    iaDiscovery.process();
+    discoverySystem.process();
+    influenceSystem.process();
     influenceRenderSystem.preprocess();
     System.out.println("The world is initialized");
 
-    empires = fillWorldWithEntities();
+    inputManager = new InputManager(camera, world, this, stage, gameMap);
+    inputManager.menuBuilder.buildTurnMenu();
+    inputManager.menuBuilder.buildEmpireMenu();
+
+    world.setManager(new PlayerManager());
+
+    mapRenderer = new MapRenderer(camera, batch, gameMap);
+    mapHighlighter = new MapHighlighter(camera, batch, gameMap);
 
     renderMap = true;
     renderHighlighter = false;
