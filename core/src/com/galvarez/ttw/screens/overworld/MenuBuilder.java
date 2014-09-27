@@ -143,8 +143,6 @@ public class MenuBuilder {
   }
 
   private void addTileDescription(MapPosition tile) {
-    System.out.println("Selected " + tile);
-
     Terrain terrain = map.getTerrainAt(tile);
     selectionMenu.addLabelSprite(terrain.getDesc() + " (" + tile.x + ", " + tile.y + ")",
         screen.mapRenderer.getTexture(terrain), Color.WHITE);

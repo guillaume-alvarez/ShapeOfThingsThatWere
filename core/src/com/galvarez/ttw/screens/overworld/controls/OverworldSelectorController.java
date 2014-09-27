@@ -66,6 +66,8 @@ public final class OverworldSelectorController extends InputAdapter {
 
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
+      System.out.println("Selected " + coords);
+
       // user clicked on the map :-)
       screen.selectedTile = coords;
       EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f).addToWorld();
