@@ -80,7 +80,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
         discoveryChoices.addLabel("Choose discoveries to combine:");
         for (Entry<Discovery, Integer> next : possible.entrySet())
           discoveryChoices.addButton("Combine: ",
-              discoverySystem.previousString(empire, next.getKey()) + " (" + next.getValue() + ")", //
+              discoverySystem.previousString(empire, next.getKey()) + " (~" + next.getValue() + " turns)", //
               new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
