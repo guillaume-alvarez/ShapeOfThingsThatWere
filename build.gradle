@@ -17,6 +17,9 @@ allprojects {
         gdxVersion = '1.3.2-SNAPSHOT'
         artemisVersion = '0.7.1'
         roboVMVersion = '0.0.14'
+        slf4jVersion = '1.7.7'
+        log4jBindingsVersion = '2.0.2'
+        log4jCoreVersion = '2.0.2'
     }
 
     repositories {
@@ -48,6 +51,9 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jBindingsVersion"
+        compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
     }
 }
 

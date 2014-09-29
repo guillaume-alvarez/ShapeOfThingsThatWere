@@ -1,5 +1,8 @@
 package com.galvarez.ttw.screens.overworld;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.files.FileHandle;
@@ -12,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -27,6 +31,8 @@ import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.MenuProcessor;
 
 public class MenuBuilder {
+
+  private static final Logger log = LoggerFactory.getLogger(MenuBuilder.class);
 
   private static final int MENU_PADDING = 15;
 
@@ -151,7 +157,7 @@ public class MenuBuilder {
   private void addDescription(Entity e) {
     Description desc = e.getComponent(Description.class);
     if (desc != null) {
-      System.out.println("Selected " + desc.desc);
+      log.info("Selected {}", desc.desc);
 
       if (desc.texture != null) {
         selectionMenu.addLabelSprite(desc.desc, desc.texture, Color.WHITE);

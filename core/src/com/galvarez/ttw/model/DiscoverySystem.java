@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -42,6 +45,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  */
 @Wire
 public final class DiscoverySystem extends EntitySystem {
+  private static final Logger log = LoggerFactory.getLogger(DiscoverySystem.class);
 
   private static final int DISCOVERY_THRESHOLD = 100;
 
@@ -110,7 +114,7 @@ public final class DiscoverySystem extends EntitySystem {
 
   private void discoverNext(Entity entity, Discoveries discovery) {
     Research next = discovery.next;
-    System.out.printf("%s discoved %s from %s.\n", entity.getComponent(Name.class), next.target, next.previous);
+    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
       notifications.addNotification(new ChangeListener() {
         @Override
