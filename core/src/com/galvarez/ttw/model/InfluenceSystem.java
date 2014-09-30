@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -28,6 +31,8 @@ import com.galvarez.ttw.rendering.components.Name;
 
 @Wire
 public final class InfluenceSystem extends EntitySystem {
+
+  private static final Logger log = LoggerFactory.getLogger(InfluenceSystem.class);
 
   public static final int INITIAL_POWER = 100;
 
@@ -103,8 +108,8 @@ public final class InfluenceSystem extends EntitySystem {
     if (source.empire == influencer.empire)
       return false;
 
-    System.out.println(e.getComponent(Name.class).name + ", conquered by " + influencer.empire
-        + ", will no longer influence tiles for " + source.empire);
+    log.info("{} conquered by {}, will no longer influence tiles for {}",
+        e.getComponent(Name.class).name, influencer.empire, source.empire);
     if (source.empire.culture == influencer.empire.culture)
       source.power = max(1, source.power / 2);
     else

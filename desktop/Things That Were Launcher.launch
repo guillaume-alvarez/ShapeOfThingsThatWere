@@ -17,4 +17,6 @@
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.galvarez.ttw.desktop.DesktopLauncher"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ShapeOfThingsThatWere-desktop"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dlog4j.configurationFile=resources/log4j2.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:ShapeOfThingsThatWere-core/assets}"/>
 </launchConfiguration>
