@@ -11,7 +11,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.galvarez.ttw.EntityFactory;
-import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
