@@ -108,8 +108,8 @@ public final class InfluenceSystem extends EntitySystem {
     if (source.empire == influencer.empire)
       return false;
 
-    log.info("{} conquered by {}, will no longer influence tiles for {}",
-        e.getComponent(Name.class).name, influencer.empire, source.empire);
+    log.info("{} conquered by {}, will no longer influence tiles for {}", e.getComponent(Name.class).name,
+        influencer.empire, source.empire);
     if (source.empire.culture == influencer.empire.culture)
       source.power = max(1, source.power / 2);
     else
@@ -124,7 +124,7 @@ public final class InfluenceSystem extends EntitySystem {
       if (e.value != 0) {
         InfluenceSource source = sources.get(world.getEntity(e.key));
         EntityFactory.createInfluenceLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
-            source.empire.color, x, y).addToWorld();
+            source.empire.color, x, y);
       }
     }
     tile.applyDelta();

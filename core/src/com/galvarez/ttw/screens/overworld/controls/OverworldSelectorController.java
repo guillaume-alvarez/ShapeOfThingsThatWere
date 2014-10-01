@@ -75,7 +75,7 @@ public final class OverworldSelectorController extends InputAdapter {
 
       // user clicked on the map :-)
       screen.selectedTile = coords;
-      EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f).addToWorld();
+      EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f);
 
       // Check the entityID of the tile they click on
       Entity entity = gameMap.getEntityAt(coords.x, coords.y);

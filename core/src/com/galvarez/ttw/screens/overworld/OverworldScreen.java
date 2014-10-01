@@ -207,8 +207,6 @@ public final class OverworldScreen extends AbstractScreen {
 
   @Override
   public void dispose() {
-    world.deleteSystem(spriteRenderSystem);
-    world.deleteSystem(influenceRenderSystem);
     stage.dispose();
   }
 
@@ -242,14 +240,12 @@ public final class OverworldScreen extends AbstractScreen {
     Entity entity;
 
     if (empire.isComputerControlled()) {
-      city.addComponent(new AIControlled());
+      city.edit().add(new AIControlled());
       entity = EntityFactory.createEmpire(world, city);
-      entity.addComponent(new AIControlled());
+      entity.edit().add(new AIControlled());
     } else {
       entity = player = EntityFactory.createEmpire(world, city);
     }
-    city.addToWorld();
-    entity.addToWorld();
     gameMap.addEntity(city, x, y);
     log.info("Created city {} for empire {}", name, empire);
     return entity;
@@ -282,7 +278,6 @@ public final class OverworldScreen extends AbstractScreen {
   public void flag(Entity source, int x, int y) {
     InfluenceSource inf = source.getComponent(InfluenceSource.class);
     inf.target = new MapPosition(x, y);
-    source.changedInWorld();
   }
 
   public void setHighlightColor(float r, float g, float b, float a) {
@@ -309,8 +304,7 @@ public final class OverworldScreen extends AbstractScreen {
   public Entity addComponent(Component component, Entity entity) {
     if (entity == null)
       return null;
-    entity.addComponent(component);
-    entity.changedInWorld();
+    entity.edit().add(component);
     return entity;
   }
 

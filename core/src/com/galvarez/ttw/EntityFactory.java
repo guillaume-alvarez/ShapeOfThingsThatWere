@@ -1,6 +1,7 @@
 package com.galvarez.ttw;
 
 import com.artemis.Entity;
+import com.artemis.EntityEdit;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.ExpiringSystem.Expires;
@@ -22,8 +23,9 @@ public class EntityFactory {
 
   public static Entity createClick(World world, int x, int y, float startScale, float speed) {
     Entity e = world.createEntity();
+    EntityEdit edit = e.edit();
 
-    MutableMapPosition pos = e.createComponent(MutableMapPosition.class);
+    MutableMapPosition pos = edit.create(MutableMapPosition.class);
     pos.x = x;
     pos.y = y;
 
@@ -33,15 +35,15 @@ public class EntityFactory {
     sprite.rotation = 0f;
     sprite.scaleX = startScale;
     sprite.scaleY = startScale;
-    e.addComponent(sprite);
+    edit.add(sprite);
 
-    Expires expires = e.createComponent(Expires.class);
+    Expires expires = edit.create(Expires.class);
     expires.delay = 1f;
 
-    ScaleAnimation scaleAnimation = e.createComponent(ScaleAnimation.class);
+    ScaleAnimation scaleAnimation = edit.create(ScaleAnimation.class);
     scaleAnimation.speed = speed;
 
-    ColorAnimation colorAnimation = e.createComponent(ColorAnimation.class);
+    ColorAnimation colorAnimation = edit.create(ColorAnimation.class);
     colorAnimation.alphaAnimate = true;
     colorAnimation.alphaSpeed = -1f;
 
@@ -51,7 +53,7 @@ public class EntityFactory {
   public static Entity createCity(World world, int x, int y, String name, Empire empire) {
     Entity e = world.createEntity();
 
-    e.addComponent(new MapPosition(x, y));
+    EntityEdit edit = e.edit();
 
     Sprite sprite = new Sprite();
     sprite.name = "cylinderwide";
@@ -59,13 +61,10 @@ public class EntityFactory {
     sprite.scaleX = 1f;
     sprite.scaleY = 1f;
     sprite.color = empire.color;
-    e.addComponent(sprite);
+    edit.add(sprite);
 
-    e.addComponent(new Description("City of " + name));
-
-    e.addComponent(new InfluenceSource(empire));
-
-    e.addComponent(new Name(name));
+    edit.add(new MapPosition(x, y)).add(new Description("City of " + name)).add(new InfluenceSource(empire))
+        .add(new Name(name));
 
     return e;
   }
@@ -73,23 +72,21 @@ public class EntityFactory {
   public static Entity createEmpire(World world, Entity capital) {
     Entity e = world.createEntity();
 
-    e.addComponent(new Discoveries());
-    e.addComponent(new Diplomacy());
-
-    e.addComponent(new Capital(capital));
-    e.addComponent(new Name(capital.getComponent(Name.class).name));
+    e.edit().add(new Discoveries()).add(new Diplomacy()).add(new Capital(capital))
+        .add(new Name(capital.getComponent(Name.class).name));
 
     return e;
   }
 
   public static Entity createInfluenceLabel(World world, String label, Color color, float x, float y) {
     Entity e = world.createEntity();
+    EntityEdit edit = e.edit();
 
-    MutableMapPosition position = e.createComponent(MutableMapPosition.class);
+    MutableMapPosition position = edit.create(MutableMapPosition.class);
     position.x = x;
     position.y = y;
 
-    FadingMessage fading = e.createComponent(FadingMessage.class);
+    FadingMessage fading = edit.create(FadingMessage.class);
     fading.label = label;
     fading.color = color;
     fading.duration = 1.2f;
