@@ -40,7 +40,6 @@ public final class GameMap {
     posByCoord = new MapPosition[width][height];
 
     Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-    log.info("HH"); // ...wut?
 
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
