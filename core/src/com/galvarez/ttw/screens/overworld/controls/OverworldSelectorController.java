@@ -1,5 +1,8 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -8,6 +11,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
@@ -16,6 +20,8 @@ import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 public final class OverworldSelectorController extends InputAdapter {
+
+  private static final Logger log = LoggerFactory.getLogger(OverworldSelectorController.class);
 
   private final OrthographicCamera camera;
 
@@ -66,7 +72,7 @@ public final class OverworldSelectorController extends InputAdapter {
 
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
-      System.out.println("Selected " + coords);
+      log.info("Selected {}", coords);
 
       // user clicked on the map :-)
       screen.selectedTile = coords;

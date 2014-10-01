@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
@@ -45,6 +48,8 @@ import com.galvarez.ttw.screens.PauseMenuScreen;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
 
 public final class OverworldScreen extends AbstractScreen {
+
+  private static final Logger log = LoggerFactory.getLogger(OverworldScreen.class);
 
   public int turnNumber = 0;
 
@@ -121,7 +126,7 @@ public final class OverworldScreen extends AbstractScreen {
     discoverySystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
-    System.out.println("The world is initialized");
+    log.info("The world is initialized");
 
     inputManager = new InputManager(camera, world, this, stage, gameMap);
     inputManager.menuBuilder.buildTurnMenu();
@@ -246,7 +251,7 @@ public final class OverworldScreen extends AbstractScreen {
     city.addToWorld();
     entity.addToWorld();
     gameMap.addEntity(city, x, y);
-    System.out.println("Created city " + name + " for empire " + empire);
+    log.info("Created city {} for empire {}", name, empire);
     return entity;
   }
 
@@ -258,7 +263,7 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   public void processTurn() {
-    System.out.println("Process new turn");
+    log.info("Process new turn");
 
     // If they don't have AI, give control to the human player
     inputManager.setEnabled(true);

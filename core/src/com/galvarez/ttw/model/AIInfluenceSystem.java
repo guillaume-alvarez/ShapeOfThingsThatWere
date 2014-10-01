@@ -5,6 +5,9 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -20,6 +23,8 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 @Wire
 public final class AIInfluenceSystem extends EntityProcessingSystem {
+  
+  private static final Logger log = LoggerFactory.getLogger(AIInfluenceSystem.class);
 
   private final GameMap map;
 
@@ -84,7 +89,7 @@ public final class AIInfluenceSystem extends EntityProcessingSystem {
         return;
       }
     }
-    System.out.println("Cannot flag anything from " + e.getComponent(Description.class));
+    log.error("Cannot flag anything from {}", e.getComponent(Description.class));
   }
 
   private boolean stillInterestedInTile(Entity e, MapPosition pos, InfluenceSource source) {
