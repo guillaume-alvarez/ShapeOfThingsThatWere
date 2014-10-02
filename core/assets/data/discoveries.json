@@ -282,4 +282,44 @@
   previous: [Floor, Oven],
   groups: [FOOD]
 },
+{
+  name: Death,
+  previous: [],
+},
+{
+  name: Sky,
+  previous: [],
+},
+{
+  name: Underworld,
+  previous: [],
+},
+{
+  name: Beliefs,
+  previous: [Death, Sky, Underworld],
+},
+{
+  name: Symbols,
+  previous: [Village, Beliefs],
+},
+{
+  name: Shamanism,
+  previous: [Animal, Beliefs],
+},
+{
+  name: Cult,
+  previous: [Shamanism, Village],
+},
+{
+  name: Religion,
+  previous: [Cult, City],
+},
+{
+  name: Priest,
+  previous: [Religion, Chief, King],
+},
+{
+  name: Animism,
+  previous: [TERRAIN, Beliefs],
+},
 ]
