@@ -103,6 +103,12 @@
   terrains: [DEEP_WATER, SHALLOW_WATER]
 },
 {
+  name: Fish,
+  previous: [Fishing],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  groups: [FOOD]
+},
+{
   name: Knife,
   previous: [Hunt, METAL],
   groups: [WEAPON]
@@ -143,6 +149,18 @@
   previous: [Breeding, Grassland],
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT]
+},
+{
+  name: Ox,
+  previous: [Breeding, Grassland],
+  groups: [FOOD, MOVE],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Sheep,
+  previous: [Breeding, Grassland],
+  groups: [FOOD],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Dirt,
@@ -214,8 +232,33 @@
   terrains: [GRASSLAND, PLAIN]
 },
 {
+  name: Wheel,
+  previous: [MATERIAL],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
+  name: Cart,
+  previous: [Wheel, Wood, MOVE],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
+  name: Trail,
+  previous: [Forest, Plain, Animal],
+  terrains: [GRASSLAND, FOREST],
+},
+{
+  name: Path,
+  previous: [Trail, FOOD],
+  terrains: [GRASSLAND, FOREST, HILLS],
+},
+{
+  name: Road,
+  previous: [Stone, Path, Village],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
   name: "Grain Mill",
-  previous: [Stone, CEREAL],
+  previous: [Stone, CEREAL, Wheel],
 },
 {
   name: "Water Mill",
@@ -227,8 +270,12 @@
   previous: ["Grain Mill", CEREAL],
 },
 {
+  name: Cooking,
+  previous: [Fire, FOOD],
+},
+{
   name: Oven,
-  previous: [Stone, House, Fire],
+  previous: [Stone, Cooking],
 },
 {
   name: Bread,
