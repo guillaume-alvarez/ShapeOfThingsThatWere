@@ -195,4 +195,44 @@
   name: King,
   previous: [City, WEAPON, Chief]
 },
+{
+  name: Wheat,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Oat,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Rye,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: "Grain Mill",
+  previous: [Stone, CEREAL],
+},
+{
+  name: "Water Mill",
+  previous: ["Grain Mill", River],
+  terrains: [HILLS]
+},
+{
+  name: Floor,
+  previous: ["Grain Mill", Cereal],
+},
+{
+  name: Oven,
+  previous: [Stone, House, Fire],
+},
+{
+  name: Bread,
+  previous: [Floor, Oven],
+  groups: [FOOD]
+},
 ]
