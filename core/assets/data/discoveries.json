@@ -224,7 +224,7 @@
 },
 {
   name: Floor,
-  previous: ["Grain Mill", Cereal],
+  previous: ["Grain Mill", CEREAL],
 },
 {
   name: Oven,
