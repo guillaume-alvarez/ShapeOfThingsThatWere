@@ -197,10 +197,10 @@
 {
   name: Chief,
   previous: [Village, WEAPON],
-  groups: [GOVERNMENT]
+  groups: [GOVERNMENT, LEADER]
 },
 {
-  name: "Elders Concil",
+  name: "Elders Council",
   previous: [Village, Fire],
   groups: [GOVERNMENT]
 },
@@ -211,7 +211,8 @@
 },
 {
   name: King,
-  previous: [City, WEAPON, Chief]
+  previous: [City, WEAPON, Chief],
+  groups: [GOVERNMENT, LEADER]
 },
 {
   name: Wheat,
@@ -300,23 +301,43 @@
 },
 {
   name: Symbols,
-  previous: [Village, Beliefs],
+  previous: [Sky, Beliefs],
 },
 {
-  name: Shamanism,
+  name: Spirits,
   previous: [Animal, Beliefs],
 },
 {
-  name: Cult,
+  name: Gods,
+  previous: [Spirits, LEADER],
+},
+{
+  name: Magic,
+  previous: [Symbols, Beliefs],
+},
+{
+  name: Mysticism,
+  previous: [Magic, "Elders council"],
+},
+{
+  name: Shamanism,
+  previous: [Spirits, "Elders council"],
+},
+{
+  name: Burying,
+  previous: [Death, Beliefs],
+},
+{
+  name: Ritual,
   previous: [Shamanism, Village],
 },
 {
   name: Religion,
-  previous: [Cult, City],
+  previous: [Ritual, Gods],
 },
 {
   name: Priest,
-  previous: [Religion, Chief, King],
+  previous: [Religion, LEADER],
 },
 {
   name: Animism,
