@@ -25,6 +25,7 @@ import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
+import com.galvarez.ttw.model.data.Choice;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -83,13 +84,13 @@ public final class DiscoverySystem extends EntitySystem {
       Discoveries discovery = empires.get(entity);
       if (discovery.next != null) {
         InfluenceSource influence = getInfluence(entity);
-        if (progressNext(entity, discovery, influence))
+        if (progressNext(discovery, influence))
           discoverNext(entity, discovery, influence);
       }
     }
   }
 
-  private boolean progressNext(Entity entity, Discoveries discovery, InfluenceSource influence) {
+  private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
     int progress = 0;
     Set<Terrain> terrains = discovery.next.target.terrains;
     if (terrains == null || terrains.isEmpty())
@@ -123,15 +124,18 @@ public final class DiscoverySystem extends EntitySystem {
     discovery.done.add(next.target);
     discovery.next = null;
 
-    applyDiscoveryEffects(next.target, influence);
+    applyDiscoveryEffects(next.target, influence, false);
   }
 
-  private void applyDiscoveryEffects(Discovery discovery, InfluenceSource influence) {
+  private void applyDiscoveryEffects(Discovery discovery, InfluenceSource influence, boolean revert) {
     for (Entry<String, Number> effect : discovery.effects.entrySet()) {
       Terrain t = Terrain.valueOf(effect.getKey());
       int delta = effect.getValue().intValue();
       Integer current = influence.modifiers.terrainBonus.get(t);
-      influence.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
+      if (revert)
+        influence.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
+      else
+        influence.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
     }
   }
 
@@ -194,9 +198,17 @@ public final class DiscoverySystem extends EntitySystem {
 
   private Discovery getDiscoveryForGroup(Discoveries empire, String previous) {
     for (Discovery d : empire.done)
-      if (d.groups.contains(previous)) {
+      if (d.groups.contains(previous))
         return d;
-      }
     return null;
+  }
+
+  public void choose(Entity entity, Choice choice, Discovery selected) {
+    Discoveries empire = empires.get(entity);
+    Discovery old = empire.choices.put(choice, selected);
+    InfluenceSource influence = getInfluence(entity);
+    if (old != null)
+      applyDiscoveryEffects(old, influence, true);
+    applyDiscoveryEffects(selected, influence, false);
   }
 }

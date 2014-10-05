@@ -114,7 +114,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
         @Override
         public void changed(ChangeEvent event, Actor actor) {
           if (sb.getSelected() != NONE)
-            empire.choices.put(choice, sb.getSelected());
+            discoverySystem.choose(entity, choice, sb.getSelected());
         }
       });
       empireChoices.getTable().add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
