@@ -42,7 +42,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
       FramedDialog dialog = new FramedDialog(skin, titles.get(i), notifications.get(i));
       dialog.addButton("OK", listeners.get(i));
       dialog.setKey(Keys.ENTER, null);
-      dialog.addToStage(stage, 256, 64);
+      dialog.addToStage(stage, 350, 200);
     }
     titles.clear();
     notifications.clear();

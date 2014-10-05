@@ -39,7 +39,7 @@ public class FramedDialog {
     };
     dialog.setBackground(skin.getTiledDrawable("menuTexture"));
     dialog.getContentTable().defaults().expandX().fillX();
-    dialog.getButtonTable().defaults().width(128).fillX();
+    dialog.getButtonTable().defaults().expandX().fillX();
 
     Label label = new Label(message, skin);
     label.setAlignment(Align.center);

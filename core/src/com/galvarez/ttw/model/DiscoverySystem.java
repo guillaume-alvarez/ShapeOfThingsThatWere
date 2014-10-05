@@ -120,11 +120,23 @@ public final class DiscoverySystem extends EntitySystem {
         public void changed(ChangeEvent event, Actor actor) {
           screen.discoveryMenu();
         }
-      }, "Discovery!", "You discovered %s from %s.", next.target, previousString(discovery, next.target));
+      }, "Discovery!", "You discovered %s from %s. %s", next.target, previousString(discovery, next.target),
+          effectsString(next.target));
     discovery.done.add(next.target);
     discovery.next = null;
 
     applyDiscoveryEffects(next.target, influence, false);
+  }
+
+  private String effectsString(Discovery target) {
+    if (target.effects.isEmpty())
+      return "It has no special effect.";
+
+    StringBuilder sb = new StringBuilder("It has the following effects:");
+    for (Entry<String, Number> effect : target.effects.entrySet())
+      sb.append("\n ").append(effect.getKey()).append(effect.getValue().intValue() > 0 ? " +" : " ")
+          .append(effect.getValue().intValue());
+    return sb.toString();
   }
 
   private void applyDiscoveryEffects(Discovery discovery, InfluenceSource influence, boolean revert) {
