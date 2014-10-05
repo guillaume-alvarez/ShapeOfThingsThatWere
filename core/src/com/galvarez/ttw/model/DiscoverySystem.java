@@ -4,8 +4,6 @@ import static java.lang.Math.max;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -92,13 +90,12 @@ public final class DiscoverySystem extends EntitySystem {
   private boolean progressNext(Entity entity, Discoveries discovery) {
     InfluenceSource influence = getInfluence(entity);
     int progress = 0;
-    List<Terrain> terrains = discovery.next.target.terrains;
+    Set<Terrain> terrains = discovery.next.target.terrains;
     if (terrains == null || terrains.isEmpty())
       progress = influence.influencedTiles.size();
     else {
-      Set<Terrain> set = EnumSet.copyOf(terrains);
       for (MapPosition pos : influence.influencedTiles) {
-        if (set.contains(map.getTerrainAt(pos)))
+        if (terrains.contains(map.getTerrainAt(pos)))
           progress++;
       }
     }
@@ -140,29 +137,27 @@ public final class DiscoverySystem extends EntitySystem {
         .collect(toMap(d -> d, d -> guessNbTurns(entity, d.terrains)));
   }
 
-  private boolean hasTerrain(Entity entity, List<Terrain> terrains) {
+  private boolean hasTerrain(Entity entity, Set<Terrain> terrains) {
     if (terrains == null || terrains.isEmpty())
       return true;
 
-    Set<Terrain> set = EnumSet.copyOf(terrains);
     InfluenceSource influence = getInfluence(entity);
     for (MapPosition pos : influence.influencedTiles)
-      if (set.contains(map.getTerrainAt(pos)))
+      if (terrains.contains(map.getTerrainAt(pos)))
         return true;
 
     return false;
   }
 
-  private int guessNbTurns(Entity empire, List<Terrain> terrains) {
+  private int guessNbTurns(Entity empire, Set<Terrain> terrains) {
     InfluenceSource influence = getInfluence(empire);
 
     int progressPerTurn = 0;
     if (terrains == null || terrains.isEmpty()) {
       progressPerTurn = influence.influencedTiles.size();
     } else {
-      Set<Terrain> set = EnumSet.copyOf(terrains);
       for (MapPosition pos : influence.influencedTiles)
-        if (set.contains(map.getTerrainAt(pos)))
+        if (terrains.contains(map.getTerrainAt(pos)))
           progressPerTurn++;
     }
 

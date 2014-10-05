@@ -1,27 +1,49 @@
 package com.galvarez.ttw.model.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
+import com.badlogic.gdx.utils.JsonValue;
 import com.galvarez.ttw.model.map.Terrain;
 
-// TODO do not allow modification after loading
 public final class Discovery {
 
-  public String name;
+  public final String name;
 
-  public List<Terrain> terrains;
+  public final Set<Terrain> terrains = EnumSet.noneOf(Terrain.class);
 
-  public List<String> groups = Collections.emptyList();
+  public final Set<String> groups;
 
-  public List<String> previous = Collections.emptyList();
+  public final Set<String> previous;
 
-  public Discovery() {
+  public Discovery(String name, List<String> previous, List<String> groups, List<Terrain> terrains) {
+    this.name = name;
+    this.previous = set(previous);
+    this.groups = set(groups);
+    if (terrains != null)
+      this.terrains.addAll(terrains);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> Set<T> set(List<T> list) {
+    if (list == null || list.isEmpty())
+      return Collections.emptySet();
+    if (list.size() == 1)
+      return Collections.singleton(list.get(0));
+    else if (list instanceof Set)
+      return (Set<T>) list;
+    else
+      return new HashSet<>(list);
   }
 
   public Discovery(String name, List<String> previous) {
-    this.name = name;
-    this.previous = previous;
+    this(name, previous, Collections.emptyList(), Collections.emptyList());
   }
 
   public String getName() {
@@ -47,4 +69,16 @@ public final class Discovery {
     else
       return false;
   }
+
+  public static final ReadOnlySerializer<Discovery> SER = new ReadOnlySerializer<Discovery>() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public Discovery read(Json json, JsonValue data, Class type) {
+      return new Discovery(data.getString("name"), //
+          json.readValue(ArrayList.class, data.get("previous")), //
+          json.readValue(ArrayList.class, data.get("groups")), //
+          json.readValue(ArrayList.class, Terrain.class, data.get("terrains")));
+    }
+  };
+
 }

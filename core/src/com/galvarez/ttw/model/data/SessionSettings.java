@@ -62,6 +62,7 @@ public final class SessionSettings {
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_Devil
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_God_2
     // TODO The mythic discoveries could be used as 'totem' animals
+    json.setSerializer(Discovery.class, Discovery.SER);
     return Arrays.asList(json.fromJson(Discovery[].class, Gdx.files.internal("data/discoveries.json")));
   }
 

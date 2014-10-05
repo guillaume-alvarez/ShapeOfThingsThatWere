@@ -195,6 +195,16 @@
   previous: [House, Agriculture]
 },
 {
+  name: Crop,
+  previous: [Village, Agriculture],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Slavery,
+  previous: [Crop, WEAPON],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
   name: Chief,
   previous: [Village, WEAPON],
   groups: [GOVERNMENT, LEADER]
