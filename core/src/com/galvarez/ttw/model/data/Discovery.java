@@ -28,12 +28,12 @@ public final class Discovery {
    * Indexed by effect name, contains the delta for the corresponding variable.
    * Positive numbers are positive modifiers for the discoverer.
    */
-  public final Map<String, Integer> effects;
+  public final Map<String, Number> effects;
 
   private Discovery(String name, List<String> previous, List<String> groups, List<Terrain> terrains,
-      Map<String, Integer> effects) {
+      Map<String, Number> effects) {
     this.name = name;
-    this.effects = effects;
+    this.effects = effects != null ? effects : Collections.emptyMap();
     this.previous = set(previous);
     this.groups = set(groups);
     if (terrains != null)

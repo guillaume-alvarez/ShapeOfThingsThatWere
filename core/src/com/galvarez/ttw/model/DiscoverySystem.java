@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -81,14 +82,14 @@ public final class DiscoverySystem extends EntitySystem {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
       if (discovery.next != null) {
-        if (progressNext(entity, discovery))
-          discoverNext(entity, discovery);
+        InfluenceSource influence = getInfluence(entity);
+        if (progressNext(entity, discovery, influence))
+          discoverNext(entity, discovery, influence);
       }
     }
   }
 
-  private boolean progressNext(Entity entity, Discoveries discovery) {
-    InfluenceSource influence = getInfluence(entity);
+  private boolean progressNext(Entity entity, Discoveries discovery, InfluenceSource influence) {
     int progress = 0;
     Set<Terrain> terrains = discovery.next.target.terrains;
     if (terrains == null || terrains.isEmpty())
@@ -109,7 +110,7 @@ public final class DiscoverySystem extends EntitySystem {
     return influence;
   }
 
-  private void discoverNext(Entity entity, Discoveries discovery) {
+  private void discoverNext(Entity entity, Discoveries discovery, InfluenceSource influence) {
     Research next = discovery.next;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
@@ -121,6 +122,17 @@ public final class DiscoverySystem extends EntitySystem {
       }, "Discovery!", "You discovered %s from %s.", next.target, previousString(discovery, next.target));
     discovery.done.add(next.target);
     discovery.next = null;
+
+    applyDiscoveryEffects(next.target, influence);
+  }
+
+  private void applyDiscoveryEffects(Discovery discovery, InfluenceSource influence) {
+    for (Entry<String, Number> effect : discovery.effects.entrySet()) {
+      Terrain t = Terrain.valueOf(effect.getKey());
+      int delta = effect.getValue().intValue();
+      Integer current = influence.modifiers.terrainBonus.get(t);
+      influence.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
+    }
   }
 
   /**

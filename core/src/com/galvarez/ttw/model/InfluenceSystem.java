@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.InfluenceSource.Modifiers;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -234,24 +235,24 @@ public final class InfluenceSystem extends EntitySystem {
   public Map<MapPosition, Integer> getDistances(Entity source, MapPosition pos) {
     Map<MapPosition, Integer> distances = new HashMap<>();
     distances.put(pos, 0);
-    collectDistances(source, 0, pos, distances);
+    collectDistances(source, 0, pos, distances, sources.get(source).modifiers);
     return distances;
   }
 
-  private void collectDistances(Entity source, int distance, MapPosition pos, Map<MapPosition, Integer> distances) {
+  private void collectDistances(Entity source, int distance, MapPosition pos, Map<MapPosition, Integer> distances,
+      Modifiers modifiers) {
     for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
       Influence inf = map.getInfluenceAt(neighbor);
       if (!inf.terrain.moveBlock()) {
         Integer old = distances.get(neighbor);
-        int newDistance = distance + inf.terrain.moveCost();
+        int newDistance = distance + max(1, inf.terrain.moveCost() - modifiers.terrainBonus.get(inf.terrain));
         if (old == null || newDistance < old.intValue()) {
           distances.put(neighbor, Integer.valueOf(newDistance));
           if (inf.hasInfluence(source))
             // only one tile from already influenced tiles
-            collectDistances(source, newDistance, neighbor, distances);
+            collectDistances(source, newDistance, neighbor, distances, modifiers);
         }
       }
     }
   }
-
 }
