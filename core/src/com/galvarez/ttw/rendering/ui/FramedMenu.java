@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -69,6 +71,22 @@ public class FramedMenu {
   /** Use only for specific menus. */
   public Table getTable() {
     return table;
+  }
+
+  public <E extends Enum<E>> void addSelectBox(String label, E selected, E[] values, ChangeListener lis) {
+    LabelStyle style = skin.get(LabelStyle.class);
+    Label l = new Label(label, style);
+    table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+
+    SelectBox<E> sb = new SelectBox<E>(skin.get(SelectBoxStyle.class));
+    sb.setItems(values);
+    sb.setSelected(selected);
+    sb.addListener(lis);
+    Cell<SelectBox<E>> right = table.add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
+    if (nbColumns > 2)
+      right.colspan(nbColumns - 1);
+
+    table.row();
   }
 
   public void addTextField(String label, Object value, TextFieldListener lis) {

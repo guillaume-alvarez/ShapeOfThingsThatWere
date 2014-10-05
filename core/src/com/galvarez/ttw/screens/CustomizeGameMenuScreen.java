@@ -27,6 +27,7 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.data.Culture;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
+import com.galvarez.ttw.model.map.MapGenerator.Generator;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 
 /**
@@ -79,9 +80,17 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
   private void updateMenu() {
     map.clear();
-    map.addTextField("noise", settings.mapNoise, (textField, c) -> settings.mapNoise.set(textField.getText()));
-    map.addTextField("height", settings.mapHeight, (textField, c) -> settings.mapHeight.set(textField.getText()));
-    map.addTextField("width", settings.mapWidth, (textField, c) -> settings.mapWidth.set(textField.getText()));
+    map.addSelectBox("Map type:", settings.mapType.get(), Generator.values(), new ChangeListener() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        settings.mapType.set(((SelectBox<Generator>) actor).getSelected());
+        updateMenu();
+      }
+    });
+    for (String prop : settings.map.stringPropertyNames())
+      map.addTextField(prop, settings.map.get(prop),
+          (textField, c) -> settings.map.setProperty(prop, textField.getText()));
     map.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     empires.clear();

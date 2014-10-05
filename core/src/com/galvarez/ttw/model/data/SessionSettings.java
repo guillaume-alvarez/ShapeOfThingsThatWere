@@ -10,13 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
-import com.galvarez.ttw.utils.IntValue;
+import com.galvarez.ttw.model.map.MapGenerator;
+import com.galvarez.ttw.utils.EnumValue;
 
 public final class SessionSettings {
 
@@ -31,18 +32,19 @@ public final class SessionSettings {
 
   public final List<Empire> empires = new ArrayList<>();
 
-  public final IntValue mapNoise, mapWidth, mapHeight;
+  public final Properties map;
+
+  public final EnumValue<MapGenerator.Generator> mapType;
 
   public SessionSettings() {
     // init map parameters
-    mapNoise = new IntValue(4);
-    mapWidth = new IntValue(2);
-    mapHeight = new IntValue(2);
+    mapType = new EnumValue<>(MapGenerator.Generator.DEFAULT);
+    map = mapType.get().algo.getDefaultValues();
 
     // load cultures from data file
     Json json = new Json();
-    this.cultures = cultures(json).stream().collect(Collectors.toMap(Culture::getName, c -> c));
-    this.discoveries = discoveries(json).stream().collect(Collectors.toMap(Discovery::getName, c -> c));
+    this.cultures = cultures(json).stream().collect(toMap(Culture::getName, c -> c));
+    this.discoveries = discoveries(json).stream().collect(toMap(Discovery::getName, c -> c));
 
     // generate some default empires
     empires.add(new Empire(Color.BLACK, cultures.get("Babylonian"), false));

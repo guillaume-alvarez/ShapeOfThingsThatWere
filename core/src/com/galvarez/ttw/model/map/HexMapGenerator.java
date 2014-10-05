@@ -1,8 +1,10 @@
 package com.galvarez.ttw.model.map;
 
+import java.util.Properties;
+
 import com.galvarez.ttw.utils.MyMath;
 
-public class HexMapGenerator {
+final class HexMapGenerator implements MapGenerator {
 
   public static float deepWaterThreshold = 0.5f;
 
@@ -20,10 +22,24 @@ public class HexMapGenerator {
 
   public static float mountainsThreshold = 0.95f;
 
-  public HexMapGenerator() {
+  HexMapGenerator() {
   }
 
-  public Terrain[][] getDiamondSquare(int noise, int width, int height) {
+  @Override
+  public Properties getDefaultValues() {
+    Properties props = new Properties();
+    props.setProperty("noise", "4");
+    props.setProperty("width", "2");
+    props.setProperty("height", "2");
+    return props;
+  }
+
+  @Override
+  public Terrain[][] getMapData(Properties props) {
+    int noise = Integer.parseInt(props.getProperty("noise"));
+    int width = Integer.parseInt(props.getProperty("width"));
+    int height = Integer.parseInt(props.getProperty("height"));
+
     int power = MyMath.pow(2, noise);
     MapTools.width = width * power + 1;
     MapTools.height = height * power + 1;
@@ -58,5 +74,4 @@ public class HexMapGenerator {
 
     return returnMap;
   }
-
 }
