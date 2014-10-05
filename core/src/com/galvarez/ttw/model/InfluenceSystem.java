@@ -30,6 +30,31 @@ import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.MapTools.Border;
 import com.galvarez.ttw.rendering.components.Name;
 
+/**
+ * This classes computes the influence from the different sources (i.e. cities)
+ * and update it every turn.
+ * <p>
+ * The game is centered on the influence idea. It starts from a source with a
+ * certain power and flow on the neighboring map tiles. The throughput depends
+ * on the source power, distance to the source and terrain cost/difficulty. When
+ * multiple sources influence the same tile, it belongs to the source with the
+ * highest influence score. For ease of understanding, influence is expressed as
+ * percentages.
+ * <p>
+ * Ideally the influence progression should be:
+ * <ul>
+ * <li>at a constant pace and continuous from a turn to the next (for instance
+ * one tile per turn)
+ * <li>with decreasing values from the civilized center to the wild or disputed
+ * border
+ * <li>on a small scale so that close influence sources can fight for tiles
+ * <p>
+ * The model that works the best seems to be a linear interpolation of the
+ * target influence. The target influence is computed as a waterfall algorithm
+ * from the source.
+ * 
+ * @author Guillaume Alvarez
+ */
 @Wire
 public final class InfluenceSystem extends EntitySystem {
 
