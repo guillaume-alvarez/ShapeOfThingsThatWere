@@ -3,8 +3,10 @@ package com.galvarez.ttw.model.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.utils.Json;
@@ -22,8 +24,16 @@ public final class Discovery {
 
   public final Set<String> previous;
 
-  public Discovery(String name, List<String> previous, List<String> groups, List<Terrain> terrains) {
+  /**
+   * Indexed by effect name, contains the delta for the corresponding variable.
+   * Positive numbers are positive modifiers for the discoverer.
+   */
+  public final Map<String, Integer> effects;
+
+  private Discovery(String name, List<String> previous, List<String> groups, List<Terrain> terrains,
+      Map<String, Integer> effects) {
     this.name = name;
+    this.effects = effects;
     this.previous = set(previous);
     this.groups = set(groups);
     if (terrains != null)
@@ -43,7 +53,7 @@ public final class Discovery {
   }
 
   public Discovery(String name, List<String> previous) {
-    this(name, previous, Collections.emptyList(), Collections.emptyList());
+    this(name, previous, Collections.emptyList(), Collections.emptyList(), null);
   }
 
   public String getName() {
@@ -77,7 +87,8 @@ public final class Discovery {
       return new Discovery(data.getString("name"), //
           json.readValue(ArrayList.class, data.get("previous")), //
           json.readValue(ArrayList.class, data.get("groups")), //
-          json.readValue(ArrayList.class, Terrain.class, data.get("terrains")));
+          json.readValue(ArrayList.class, Terrain.class, data.get("terrains")), //
+          json.readValue(HashMap.class, data.get("effects")));
     }
   };
 
