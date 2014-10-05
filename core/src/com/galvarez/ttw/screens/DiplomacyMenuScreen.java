@@ -28,10 +28,13 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
 
   private final List<Entity> empires;
 
+  private final Entity player;
+
   public DiplomacyMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, AbstractScreen gameScreen,
-      List<Entity> empires) {
+      List<Entity> empires, Entity player) {
     super(game, world, batch, gameScreen);
     this.empires = empires;
+    this.player = player;
 
     topMenu = new FramedMenu(skin, 800, 600);
   }
@@ -52,13 +55,21 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     float centerY = topMenu.getY() * 0.5f;
     float radiusX = Gdx.graphics.getWidth() * 0.4f;
     float radiusY = topMenu.getY() * 0.4f;
-    float angle = 2f * PI / empires.size();
+    float angle = 2f * PI / (player != null ? empires.size() - 1 : empires.size());
     float angle1 = 0f;
     for (Entity empire : empires) {
-      FramedMenu menu = new FramedMenu(skin, maxWidth, 36);
-      menu.addLabel(empire.getComponent(Name.class).name);
-      menu.addToStage(stage, centerX + radiusX * cos(angle1), centerY + radiusY * sin(angle1), false);
-      angle1 += angle;
+      if (empire != player) {
+        FramedMenu menu = new FramedMenu(skin, maxWidth, 36);
+        menu.addLabel(empire.getComponent(Name.class).name);
+        menu.addToStage(stage, centerX + radiusX * cos(angle1), centerY + radiusY * sin(angle1), false);
+        angle1 += angle;
+      }
     }
+
+    // draw player at the center of the screen, so that it is easier for him to
+    // understand the screen contents
+    FramedMenu menu = new FramedMenu(skin, maxWidth, 36);
+    menu.addLabel(player.getComponent(Name.class).name);
+    menu.addToStage(stage, centerX, centerY, false);
   }
 }

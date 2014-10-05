@@ -140,7 +140,7 @@ public final class OverworldScreen extends AbstractScreen {
     renderHighlighter = false;
 
     pauseScreen = new PauseMenuScreen(game, world, batch, this);
-    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires);
+    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
   }
 
