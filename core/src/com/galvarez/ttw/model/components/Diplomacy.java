@@ -4,8 +4,4 @@ import com.artemis.Component;
 
 public final class Diplomacy extends Component {
 
-  public Diplomacy() {
-    // TODO Auto-generated constructor stub
-  }
-
 }
