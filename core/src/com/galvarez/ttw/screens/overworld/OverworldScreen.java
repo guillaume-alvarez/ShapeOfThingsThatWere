@@ -22,6 +22,7 @@ import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.AIDiscoverySystem;
 import com.galvarez.ttw.model.AIInfluenceSystem;
+import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.AIControlled;
@@ -61,6 +62,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
 
   private final DiscoverySystem discoverySystem;
+
+  private final DiplomaticSystem diplomaticSystem;
 
   final InfluenceSystem influenceSystem;
 
@@ -110,6 +113,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.setSystem(new NotificationsSystem(stage));
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
+    diplomaticSystem = world.setSystem(new DiplomaticSystem(), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
@@ -122,6 +126,7 @@ public final class OverworldScreen extends AbstractScreen {
     iaInfluence.process();
     iaDiscovery.process();
     discoverySystem.process();
+    diplomaticSystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
     log.info("The world is initialized");
@@ -139,7 +144,7 @@ public final class OverworldScreen extends AbstractScreen {
     renderHighlighter = false;
 
     pauseScreen = new PauseMenuScreen(game, world, batch, this, settings);
-    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player);
+    diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
   }
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
+import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 
@@ -30,11 +31,14 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
 
   private final Entity player;
 
+  private final DiplomaticSystem diplomaticSystem;
+
   public DiplomacyMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, AbstractScreen gameScreen,
-      List<Entity> empires, Entity player) {
+      List<Entity> empires, Entity player, DiplomaticSystem diplomaticSystem) {
     super(game, world, batch, gameScreen);
     this.empires = empires;
     this.player = player;
+    this.diplomaticSystem = diplomaticSystem;
 
     topMenu = new FramedMenu(skin, 800, 600);
   }
