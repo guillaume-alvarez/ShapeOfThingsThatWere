@@ -49,9 +49,9 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
   private final Texture square;
 
-  public CustomizeGameMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch) {
+  public CustomizeGameMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, SessionSettings settings) {
     super(game, world, batch);
-    this.settings = new SessionSettings();
+    this.settings = settings;
 
     stage = new Stage(new ScreenViewport(), batch);
 

@@ -138,7 +138,7 @@ public final class OverworldScreen extends AbstractScreen {
     renderMap = true;
     renderHighlighter = false;
 
-    pauseScreen = new PauseMenuScreen(game, world, batch, this);
+    pauseScreen = new PauseMenuScreen(game, world, batch, this, settings);
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
   }

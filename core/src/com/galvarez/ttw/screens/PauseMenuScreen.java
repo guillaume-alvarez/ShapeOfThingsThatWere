@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
+import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 
 /**
@@ -17,8 +18,12 @@ public final class PauseMenuScreen extends AbstractPausedScreen<AbstractScreen> 
 
   private final FramedMenu menu;
 
-  public PauseMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, AbstractScreen gameScreen) {
+  private final SessionSettings settings;
+
+  public PauseMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, AbstractScreen gameScreen,
+      SessionSettings settings) {
     super(game, world, batch, gameScreen);
+    this.settings = settings;
 
     menu = new FramedMenu(skin, 800, 600);
 
@@ -37,7 +42,7 @@ public final class PauseMenuScreen extends AbstractPausedScreen<AbstractScreen> 
     menu.addButton("Return to main menu", new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        game.returnToMainMenu();
+        game.returnToMainMenu(settings);
       }
     }, true);
     menu.addButton("Exit game", new ChangeListener() {
