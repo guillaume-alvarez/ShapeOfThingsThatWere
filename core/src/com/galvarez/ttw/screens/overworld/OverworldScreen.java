@@ -30,7 +30,6 @@ import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
-import com.galvarez.ttw.model.map.MapGenerator.Generator;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.Terrain;
@@ -107,7 +106,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     stage = new Stage(new ScreenViewport(), new SpriteBatch());
 
-    gameMap = new GameMap(Generator.DEFAULT.algo.getMapData(settings.map), settings.empires);
+    gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
     world.setSystem(new NotificationsSystem(stage));
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
