@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.model.InfluenceSystem;
+import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
@@ -89,6 +90,16 @@ public class MenuBuilder {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         menuProcessor.diplomacyMenu();
+      }
+    }, true);
+
+    // here present a new screen with army preferences
+    Army army = screen.player.getComponent(Army.class);
+    empireMenu.addButton("Army (power=" + army.militaryPower + ")", new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        // TODO add a army menu when we know what to do with it
+        // menuProcessor.armyMenu();
       }
     }, true);
 

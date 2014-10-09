@@ -23,14 +23,14 @@
 {
   name: Hill,
   previous: [],
-  groups: [TERRAIN],
+  groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [HILLS],
   effects: {HILLS: 1}
 },
 {
   name: Mountain,
   previous: [],
-  groups: [TERRAIN],
+  groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [MOUNTAIN],
   effects: {MOUNTAIN: 1}
 },
@@ -43,26 +43,27 @@
 },
 {
   name: River,
-  previous: [Mountain, Hill, Grassland],
+  previous: [HIGH_TERRAIN, Grassland],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
   effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Iron,
-  previous: [Mountain, Hill, Fire],
+  previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
-  terrains: [MOUNTAIN, HILLS]
+  terrains: [MOUNTAIN, HILLS],
+  effects: {militaryPower: 1}
 },
 {
   name: Copper,
-  previous: [Mountain, Hill, Fire],
+  previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Tin,
-  previous: [Mountain, Hill, Fire],
+  previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS]
 },
@@ -70,17 +71,18 @@
   name: Bronze,
   previous: [Copper, Tin],
   groups: [METAL],
-  terrains: [MOUNTAIN, HILLS]
+  terrains: [MOUNTAIN, HILLS],
+  effects: {militaryPower: 1}
 },
 {
   name: Gold,
-  previous: [Mountain, Hill, River],
+  previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS]
 },
 {
   name: Silver,
-  previous: [Mountain, Hill, River],
+  previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS]
 },
@@ -97,7 +99,8 @@
 {
   name: Hunt,
   previous: [Animal, Wood],
-  terrains: [GRASSLAND, PLAIN, FOREST]
+  terrains: [GRASSLAND, PLAIN, FOREST],
+  effects: {militaryPower: 1}
 },
 {
   name: Gathering,
@@ -107,7 +110,8 @@
 {
   name: Fishing,
   previous: [Sea, River, Wood],
-  terrains: [DEEP_WATER, SHALLOW_WATER]
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  effects: {militaryPower: 1}
 },
 {
   name: Fish,
@@ -118,17 +122,20 @@
 {
   name: Knife,
   previous: [Hunt, METAL],
-  groups: [WEAPON]
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
 },
 {
   name: Stick,
   previous: [Hunt, Wood, Fishing],
-  groups: [WEAPON]
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
 },
 {
   name: Sword,
   previous: [WEAPON, Bronze, Iron],
-  groups: [WEAPON]
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
 },
 {
   name: Walk,
@@ -179,7 +186,8 @@
   name: Stone,
   previous: [Hills, Mountain],
   groups: [MATERIAL],
-  terrains: [HILLS, MOUNTAIN]
+  terrains: [HILLS, MOUNTAIN],
+  effects: {militaryPower: 1}
 },
 {
   name: Clay,
@@ -190,7 +198,8 @@
 {
   name: Fire,
   previous: [Wood],
-  terrains: [GRASSLAND, FOREST]
+  terrains: [GRASSLAND, FOREST],
+  effects: {militaryPower: 1}
 },
 {
   name: House,
@@ -214,7 +223,8 @@
 {
   name: Chief,
   previous: [Village, WEAPON],
-  groups: [GOVERNMENT, LEADER]
+  groups: [GOVERNMENT, LEADER],
+  effects: {militaryPower: 1}
 },
 {
   name: "Elders Council",
@@ -229,7 +239,8 @@
 {
   name: King,
   previous: [City, WEAPON, Chief],
-  groups: [GOVERNMENT, LEADER]
+  groups: [GOVERNMENT, LEADER],
+  effects: {militaryPower: 1}
 },
 {
   name: Wheat,
@@ -351,6 +362,7 @@
 {
   name: Religion,
   previous: [Ritual, Gods],
+  effects: {militaryPower: 1}
 },
 {
   name: Priest,

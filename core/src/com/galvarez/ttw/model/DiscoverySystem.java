@@ -21,6 +21,7 @@ import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -59,6 +60,8 @@ public final class DiscoverySystem extends EntitySystem {
 
   private ComponentMapper<Discoveries> empires;
 
+  private ComponentMapper<Army> armies;
+
   private ComponentMapper<Capital> capitals;
 
   private ComponentMapper<InfluenceSource> influences;
@@ -83,9 +86,8 @@ public final class DiscoverySystem extends EntitySystem {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
       if (discovery.next != null) {
-        InfluenceSource influence = getInfluence(entity);
-        if (progressNext(discovery, influence))
-          discoverNext(entity, discovery, influence);
+        if (progressNext(discovery, getInfluence(entity)))
+          discoverNext(entity, discovery);
       }
     }
   }
@@ -111,7 +113,7 @@ public final class DiscoverySystem extends EntitySystem {
     return influence;
   }
 
-  private void discoverNext(Entity entity, Discoveries discovery, InfluenceSource influence) {
+  private void discoverNext(Entity entity, Discoveries discovery) {
     Research next = discovery.next;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
@@ -125,7 +127,7 @@ public final class DiscoverySystem extends EntitySystem {
     discovery.done.add(next.target);
     discovery.next = null;
 
-    applyDiscoveryEffects(next.target, influence, false);
+    applyDiscoveryEffects(next.target, entity, false);
   }
 
   private String effectsString(Discovery target) {
@@ -139,15 +141,25 @@ public final class DiscoverySystem extends EntitySystem {
     return sb.toString();
   }
 
-  private void applyDiscoveryEffects(Discovery discovery, InfluenceSource influence, boolean revert) {
+  private void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
     for (Entry<String, Number> effect : discovery.effects.entrySet()) {
-      Terrain t = Terrain.valueOf(effect.getKey());
+      String name = effect.getKey();
       int delta = effect.getValue().intValue();
-      Integer current = influence.modifiers.terrainBonus.get(t);
-      if (revert)
-        influence.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
-      else
-        influence.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
+      if ("militaryPower".equalsIgnoreCase(name)) {
+        Army army = armies.get(entity);
+        if (revert)
+          army.militaryPower -= delta;
+        else
+          army.militaryPower += delta;
+      } else {
+        InfluenceSource source = getInfluence(entity);
+        Terrain t = Terrain.valueOf(name);
+        Integer current = source.modifiers.terrainBonus.get(t);
+        if (revert)
+          source.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
+        else
+          source.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
+      }
     }
   }
 
@@ -218,9 +230,8 @@ public final class DiscoverySystem extends EntitySystem {
   public void choose(Entity entity, Choice choice, Discovery selected) {
     Discoveries empire = empires.get(entity);
     Discovery old = empire.choices.put(choice, selected);
-    InfluenceSource influence = getInfluence(entity);
     if (old != null)
-      applyDiscoveryEffects(old, influence, true);
-    applyDiscoveryEffects(selected, influence, false);
+      applyDiscoveryEffects(old, entity, true);
+    applyDiscoveryEffects(selected, entity, false);
   }
 }

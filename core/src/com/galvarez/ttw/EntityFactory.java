@@ -5,6 +5,7 @@ import com.artemis.EntityEdit;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.ExpiringSystem.Expires;
+import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -72,7 +73,7 @@ public class EntityFactory {
   public static Entity createEmpire(World world, Entity capital) {
     Entity e = world.createEntity();
 
-    e.edit().add(new Discoveries()).add(new Diplomacy()).add(new Capital(capital))
+    e.edit().add(new Discoveries()).add(new Diplomacy()).add(new Army()).add(new Capital(capital))
         .add(new Name(capital.getComponent(Name.class).name));
 
     return e;
