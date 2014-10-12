@@ -237,6 +237,12 @@
   terrains: [GRASSLAND, PLAIN]
 },
 {
+  name: War,
+  previous: [City, WEAPON],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {diplomacy: WAR}
+},
+{
   name: King,
   previous: [City, WEAPON, Chief],
   groups: [GOVERNMENT, LEADER],

@@ -20,9 +20,11 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
+import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
@@ -135,25 +137,28 @@ public final class DiscoverySystem extends EntitySystem {
       return "It has no special effect.";
 
     StringBuilder sb = new StringBuilder("It has the following effects:");
-    for (Entry<String, Number> effect : target.effects.entrySet())
-      sb.append("\n ").append(effect.getKey()).append(effect.getValue().intValue() > 0 ? " +" : " ")
-          .append(effect.getValue().intValue());
+    for (Entry<String, Object> effect : target.effects.entrySet())
+      sb.append("\n ").append(effect.getKey()).append(" ").append(effect.getValue());
     return sb.toString();
   }
 
   private void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
-    for (Entry<String, Number> effect : discovery.effects.entrySet()) {
+    for (Entry<String, Object> effect : discovery.effects.entrySet()) {
       String name = effect.getKey();
-      int delta = effect.getValue().intValue();
       if ("militaryPower".equalsIgnoreCase(name)) {
+        int delta = ((Number) effect.getValue()).intValue();
         Army army = armies.get(entity);
         if (revert)
           army.militaryPower -= delta;
         else
           army.militaryPower += delta;
+      } else if ("diplomacy".equalsIgnoreCase(name)) {
+        Diplomacy diplomacy = entity.getComponent(Diplomacy.class);
+        diplomacy.knownStates.add(State.valueOf((String) effect.getValue()));
       } else {
         InfluenceSource source = getInfluence(entity);
         Terrain t = Terrain.valueOf(name);
+        int delta = ((Number) effect.getValue()).intValue();
         Integer current = source.modifiers.terrainBonus.get(t);
         if (revert)
           source.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
