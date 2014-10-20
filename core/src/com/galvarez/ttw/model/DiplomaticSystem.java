@@ -31,6 +31,11 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * For every empire, apply diplomatic modifiers.
+ * <p>
+ * Each empire can make different proposals to other empires. When the are
+ * compatible then the proposal is enacted. Some require both empires to agree,
+ * like signing a treaty. Obviously one empire can declare war to another
+ * whatever the peer wants to do.
  * 
  * @author Guillaume Alvarez
  */
