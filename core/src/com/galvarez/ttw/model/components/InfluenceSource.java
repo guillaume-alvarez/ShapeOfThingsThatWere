@@ -6,13 +6,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.artemis.Component;
+import com.artemis.Entity;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 
 public final class InfluenceSource extends Component {
 
-  public Empire empire;
+  public Entity empire;
 
   public int power = -1;
 
@@ -24,10 +25,6 @@ public final class InfluenceSource extends Component {
   public int powerAdvancement = 0;
 
   public final Modifiers modifiers = new Modifiers();
-
-  public InfluenceSource(Empire empire) {
-    this.empire = empire;
-  }
 
   public static final class Modifiers {
 
@@ -42,7 +39,7 @@ public final class InfluenceSource extends Component {
 
   @Override
   public String toString() {
-    return empire.toString();
+    return empire.getComponent(Empire.class).toString();
   }
 
 }

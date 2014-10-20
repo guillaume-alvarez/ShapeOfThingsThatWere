@@ -5,7 +5,6 @@ import static com.badlogic.gdx.math.MathUtils.cos;
 import static com.badlogic.gdx.math.MathUtils.sin;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,10 +15,10 @@ import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiplomaticSystem;
+import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.components.Name;
@@ -36,6 +35,8 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
   private static final Logger log = LoggerFactory.getLogger(DiplomacyMenuScreen.class);
 
   private final FramedMenu topMenu;
+
+  private FramedMenu actionMenu;
 
   private final List<Entity> empires;
 
@@ -57,6 +58,8 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
 
   @Override
   protected void initMenu() {
+    if (actionMenu != null)
+      actionMenu.clear();
     topMenu.clear();
     topMenu.addButton("Resume game", new ChangeListener() {
       @Override
@@ -82,20 +85,12 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
         FramedMenu menu = new FramedMenu(skin, maxWidth, 64);
         menu.addLabel(empire.getComponent(Name.class).name);
         if (diplo != null) {
-          State current = diplo.getRelationWith(empire);
-          EnumSet<State> possible = diplo.knownStates.clone();
-          possible.add(current);
-          menu.addSelectBox("", current, possible.toArray(new State[possible.size()]), new ChangeListener() {
+          menu.addButton(diplo.getRelationWith(empire).toString(), new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              @SuppressWarnings("unchecked")
-              State selected = ((SelectBox<State>) actor).getSelected();
-              log.info("Relation between {} and {}: {}", player.getComponent(Name.class),
-                  empire.getComponent(Name.class), selected);
-              diplo.relations.put(empire, selected);
-              empire.getComponent(Diplomacy.class).relations.put(player, selected);
+              displayActionsMenu(menu, diplo, empire);
             }
-          });
+          }, true);
         }
         menu.addToStage(stage, centerX + radiusX * cos(angle1), centerY + radiusY * sin(angle1), false);
         menus.add(menu);
@@ -111,4 +106,24 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     menus.add(menu);
   }
 
+  private void displayActionsMenu(FramedMenu parent, Diplomacy diplo, Entity target) {
+    if (actionMenu != null)
+      actionMenu.clear();
+    actionMenu = new FramedMenu(skin, 256, 128, parent);
+    boolean hasActions = false;
+    for (Action action : diplomaticSystem.getPossibleActions(diplo, target)) {
+      hasActions = true;
+      actionMenu.addButton(action.str, new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          if (action != Action.NO_CHANGE)
+            diplo.proposals.put(target, action);
+          actionMenu.clear();
+        }
+      }, true);
+    }
+    if (!hasActions)
+      actionMenu.addLabel("No possible actions!");
+    actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+  }
 }

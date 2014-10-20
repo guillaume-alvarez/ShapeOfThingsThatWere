@@ -278,6 +278,14 @@ public class FramedMenu {
     return scrollPane.getY();
   }
 
+  public float getX() {
+    return scrollPane.getX();
+  }
+
+  public float getWidth() {
+    return scrollPane.getWidth();
+  }
+
   /** Make it untouchable, and gray/transparent it out */
   public void disable() {
     scrollPane.setTouchable(Touchable.disabled);
@@ -302,4 +310,5 @@ public class FramedMenu {
   public FramedMenu getParent() {
     return parent;
   }
+
 }

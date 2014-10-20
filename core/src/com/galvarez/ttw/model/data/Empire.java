@@ -3,6 +3,7 @@ package com.galvarez.ttw.model.data;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.Color;
  * 
  * @author Guillaume Alvarez
  */
-public final class Empire {
+public final class Empire extends Component {
 
   private static final AtomicInteger COUNTER = new AtomicInteger(0);
 

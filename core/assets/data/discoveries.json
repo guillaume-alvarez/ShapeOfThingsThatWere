@@ -233,7 +233,7 @@
 },
 {
   name: City,
-  previous: [Village, Agriculture, LUXURY],
+  previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN]
 },
 {
@@ -241,6 +241,20 @@
   previous: [City, WEAPON],
   terrains: [GRASSLAND, PLAIN],
   effects: {diplomacy: WAR}
+},
+{
+  name: Trade,
+  previous: [City, Road],
+  terrains: [GRASSLAND, PLAIN, SHALLOW_WATER]
+},
+{
+  name: Money,
+  previous: [Trade, LUXURY]
+},
+{
+  name: Tribute,
+  previous: [LUXURy, War],
+  effects: {diplomacy: TRIBUTE}
 },
 {
   name: King,

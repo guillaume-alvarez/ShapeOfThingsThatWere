@@ -30,6 +30,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
+  private ComponentMapper<Empire> empires;
+
   private final GameMap map;
 
   private final EnumMap<Border, Border> nextBorder = new EnumMap<>(Border.class);
@@ -105,7 +107,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
         int main = inf.getMainInfluenceSource();
         if (main != -1) {
           Entity source = world.getEntity(main);
-          Empire empire = sources.get(source).empire;
+          Empire empire = empire(source);
           for (Border b : Border.values()) {
             MapPosition neighbor = MapTools.getNeighbor(b, x, y);
             Influence neighborTile = map.getInfluenceAt(neighbor);
@@ -124,11 +126,15 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     }
   }
 
+  private Empire empire(Entity source) {
+    return empires.get(sources.get(source).empire);
+  }
+
   private Empire getMainEmpire(Influence tile) {
     int main = tile.getMainInfluenceSource();
     if (main == -1)
       return null;
-    return sources.get(world.getEntity(main)).empire;
+    return empire(world.getEntity(main));
   }
 
   @Override
@@ -157,7 +163,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
     // use source color
     Color c = batch.getColor();
-    batch.setColor(source.empire.color);
+    batch.setColor(empires.get(source.empire).color);
 
     // draw the flag for influencing
     if (source.target != null) {

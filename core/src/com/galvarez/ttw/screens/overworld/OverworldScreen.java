@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
+import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
 import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
@@ -71,6 +72,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final AIDiscoverySystem iaDiscovery;
 
+  private final AIDiplomaticSystem iaDiplomacy;
+
   final MapRenderer mapRenderer;
 
   private final MapHighlighter mapHighlighter;
@@ -113,10 +116,11 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.setSystem(new NotificationsSystem(stage));
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
-    diplomaticSystem = world.setSystem(new DiplomaticSystem(), true);
+    diplomaticSystem = world.setSystem(new DiplomaticSystem(this), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
+    iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
@@ -125,6 +129,7 @@ public final class OverworldScreen extends AbstractScreen {
     empires = fillWorldWithEntities();
     iaInfluence.process();
     iaDiscovery.process();
+    iaDiplomacy.process();
     discoverySystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
@@ -242,12 +247,12 @@ public final class OverworldScreen extends AbstractScreen {
     Entity city = EntityFactory.createCity(world, x, y, name, empire);
     Entity entity;
 
+    entity = EntityFactory.createEmpire(world, city, empire);
     if (empire.isComputerControlled()) {
       city.edit().add(new AIControlled());
-      entity = EntityFactory.createEmpire(world, city);
       entity.edit().add(new AIControlled());
     } else {
-      entity = player = EntityFactory.createEmpire(world, city);
+      player = entity;
     }
     gameMap.addEntity(city, x, y);
     log.info("Created city {} for empire {}", name, empire);
@@ -271,7 +276,9 @@ public final class OverworldScreen extends AbstractScreen {
 
     iaInfluence.process();
     iaDiscovery.process();
+    iaDiplomacy.process();
     discoverySystem.process();
+    diplomaticSystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
     turnNumber++;

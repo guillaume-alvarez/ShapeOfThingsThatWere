@@ -21,8 +21,10 @@ import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.InfluenceSource.Modifiers;
+import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -62,7 +64,12 @@ public final class InfluenceSystem extends EntitySystem {
 
   public static final int INITIAL_POWER = 100;
 
+  private ComponentMapper<Empire> empires;
+
   private ComponentMapper<InfluenceSource> sources;
+
+  // TODO apply diplomacy effects to influence propagation
+  private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<MapPosition> positions;
 
@@ -135,8 +142,8 @@ public final class InfluenceSystem extends EntitySystem {
       return false;
 
     log.info("{} conquered by {}, will no longer influence tiles for {}", e.getComponent(Name.class).name,
-        influencer.empire, source.empire);
-    if (source.empire.culture == influencer.empire.culture)
+        influencer.empire.getComponent(Name.class), source.empire.getComponent(Name.class));
+    if (source.empire.getComponent(Empire.class).culture == influencer.empire.getComponent(Empire.class).culture)
       source.power = max(1, source.power / 2);
     else
       source.power = 1;
@@ -150,7 +157,7 @@ public final class InfluenceSystem extends EntitySystem {
       if (e.value != 0) {
         InfluenceSource source = sources.get(world.getEntity(e.key));
         EntityFactory.createInfluenceLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
-            source.empire.color, x, y);
+            empires.get(source.empire).color, x, y);
       }
     }
     tile.applyDelta();

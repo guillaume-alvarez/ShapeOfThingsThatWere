@@ -6,11 +6,16 @@ import java.util.Map;
 
 import com.artemis.Component;
 import com.artemis.Entity;
+import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 
 public final class Diplomacy extends Component {
 
   public final Map<Entity, State> relations = new HashMap<>();
+
+  public final Map<Entity, Integer> lastChange = new HashMap<>();
+
+  public final Map<Entity, Action> proposals = new HashMap<>();
 
   public final EnumSet<State> knownStates = EnumSet.of(State.NONE);
 

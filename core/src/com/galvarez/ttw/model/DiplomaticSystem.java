@@ -1,13 +1,33 @@
 package com.galvarez.ttw.model;
 
+import static java.util.EnumSet.allOf;
+import static java.util.EnumSet.complementOf;
+import static java.util.EnumSet.of;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.rendering.NotificationsSystem;
+import com.galvarez.ttw.rendering.components.Name;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * For every empire, apply diplomatic modifiers.
@@ -17,15 +37,69 @@ import com.galvarez.ttw.model.components.Diplomacy;
 @Wire
 public final class DiplomaticSystem extends EntitySystem {
 
+  private static final Logger log = LoggerFactory.getLogger(DiplomaticSystem.class);
+
   public enum State {
     NONE, WAR, TREATY, TRIBUTE;
   }
 
+  public enum Action {
+
+    NO_CHANGE("No change", null, null, allOf(State.class), a -> false),
+
+    DECLARE_WAR("Declare war", State.WAR, State.WAR, complementOf(of(State.WAR)), a -> true),
+
+    MAKE_PEACE("Make peace", State.NONE, State.NONE, of(State.WAR), a -> false),
+
+    SIGN_TREATY("Sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE),
+        a -> a == MAKE_PEACE),
+
+    SURRENDER("Surrender", State.TRIBUTE, State.NONE, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
+
+    public final String str;
+
+    public final Set<State> before;
+
+    private final State afterMe;
+
+    private final State afterYou;
+
+    private final Predicate<Action> compatibleWith;
+
+    private Action(String str, State afterMe, State afterYou, Set<State> before, Predicate<Action> compatibleWith) {
+      this.str = str;
+      this.afterMe = afterMe;
+      this.afterYou = afterYou;
+      this.before = before;
+      this.compatibleWith = compatibleWith;
+    }
+
+    public boolean compatibleWith(Action targetProposal) {
+      return targetProposal == this || compatibleWith.test(targetProposal);
+    }
+
+  }
+
+  private NotificationsSystem notifications;
+
   private ComponentMapper<Diplomacy> relations;
 
+  private ComponentMapper<AIControlled> ai;
+
+  private final OverworldScreen screen;
+
+  private final ChangeListener showDiploScreen;
+
   @SuppressWarnings("unchecked")
-  public DiplomaticSystem() {
+  public DiplomaticSystem(OverworldScreen screen) {
     super(Aspect.getAspectForAll(Diplomacy.class, Capital.class));
+    this.screen = screen;
+    this.showDiploScreen = new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        screen.diplomacyMenu();
+      }
+    };
   }
 
   @Override
@@ -36,7 +110,41 @@ public final class DiplomaticSystem extends EntitySystem {
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
-      // TODO
+      Diplomacy diplo = relations.get(entity);
+      for (Iterator<Entry<Entity, Action>> it = diplo.proposals.entrySet().iterator(); it.hasNext();) {
+        Entry<Entity, Action> proposal = it.next();
+        Entity target = proposal.getKey();
+        Action action = proposal.getValue();
+        Diplomacy targetDiplo = relations.get(target);
+        if (action.compatibleWith(targetDiplo.proposals.get(entity))) {
+          diplo.relations.put(target, action.afterMe);
+          targetDiplo.relations.put(target, action.afterYou);
+          // remove the accepted proposal
+          it.remove();
+          targetDiplo.proposals.remove(entity);
+          // prevent changing state for a few turns
+          diplo.lastChange.put(target, Integer.valueOf(screen.turnNumber));
+          targetDiplo.lastChange.put(entity, Integer.valueOf(screen.turnNumber));
+          if (!ai.has(entity))
+            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s",
+                target.getComponent(Name.class), action.afterMe);
+          else if (!ai.has(target))
+            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s",
+                entity.getComponent(Name.class), action.afterYou);
+          else
+            log.info("Relation between %s and %s is now %s", entity.getComponent(Name.class),
+                target.getComponent(Name.class), action.afterMe);
+        }
+      }
     }
+  }
+
+  public Collection<Action> getPossibleActions(Diplomacy diplo, Entity target) {
+    Set<Action> actions = EnumSet.of(Action.NO_CHANGE);
+    for (Action action : Action.values()) {
+      if (diplo.knownStates.contains(action.afterMe) && action.before.contains(diplo.getRelationWith(target)))
+        actions.add(action);
+    }
+    return actions;
   }
 }

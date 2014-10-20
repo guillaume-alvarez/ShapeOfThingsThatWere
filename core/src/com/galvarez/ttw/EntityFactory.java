@@ -64,17 +64,20 @@ public class EntityFactory {
     sprite.color = empire.color;
     edit.add(sprite);
 
-    edit.add(new MapPosition(x, y)).add(new Description("City of " + name)).add(new InfluenceSource(empire))
+    edit.add(new MapPosition(x, y)).add(new Description("City of " + name)).add(new InfluenceSource())
         .add(new Name(name));
 
     return e;
   }
 
-  public static Entity createEmpire(World world, Entity capital) {
+  public static Entity createEmpire(World world, Entity capital, Empire empire) {
     Entity e = world.createEntity();
 
-    e.edit().add(new Discoveries()).add(new Diplomacy()).add(new Army()).add(new Capital(capital))
+    e.edit().add(empire).add(new Discoveries()).add(new Diplomacy()).add(new Army()).add(new Capital(capital))
         .add(new Name(capital.getComponent(Name.class).name));
+
+    // link the capital to its empire
+    capital.getComponent(InfluenceSource.class).empire = e;
 
     return e;
   }
