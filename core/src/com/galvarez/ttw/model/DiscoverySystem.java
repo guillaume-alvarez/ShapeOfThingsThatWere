@@ -50,7 +50,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 public final class DiscoverySystem extends EntitySystem {
   private static final Logger log = LoggerFactory.getLogger(DiscoverySystem.class);
 
-  private static final int DISCOVERY_THRESHOLD = 100;
+  private static final int DISCOVERY_THRESHOLD = 30;
 
   private final OverworldScreen screen;
 
