@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -57,6 +58,8 @@ public final class DiscoverySystem extends EntitySystem {
   private final Map<String, Discovery> discoveries;
 
   private final GameMap map;
+
+  private final Random rand = new Random();
 
   private NotificationsSystem notifications;
 
@@ -178,7 +181,7 @@ public final class DiscoverySystem extends EntitySystem {
 
     Predicate<Discovery> canBeDiscovered = d -> !done.contains(d.name) && done.containsAll(d.previous)
         && hasTerrain(entity, d.terrains);
-    return discoveries.values().stream().filter(canBeDiscovered).limit(nb)
+    return discoveries.values().stream().filter(canBeDiscovered).sorted((d1, d2) -> rand.nextInt(3) - 1).limit(nb)
         .collect(toMap(d -> d, d -> guessNbTurns(entity, d.terrains)));
   }
 
