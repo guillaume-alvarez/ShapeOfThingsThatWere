@@ -32,6 +32,10 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
 
   private ComponentMapper<Diplomacy> relations;
 
+  private ComponentMapper<Capital> capitals;
+
+  private ComponentMapper<MapPosition> positions;
+
   private ComponentMapper<AIControlled> ai;
 
   private DiplomaticSystem diplomaticSystem;
@@ -80,11 +84,12 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   /** Neighbors from the nicest to the baddest. */
   private List<Entity> getNeighbors(Entity entity, Diplomacy diplo) {
     IntIntMap neighbors = new IntIntMap(16);
-    MapPosition pos = entity.getComponent(Capital.class).capital.getComponent(MapPosition.class);
+    Entity capital = capitals.get(entity).capital;
+    MapPosition pos = positions.get(capital);
     for (int i = 1; i < 10; i++) {
       // TODO really search for all tiles
       Influence inf = map.getInfluenceAt(pos.x + i, pos.y + i);
-      if (inf != null && !inf.isMainInfluencer(entity) && inf.getMainInfluenceSource() != -1)
+      if (inf != null && !inf.isMainInfluencer(capital) && inf.getMainInfluenceSource() != -1)
         neighbors.getAndIncrement(inf.getMainInfluenceSource(), 0, 1);
     }
     List<Entry> entries = new ArrayList<>();
