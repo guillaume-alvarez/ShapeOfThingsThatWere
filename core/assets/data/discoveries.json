@@ -127,7 +127,7 @@
 },
 {
   name: Stick,
-  previous: [Hunt, Wood, Fishing],
+  previous: [Hunt, Wood],
   groups: [WEAPON],
   effects: {militaryPower: 1}
 },
