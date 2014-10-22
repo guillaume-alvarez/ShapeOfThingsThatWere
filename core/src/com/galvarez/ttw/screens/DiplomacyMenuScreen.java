@@ -90,12 +90,13 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
               displayActionsMenu(menu, playerDiplo, empire);
             }
           }, true);
+          // TODO needs a smaller font for these labels
           Action mine = playerDiplo.getProposalTo(empire);
           if (mine != Action.NO_CHANGE)
-            menu.addLabel("you want to " + mine);
+            menu.addLabel(">" + mine.str);
           Action yours = empire.getComponent(Diplomacy.class).getProposalTo(player);
           if (yours != Action.NO_CHANGE)
-            menu.addLabel("it proposes to " + yours);
+            menu.addLabel("<" + yours.str);
         }
         menu.addToStage(stage, centerX + radiusX * cos(angle1), centerY + radiusY * sin(angle1), false);
         menus.add(menu);
@@ -130,6 +131,21 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     }
     if (!hasActions)
       actionMenu.addLabel("No possible actions!");
-    actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+    if (actionMenu.getTable().getPrefHeight() > parent.getY()) {
+      if (actionMenu.getTable().getPrefWidth() <= parent.getX())
+        // display on BOTTOM LEFT
+        actionMenu.addToStage(stage, parent.getX() - actionMenu.getTable().getPrefWidth(), parent.getY() - 10, true);
+      else
+        // display on BOTTOM RIGHT
+        actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() - 10, true);
+    } else {
+      if (actionMenu.getTable().getPrefWidth() <= parent.getX())
+        // display on TOP LEFT
+        actionMenu.addToStage(stage, parent.getX() - actionMenu.getTable().getPrefWidth(),
+            parent.getY() + parent.getHeight() - 10, true);
+      else
+        // display on TOP RIGHT
+        actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + parent.getHeight() - 10, true);
+    }
   }
 }
