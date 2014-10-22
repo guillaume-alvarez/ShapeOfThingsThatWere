@@ -49,13 +49,6 @@
   effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
-  name: Iron,
-  previous: [HIGH_TERRAIN, Fire],
-  groups: [METAL],
-  terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 1}
-},
-{
   name: Copper,
   previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
@@ -73,6 +66,13 @@
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {militaryPower: 1}
+},
+{
+  name: Iron,
+  previous: [HIGH_TERRAIN, Fire],
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS],
+  effects: {militaryPower: 2}
 },
 {
   name: Gold,
@@ -208,7 +208,7 @@
 },
 {
   name: Village,
-  previous: [House, Agriculture]
+  previous: [House, Agriculture, militaryPower: 1]
 },
 {
   name: Crop,
@@ -218,7 +218,7 @@
 {
   name: Slavery,
   previous: [Crop, WEAPON],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN, militaryPower: 1]
 },
 {
   name: Chief,
@@ -234,13 +234,18 @@
 {
   name: City,
   previous: [Village, Agriculture],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN, militaryPower: 2]
 },
 {
   name: War,
   previous: [City, WEAPON],
   terrains: [GRASSLAND, PLAIN],
-  effects: {diplomacy: WAR}
+  effects: {diplomacy: WAR, militaryPower: 3}
+},
+{
+  name: Treaty,
+  previous: [War, GOVERNMENT],
+  effects: {diplomacy: TREATY}
 },
 {
   name: Trade,
@@ -253,14 +258,14 @@
 },
 {
   name: Tribute,
-  previous: [LUXURy, War],
-  effects: {diplomacy: TRIBUTE}
+  previous: [LUXURY, War],
+  effects: {diplomacy: TRIBUTE, militaryPower: 1}
 },
 {
   name: King,
   previous: [City, WEAPON, Chief],
   groups: [GOVERNMENT, LEADER],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 2}
 },
 {
   name: Wheat,
@@ -334,14 +339,17 @@
 {
   name: Death,
   previous: [],
+  effects: {militaryPower: -1}
 },
 {
   name: Sky,
   previous: [],
+  effects: {militaryPower: -1}
 },
 {
   name: Underworld,
   previous: [],
+  effects: {militaryPower: -1}
 },
 {
   name: Beliefs,
@@ -374,6 +382,7 @@
 {
   name: Burying,
   previous: [Death, Beliefs],
+  effects: {militaryPower: 1}
 },
 {
   name: Ritual,
