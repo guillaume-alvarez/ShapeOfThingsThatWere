@@ -49,9 +49,17 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  */
 @Wire
 public final class DiscoverySystem extends EntitySystem {
+
   private static final Logger log = LoggerFactory.getLogger(DiscoverySystem.class);
 
-  private static final int DISCOVERY_THRESHOLD = 30;
+  /** This value permits to display values as percentages. */
+  private static final int DISCOVERY_THRESHOLD = 100;
+
+  /** Increase to speed progress up. */
+  private static final int PROGRESS_PER_TURN = 10;
+
+  /** Increase to speed progress up. */
+  private static final int PROGRESS_PER_TILE = 1;
 
   private final OverworldScreen screen;
 
@@ -98,18 +106,33 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
-    int progress = 0;
+    int progress = PROGRESS_PER_TURN;
     Set<Terrain> terrains = discovery.next.target.terrains;
     if (terrains == null || terrains.isEmpty())
       progress = influence.influencedTiles.size();
     else {
       for (MapPosition pos : influence.influencedTiles) {
         if (terrains.contains(map.getTerrainAt(pos)))
-          progress++;
+          progress += PROGRESS_PER_TILE;
       }
     }
-    discovery.next.progress += max(1, progress);
+    discovery.next.progress += max(PROGRESS_PER_TURN, progress);
     return discovery.next.progress >= DISCOVERY_THRESHOLD;
+  }
+
+  private int guessNbTurns(Entity empire, Set<Terrain> terrains) {
+    InfluenceSource influence = getInfluence(empire);
+
+    int progressPerTurn = PROGRESS_PER_TURN;
+    if (terrains == null || terrains.isEmpty()) {
+      progressPerTurn = influence.influencedTiles.size();
+    } else {
+      for (MapPosition pos : influence.influencedTiles)
+        if (terrains.contains(map.getTerrainAt(pos)))
+          progressPerTurn += PROGRESS_PER_TILE;
+    }
+
+    return DISCOVERY_THRESHOLD / max(PROGRESS_PER_TURN, progressPerTurn);
   }
 
   private InfluenceSource getInfluence(Entity empire) {
@@ -195,21 +218,6 @@ public final class DiscoverySystem extends EntitySystem {
         return true;
 
     return false;
-  }
-
-  private int guessNbTurns(Entity empire, Set<Terrain> terrains) {
-    InfluenceSource influence = getInfluence(empire);
-
-    int progressPerTurn = 0;
-    if (terrains == null || terrains.isEmpty()) {
-      progressPerTurn = influence.influencedTiles.size();
-    } else {
-      for (MapPosition pos : influence.influencedTiles)
-        if (terrains.contains(map.getTerrainAt(pos)))
-          progressPerTurn++;
-    }
-
-    return DISCOVERY_THRESHOLD / max(1, progressPerTurn);
   }
 
   public String previousString(Discoveries empire, Discovery next) {
