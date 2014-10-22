@@ -167,8 +167,6 @@ public class MenuBuilder {
   private void addDescription(Entity e) {
     Description desc = e.getComponent(Description.class);
     if (desc != null) {
-      log.info("Selected {}", desc.desc);
-
       if (desc.texture != null) {
         selectionMenu.addLabelSprite(desc.desc, desc.texture, Color.WHITE);
       } else {

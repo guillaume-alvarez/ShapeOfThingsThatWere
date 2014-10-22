@@ -16,6 +16,7 @@ import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 public final class OverworldSelectorController extends InputAdapter {
@@ -71,7 +72,6 @@ public final class OverworldSelectorController extends InputAdapter {
 
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
-      log.info("Selected {}", coords);
 
       // user clicked on the map :-)
       screen.selectedTile = coords;
@@ -81,6 +81,11 @@ public final class OverworldSelectorController extends InputAdapter {
       Entity entity = gameMap.getEntityAt(coords.x, coords.y);
       // Now select the current entity (may be null)
       inputManager.selectedEntity = entity;
+
+      if (entity != null)
+        log.info("Selected {}: {}", coords, entity.getComponent(Description.class));
+      else
+        log.info("Selected {}: no entity", coords);
 
       // Put up a menu for the selected entity
       inputManager.menuBuilder.buildSelectionMenu(coords, entity);
