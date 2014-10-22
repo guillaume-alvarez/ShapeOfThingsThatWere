@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.galvarez.ttw.model.map.MapGenerator;
@@ -74,7 +75,10 @@ public final class SessionSettings implements Cloneable {
   }
 
   private static List<Culture> cultures(Json json) {
-    return Arrays.asList(json.fromJson(Culture[].class, Gdx.files.internal("data/cultures.json")));
+    List<Culture> cultures = new ArrayList<>();
+    for (FileHandle f : files("data/cultures/", "antiquity.json"))
+      cultures.addAll(Arrays.asList(json.fromJson(Culture[].class, f)));
+    return cultures;
   }
 
   private static List<Discovery> discoveries(Json json) {
@@ -82,7 +86,14 @@ public final class SessionSettings implements Cloneable {
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_God_2
     // TODO The mythic discoveries could be used as 'totem' animals
     json.setSerializer(Discovery.class, Discovery.SER);
-    return Arrays.asList(json.fromJson(Discovery[].class, Gdx.files.internal("data/discoveries.json")));
+    List<Discovery> discoveries = new ArrayList<>();
+    for (FileHandle f : files("data/discoveries/", "nature.json", "prehistory.json", "antiquity.json"))
+      discoveries.addAll(Arrays.asList(json.fromJson(Discovery[].class, f)));
+    return discoveries;
+  }
+
+  private static Iterable<FileHandle> files(String dir, String ... files) {
+    return Arrays.stream(files).map(f -> Gdx.files.internal(dir + f)).collect(toList());
   }
 
   public Map<String, Discovery> getDiscoveries() {

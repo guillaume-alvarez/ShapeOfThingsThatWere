@@ -1,0 +1,193 @@
+[
+{
+  name: Hunt,
+  previous: [Animal, Wood],
+  terrains: [GRASSLAND, PLAIN, FOREST],
+  effects: {militaryPower: 1}
+},
+{
+  name: Gathering,
+  previous: [Forest, Grassland],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Fishing,
+  previous: [Fish, Wood],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  effects: {militaryPower: 1}
+},
+{
+  name: Knife,
+  previous: [Hunt, METAL],
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
+},
+{
+  name: Stick,
+  previous: [Hunt, Wood],
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
+},
+{
+  name: Walk,
+  previous: [Hunt, Fishing, Gathering],
+  groups: [MOVE]
+},
+{
+  name: Agriculture,
+  previous: [Grassland, Gathering],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Breeding,
+  previous: [Agriculture, Animal],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Horse,
+  previous: [Breeding, Grassland],
+  groups: [FOOD, MOVE],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Goat,
+  previous: [Breeding, Grassland],
+  groups: [FOOD],
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT]
+},
+{
+  name: Ox,
+  previous: [Breeding, Grassland],
+  groups: [FOOD, MOVE],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Sheep,
+  previous: [Breeding, Grassland],
+  groups: [FOOD],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Fire,
+  previous: [Wood],
+  terrains: [GRASSLAND, FOREST],
+  effects: {militaryPower: 1}
+},
+{
+  name: House,
+  previous: [MATERIAL, Fire, Wood],
+  terrains: [GRASSLAND, FOREST, PLAIN, HILLS]
+},
+{
+  name: Village,
+  previous: [House, Agriculture],
+  effects: {militaryPower: 1}
+},
+{
+  name: Crop,
+  previous: [Village, Agriculture],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Slavery,
+  previous: [Crop, WEAPON],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {militaryPower: 1}
+},
+{
+  name: Chief,
+  previous: [Village, WEAPON],
+  groups: [GOVERNMENT, LEADER],
+  effects: {militaryPower: 1}
+},
+{
+  name: "Elders Council",
+  previous: [Village, Fire],
+  groups: [GOVERNMENT]
+},
+{
+  name: Wheat,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Oat,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Rye,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
+  name: Trail,
+  previous: [Forest, Plain, Animal],
+  terrains: [GRASSLAND, FOREST],
+},
+{
+  name: Path,
+  previous: [Trail, FOOD],
+  terrains: [GRASSLAND, FOREST, HILLS],
+},
+{
+  name: Cooking,
+  previous: [Fire, FOOD],
+},
+{
+  name: Oven,
+  previous: [Stone, Cooking],
+},
+{
+  name: Bread,
+  previous: [Floor, Oven],
+  groups: [FOOD]
+},
+{
+  name: Death,
+  previous: [],
+  effects: {militaryPower: -1}
+},
+{
+  name: Sky,
+  previous: [],
+  effects: {militaryPower: -1}
+},
+{
+  name: Underworld,
+  previous: [],
+  effects: {militaryPower: -1}
+},
+{
+  name: Beliefs,
+  previous: [Death, Sky, Underworld],
+},
+{
+  name: Symbols,
+  previous: [Sky, Beliefs],
+},
+{
+  name: Spirits,
+  previous: [Animal, Beliefs],
+},
+{
+  name: Animism,
+  previous: [TERRAIN, Beliefs],
+},
+{
+  name: Shamanism,
+  previous: [Spirits, "Elders council"],
+},
+{
+  name: Burying,
+  previous: [Death, Beliefs],
+  effects: {militaryPower: 1}
+},
+{
+  name: Ritual,
+  previous: [Shamanism, Village],
+},
+]

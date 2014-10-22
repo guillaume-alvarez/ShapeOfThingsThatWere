@@ -1,0 +1,94 @@
+[
+{
+  name: Sword,
+  previous: [WEAPON, Bronze, Iron],
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
+},
+{
+  name: City,
+  previous: [Village, Agriculture],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {militaryPower: 2}
+},
+{
+  name: War,
+  previous: [City, WEAPON],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {diplomacy: WAR, militaryPower: 3}
+},
+{
+  name: Treaty,
+  previous: [War, GOVERNMENT],
+  effects: {diplomacy: TREATY}
+},
+{
+  name: Trade,
+  previous: [City, Road],
+  terrains: [GRASSLAND, PLAIN, SHALLOW_WATER]
+},
+{
+  name: Money,
+  previous: [Trade, LUXURY]
+},
+{
+  name: Tribute,
+  previous: [LUXURY, War],
+  effects: {diplomacy: TRIBUTE, militaryPower: 1}
+},
+{
+  name: King,
+  previous: [City, WEAPON, Chief],
+  groups: [GOVERNMENT, LEADER],
+  effects: {militaryPower: 2}
+},
+{
+  name: Wheel,
+  previous: [MATERIAL],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
+  name: Cart,
+  previous: [Wheel, Wood, MOVE],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
+  name: Road,
+  previous: [Stone, Path, Village],
+  terrains: [GRASSLAND, PLAIN],
+},
+{
+  name: "Grain Mill",
+  previous: [Stone, CEREAL, Wheel],
+},
+{
+  name: "Water Mill",
+  previous: ["Grain Mill", River],
+  terrains: [HILLS]
+},
+{
+  name: Floor,
+  previous: ["Grain Mill", CEREAL],
+},
+{
+  name: Gods,
+  previous: [Spirits, LEADER],
+},
+{
+  name: Magic,
+  previous: [Symbols, Beliefs],
+},
+{
+  name: Mysticism,
+  previous: [Magic, "Elders council"],
+},
+{
+  name: Religion,
+  previous: [Ritual, Gods],
+  effects: {militaryPower: 1}
+},
+{
+  name: Priest,
+  previous: [Religion, LEADER],
+},
+]

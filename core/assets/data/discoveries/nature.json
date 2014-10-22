@@ -1,0 +1,124 @@
+[
+{
+  name: Grassland,
+  previous: [],
+  groups: [TERRAIN],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {GRASSLAND: 1, PLAIN: 1}
+},
+{
+  name: Forest,
+  previous: [],
+  groups: [TERRAIN],
+  terrains: [FOREST],
+  effects: {FOREST: 1}
+},
+{
+  name: Desert,
+  previous: [],
+  groups: [TERRAIN],
+  terrains: [DESERT],
+  effects: {DESERT: 1}
+},
+{
+  name: Hill,
+  previous: [],
+  groups: [TERRAIN, HIGH_TERRAIN],
+  terrains: [HILLS],
+  effects: {HILLS: 1}
+},
+{
+  name: Mountain,
+  previous: [],
+  groups: [TERRAIN, HIGH_TERRAIN],
+  terrains: [MOUNTAIN],
+  effects: {MOUNTAIN: 1}
+},
+{
+  name: Sea,
+  previous: [],
+  groups: [TERRAIN],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  effects: {DEEP_WATER: 1, SHALLOW_WATER: 1}
+},
+{
+  name: River,
+  previous: [HIGH_TERRAIN, Grassland],
+  groups: [TERRAIN],
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
+  effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
+},
+{
+  name: Copper,
+  previous: [HIGH_TERRAIN, Fire],
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
+},
+{
+  name: Tin,
+  previous: [HIGH_TERRAIN, Fire],
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS]
+},
+{
+  name: Bronze,
+  previous: [Copper, Tin],
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS],
+  effects: {militaryPower: 1}
+},
+{
+  name: Iron,
+  previous: [HIGH_TERRAIN, Fire],
+  groups: [METAL],
+  terrains: [MOUNTAIN, HILLS],
+  effects: {militaryPower: 2}
+},
+{
+  name: Gold,
+  previous: [HIGH_TERRAIN, River],
+  groups: [LUXURY],
+  terrains: [MOUNTAIN, HILLS]
+},
+{
+  name: Silver,
+  previous: [HIGH_TERRAIN, River],
+  groups: [LUXURY],
+  terrains: [MOUNTAIN, HILLS]
+},
+{
+  name: Wood,
+  previous: [Forest],
+  groups: [MATERIAL],
+  terrains: [FOREST]
+},
+{
+  name: Dirt,
+  previous: [Hills, Desert],
+  groups: [MATERIAL],
+  terrains: [HILLS, DESERT]
+},
+{
+  name: Stone,
+  previous: [Hills, Mountain],
+  groups: [MATERIAL],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {militaryPower: 1}
+},
+{
+  name: Clay,
+  previous: [Hills, River],
+  groups: [MATERIAL],
+  terrains: [PLAIN, HILLS]
+},
+{
+  name: Animal,
+  previous: [TERRAIN]
+},
+{
+  name: Fish,
+  previous: [River, Sea],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  groups: [FOOD]
+},
+]
