@@ -19,6 +19,7 @@ import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -144,8 +145,9 @@ public class MenuBuilder {
       // TODO use empire color when https://github.com/libgdx/libgdx/issues/1934
       // is fixed
       Entity source = world.getEntity(e.key);
-      sb.append("\n ").append(source.getComponent(Name.class).name).append(": ")
-          .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
+      Empire empire = empire(source);
+      sb.append("\n [#").append(empire.color.toString()).append(']').append(source.getComponent(Name.class).name)
+          .append("[]: ").append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
       int delta = influence.getDelta(source);
       if (delta > 0)
         sb.append(" +").append(100 * delta / InfluenceSystem.INITIAL_POWER).append('%');
@@ -156,6 +158,10 @@ public class MenuBuilder {
         sb.append(" (main)");
     }
     selectionMenu.addLabel(sb.toString());
+  }
+
+  private static Empire empire(Entity source) {
+    return source.getComponent(InfluenceSource.class).empire.getComponent(Empire.class);
   }
 
   private void addTileDescription(MapPosition tile) {

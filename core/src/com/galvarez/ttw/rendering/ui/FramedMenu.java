@@ -130,6 +130,7 @@ public class FramedMenu {
   /** Adds a label followed by a sprite to the menu. */
   public Label addLabelSprite(String label, TextureRegion region, Color color) {
     LabelStyle style = skin.get(LabelStyle.class);
+    style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
 
@@ -147,6 +148,7 @@ public class FramedMenu {
   /** Adds a label to the menu. */
   public Label addLabel(String label) {
     LabelStyle style = skin.get(LabelStyle.class);
+    style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
 
     table.add(l).colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
