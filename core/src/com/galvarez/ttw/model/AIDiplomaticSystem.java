@@ -20,6 +20,7 @@ import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -37,6 +38,8 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   private ComponentMapper<MapPosition> positions;
 
   private ComponentMapper<AIControlled> ai;
+
+  private ComponentMapper<InfluenceSource> sources;
 
   private DiplomaticSystem diplomaticSystem;
 
@@ -58,43 +61,54 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     Diplomacy diplo = relations.get(entity);
     // TODO have a real AI algorithm for diplomacy
     // neighbors from the nicest to the baddest
-    List<Entity> neighbors = getNeighbors(entity, diplo);
-    if (diplo.knownStates.contains(State.TREATY)) {
+    List<Entity> neighbors = getNeighboringSources(entity);
+    if (diplo.knownStates.contains(State.TREATY) && !neighbors.isEmpty()) {
       // sign treaty with half the neighbors
       for (int i = 0; i < neighbors.size() / 2; i++) {
-        Entity target = neighbors.get(i);
+        Entity target = empire(neighbors.get(i));
         if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.SIGN_TREATY)) {
-          log.info("%s wants to sign treaty with %s", entity.getComponent(Name.class), target.getComponent(Name.class));
+          log.info("{} wants to sign treaty with {}", entity.getComponent(Name.class), target.getComponent(Name.class));
           diplo.proposals.put(target, Action.SIGN_TREATY);
         }
       }
     }
-    if (diplo.knownStates.contains(State.WAR)) {
+    if (diplo.knownStates.contains(State.WAR) && !neighbors.isEmpty()) {
       // declare war to half the neighbors
-      for (int i = (neighbors.size() / 2) + 1; i < neighbors.size(); i++) {
-        Entity target = neighbors.get(i);
-        if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.DECLARE_WAR)) {
-          log.info("%s wants to declare war to %s", entity.getComponent(Name.class), target.getComponent(Name.class));
-          diplo.proposals.put(target, Action.DECLARE_WAR);
-        }
+      Entity target = empire(neighbors.get(neighbors.size() - 1));
+      if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.DECLARE_WAR)) {
+        log.info("{} wants to declare war to {}", entity.getComponent(Name.class), target.getComponent(Name.class));
+        diplo.proposals.put(target, Action.DECLARE_WAR);
       }
+
     }
   }
 
+  private Entity empire(Entity source) {
+    InfluenceSource city = sources.get(source);
+    return city.empire;
+  }
+
   /** Neighbors from the nicest to the baddest. */
-  private List<Entity> getNeighbors(Entity entity, Diplomacy diplo) {
+  private List<Entity> getNeighboringSources(Entity entity) {
     IntIntMap neighbors = new IntIntMap(16);
     Entity capital = capitals.get(entity).capital;
     MapPosition pos = positions.get(capital);
     for (int i = 1; i < 10; i++) {
       // TODO really search for all tiles
-      Influence inf = map.getInfluenceAt(pos.x + i, pos.y + i);
-      if (inf != null && !inf.isMainInfluencer(capital) && inf.getMainInfluenceSource() != -1)
-        neighbors.getAndIncrement(inf.getMainInfluenceSource(), 0, 1);
+      addInfluencer(neighbors, capital, pos.x + i, pos.y + i);
+      addInfluencer(neighbors, capital, pos.x - i, pos.y + i);
+      addInfluencer(neighbors, capital, pos.x + i, pos.y - i);
+      addInfluencer(neighbors, capital, pos.x - i, pos.y - i);
     }
     List<Entry> entries = new ArrayList<>();
     neighbors.entries().forEach(e -> entries.add(e));
     return entries.stream().sorted((e1, e2) -> Integer.compare(e1.value, e2.value)).map(e -> world.getEntity(e.key))
         .collect(toList());
+  }
+
+  private void addInfluencer(IntIntMap neighbors, Entity capital, int x, int y) {
+    Influence inf = map.getInfluenceAt(x, y);
+    if (inf != null && !inf.isMainInfluencer(capital) && inf.getMainInfluenceSource() != -1)
+      neighbors.getAndIncrement(inf.getMainInfluenceSource(), 0, 1);
   }
 }

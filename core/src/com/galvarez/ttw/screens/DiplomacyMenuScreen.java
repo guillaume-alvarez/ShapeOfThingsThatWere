@@ -19,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
-import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
@@ -79,18 +78,24 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     float radiusY = topMenu.getY() * 0.4f;
     float angle = 2f * PI / (player != null ? empires.size() - 1 : empires.size());
     float angle1 = 0f;
-    Diplomacy diplo = player != null ? player.getComponent(Diplomacy.class) : null;
+    Diplomacy playerDiplo = player != null ? player.getComponent(Diplomacy.class) : null;
     for (Entity empire : empires) {
       if (empire != player) {
-        FramedMenu menu = new FramedMenu(skin, maxWidth, 64);
+        FramedMenu menu = new FramedMenu(skin, maxWidth, 128);
         menu.addLabel(empire.getComponent(Name.class).name);
-        if (diplo != null) {
-          menu.addButton(diplo.getRelationWith(empire).toString(), new ChangeListener() {
+        if (playerDiplo != null) {
+          menu.addButton(playerDiplo.getRelationWith(empire).toString(), new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              displayActionsMenu(menu, diplo, empire);
+              displayActionsMenu(menu, playerDiplo, empire);
             }
           }, true);
+          Action mine = playerDiplo.getProposalTo(empire);
+          if (mine != Action.NO_CHANGE)
+            menu.addLabel("you want to " + mine);
+          Action yours = empire.getComponent(Diplomacy.class).getProposalTo(player);
+          if (yours != Action.NO_CHANGE)
+            menu.addLabel("it proposes to " + yours);
         }
         menu.addToStage(stage, centerX + radiusX * cos(angle1), centerY + radiusY * sin(angle1), false);
         menus.add(menu);
@@ -119,6 +124,7 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
           if (action != Action.NO_CHANGE)
             diplo.proposals.put(target, action);
           actionMenu.clear();
+          initMenu();
         }
       }, true);
     }

@@ -50,16 +50,16 @@ public final class DiplomaticSystem extends EntitySystem {
 
   public enum Action {
 
-    NO_CHANGE("No change", null, null, allOf(State.class), a -> false),
+    NO_CHANGE("no change", null, null, allOf(State.class), a -> false),
 
-    DECLARE_WAR("Declare war", State.WAR, State.WAR, complementOf(of(State.WAR)), a -> true),
+    DECLARE_WAR("declare war", State.WAR, State.WAR, complementOf(of(State.WAR)), a -> true),
 
-    MAKE_PEACE("Make peace", State.NONE, State.NONE, of(State.WAR), a -> false),
+    MAKE_PEACE("make peace", State.NONE, State.NONE, of(State.WAR), a -> false),
 
-    SIGN_TREATY("Sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE),
+    SIGN_TREATY("sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE),
         a -> a == MAKE_PEACE),
 
-    SURRENDER("Surrender", State.TRIBUTE, State.NONE, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
+    SURRENDER("surrender", State.TRIBUTE, State.NONE, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
 
     public final String str;
 
@@ -131,13 +131,13 @@ public final class DiplomaticSystem extends EntitySystem {
           diplo.lastChange.put(target, Integer.valueOf(screen.turnNumber));
           targetDiplo.lastChange.put(entity, Integer.valueOf(screen.turnNumber));
           if (!ai.has(entity))
-            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s",
+            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
                 target.getComponent(Name.class), action.afterMe);
           else if (!ai.has(target))
-            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s",
+            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
                 entity.getComponent(Name.class), action.afterYou);
           else
-            log.info("Relation between %s and %s is now %s", entity.getComponent(Name.class),
+            log.info("Relation between {} and {} is now {}", entity.getComponent(Name.class),
                 target.getComponent(Name.class), action.afterMe);
         }
       }

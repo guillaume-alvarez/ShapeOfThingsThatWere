@@ -27,4 +27,9 @@ public final class Diplomacy extends Component {
     return state != null ? state : State.NONE;
   }
 
+  public Action getProposalTo(Entity other) {
+    Action action = proposals.get(other);
+    return action != null ? action : Action.NO_CHANGE;
+  }
+
 }
