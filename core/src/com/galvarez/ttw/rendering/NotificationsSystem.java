@@ -46,6 +46,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
     }
     titles.clear();
     notifications.clear();
+    listeners.clear();
   }
 
   public void addNotification(String title, String msg, Object ... args) {
