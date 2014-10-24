@@ -54,7 +54,7 @@
 },
 {
   name: Road,
-  previous: [Stone, Path, Village],
+  previous: [Stone, Path, Wheel],
   terrains: [GRASSLAND, PLAIN],
 },
 {
