@@ -18,6 +18,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.galvarez.ttw.model.map.MapGenerator;
+import com.galvarez.ttw.utils.BooleanValue;
 import com.galvarez.ttw.utils.EnumValue;
 
 public final class SessionSettings implements Cloneable {
@@ -36,6 +37,8 @@ public final class SessionSettings implements Cloneable {
   public final Properties map;
 
   public final EnumValue<MapGenerator.Generator> mapType;
+
+  public final BooleanValue startWithDiplomacy = new BooleanValue(false);
 
   public SessionSettings() {
     // init map parameters

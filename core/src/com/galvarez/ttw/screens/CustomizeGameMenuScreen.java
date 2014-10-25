@@ -105,6 +105,13 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     stage.setScrollFocus(empires.getTable());
 
     actions.clear();
+    actions.addBooleanSelectBox("Start with diplomacy?", settings.startWithDiplomacy.get(), new ChangeListener() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        settings.startWithDiplomacy.set(((SelectBox<Boolean>) actor).getSelected());
+      }
+    });
     actions.addButton("Add new empire", new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {

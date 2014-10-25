@@ -4,6 +4,7 @@ import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.complementOf;
 import static java.util.EnumSet.of;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -95,16 +96,25 @@ public final class DiplomaticSystem extends EntitySystem {
 
   private final ChangeListener showDiploScreen;
 
+  private final boolean startWithDiplomacy;
+
   @SuppressWarnings("unchecked")
-  public DiplomaticSystem(OverworldScreen screen) {
+  public DiplomaticSystem(OverworldScreen screen, boolean startWithDiplomacy) {
     super(Aspect.getAspectForAll(Diplomacy.class, Capital.class));
     this.screen = screen;
+    this.startWithDiplomacy = startWithDiplomacy;
     this.showDiploScreen = new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         screen.diplomacyMenu();
       }
     };
+  }
+
+  @Override
+  protected void inserted(Entity e) {
+    super.inserted(e);
+    relations.get(e).knownStates.addAll(Arrays.asList(State.values()));
   }
 
   @Override

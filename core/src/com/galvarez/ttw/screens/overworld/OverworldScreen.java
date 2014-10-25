@@ -116,7 +116,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.setSystem(new NotificationsSystem(stage));
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
-    diplomaticSystem = world.setSystem(new DiplomaticSystem(this), true);
+    diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
