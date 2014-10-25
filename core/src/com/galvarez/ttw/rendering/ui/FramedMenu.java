@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -163,6 +165,16 @@ public class FramedMenu {
     i.setScaling(Scaling.fit);
 
     table.add(i).colspan(nbColumns).minHeight(region.getRegionHeight()).prefHeight(region.getRegionHeight());
+    table.row();
+  }
+
+  public void addCheckBox(String text, boolean checked, ChangeListener lis) {
+    CheckBoxStyle style = skin.get(CheckBoxStyle.class);
+    CheckBox cb = new CheckBox(text, style);
+    cb.setChecked(checked);
+    cb.addListener(lis);
+
+    table.add(cb).colspan(nbColumns).minHeight(cb.getMinHeight()).prefHeight(cb.getPrefHeight());
     table.row();
   }
 
