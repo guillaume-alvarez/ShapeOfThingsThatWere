@@ -91,6 +91,22 @@ public class FramedMenu {
     table.row();
   }
 
+  public void addBooleanSelectBox(String label, boolean selected, ChangeListener lis) {
+    LabelStyle style = skin.get(LabelStyle.class);
+    Label l = new Label(label, style);
+    table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+
+    SelectBox<Boolean> sb = new SelectBox<Boolean>(skin.get(SelectBoxStyle.class));
+    sb.setItems(Boolean.TRUE, Boolean.FALSE);
+    sb.setSelected(selected);
+    sb.addListener(lis);
+    Cell<SelectBox<Boolean>> right = table.add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
+    if (nbColumns > 2)
+      right.colspan(nbColumns - 1);
+
+    table.row();
+  }
+
   public void addTextField(String label, Object value, TextFieldListener lis) {
     Label l = new Label(label, skin.get(LabelStyle.class));
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
@@ -125,7 +141,7 @@ public class FramedMenu {
     b.add(new Label(label, style)).left();
     b.add(new Label(secondaryLabel, style)).padRight(15f);
 
-    table.add(b).left().padLeft(1f);
+    table.add(b).left().padLeft(1f).colspan(nbColumns);
     table.row();
   }
 
