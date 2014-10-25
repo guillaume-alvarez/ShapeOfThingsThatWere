@@ -19,6 +19,10 @@
 		default: { font: default-font, fontColor: black },
 		inactive: { font: default-font, fontColor: gray }
 	},
+	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+		default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: black },
+		inactive: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: gray }
+	},
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: default-font, fontColor: black,
       scrollStyle: default,
