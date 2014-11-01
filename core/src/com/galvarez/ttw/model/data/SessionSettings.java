@@ -71,6 +71,7 @@ public final class SessionSettings implements Cloneable {
     this.map.putAll(settings.map);
     this.mapType = new EnumValue<>(MapGenerator.Generator.DEFAULT);
     this.mapType.set(settings.mapType.get());
+    this.startWithDiplomacy.set(settings.startWithDiplomacy.get());
 
     // copy empires using new cultures (as they have a city iterator)
     for (Empire empire : settings.empires)
