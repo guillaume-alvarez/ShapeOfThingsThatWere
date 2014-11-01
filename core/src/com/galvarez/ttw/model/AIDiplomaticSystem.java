@@ -62,9 +62,9 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     // TODO have a real AI algorithm for diplomacy
     // neighbors from the nicest to the baddest
     List<Entity> neighbors = getNeighboringSources(entity);
-    if (diplo.knownStates.contains(State.TREATY) && !neighbors.isEmpty()) {
-      // sign treaty with half the neighbors
-      for (int i = 0; i < neighbors.size() / 2; i++) {
+    if (diplo.knownStates.contains(State.TREATY) && neighbors.size() > 2) {
+      // sign treaty with half the neighbors, not the last one (WAR for him!)
+      for (int i = 0; i < neighbors.size() / 2 && i < neighbors.size() - 1; i++) {
         Entity target = empire(neighbors.get(i));
         if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.SIGN_TREATY)) {
           log.info("{} wants to sign treaty with {}", entity.getComponent(Name.class), target.getComponent(Name.class));
@@ -83,6 +83,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
         }
       } else if (atWarWith != target) {
         // to change our war target, first make peace with preceding one
+        log.info("{} wants to make peace with {}", entity.getComponent(Name.class), atWarWith.getComponent(Name.class));
         diplo.proposals.put(atWarWith, Action.MAKE_PEACE);
       }
     }
