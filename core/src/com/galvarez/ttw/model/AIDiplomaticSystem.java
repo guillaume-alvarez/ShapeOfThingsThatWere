@@ -114,8 +114,8 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     }
     List<Entry> entries = new ArrayList<>();
     neighbors.entries().forEach(e -> entries.add(e));
-    return entries.stream().sorted((e1, e2) -> Integer.compare(e1.value, e2.value)).map(e -> world.getEntity(e.key))
-        .collect(toList());
+    return entries.stream().filter(e -> e.key != entity.getId())
+        .sorted((e1, e2) -> Integer.compare(e1.value, e2.value)).map(e -> world.getEntity(e.key)).collect(toList());
   }
 
   private void addInfluencer(IntIntMap neighbors, Entity capital, int x, int y) {
