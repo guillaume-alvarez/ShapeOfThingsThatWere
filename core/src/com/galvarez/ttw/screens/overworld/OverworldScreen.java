@@ -64,7 +64,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final DiscoverySystem discoverySystem;
 
-  private final DiplomaticSystem diplomaticSystem;
+  final DiplomaticSystem diplomaticSystem;
 
   final InfluenceSystem influenceSystem;
 

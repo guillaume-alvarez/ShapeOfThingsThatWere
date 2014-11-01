@@ -141,7 +141,7 @@ public class FramedMenu {
     b.add(new Label(label, style)).left();
     b.add(new Label(secondaryLabel, style)).padRight(15f);
 
-    table.add(b).left().padLeft(1f).colspan(nbColumns);
+    table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
     table.row();
   }
 
@@ -169,7 +169,7 @@ public class FramedMenu {
     style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
 
-    table.add(l).colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+    table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
     table.row();
 
     return l;

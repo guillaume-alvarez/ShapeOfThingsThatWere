@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Diplomacy;
@@ -30,6 +31,7 @@ import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
+import com.galvarez.ttw.screens.overworld.controls.InputManager;
 import com.galvarez.ttw.screens.overworld.controls.MenuProcessor;
 
 public class MenuBuilder {
@@ -48,18 +50,24 @@ public class MenuBuilder {
 
   private final FramedMenu selectionMenu;
 
+  private FramedMenu actionMenu;
+
   private final World world;
 
   private final GameMap map;
 
   private final OverworldScreen screen;
 
-  public MenuBuilder(MenuProcessor menuProcessor, Stage stage, World world, GameMap map, OverworldScreen screen) {
+  private final InputManager inputManager;
+
+  public MenuBuilder(MenuProcessor menuProcessor, Stage stage, World world, GameMap map, OverworldScreen screen,
+      InputManager inputManager) {
     this.menuProcessor = menuProcessor;
     this.stage = stage;
     this.world = world;
     this.map = map;
     this.screen = screen;
+    this.inputManager = inputManager;
 
     FileHandle skinFile = new FileHandle("resources/uiskin/uiskin.json");
     skin = new Skin(skinFile);
@@ -145,15 +153,6 @@ public class MenuBuilder {
     selectionMenu.addToStage(stage, MENU_PADDING, empireMenu.getY() - MENU_PADDING, true);
   }
 
-  private void addEmpire(Entity player, Entity selected) {
-    selectionMenu.addLabel("Empire: " + selected.getComponent(Name.class).name);
-    Diplomacy playerDiplo = player.getComponent(Diplomacy.class);
-    Diplomacy selectedDiplo = selected.getComponent(Diplomacy.class);
-    selectionMenu.addLabel(" relations are " + playerDiplo.getRelationWith(selected));
-    selectionMenu.addLabel(" we want " + playerDiplo.getProposalTo(selected));
-    selectionMenu.addLabel(" they want " + selectedDiplo.getProposalTo(player));
-  }
-
   private Influence addInfluences(MapPosition tile) {
     Influence influence = map.getInfluenceAt(tile);
     int mainSource = influence.getMainInfluenceSource();
@@ -201,6 +200,43 @@ public class MenuBuilder {
           selectionMenu.addLabel(desc.desc);
       }
     }
+  }
+
+  private void addEmpire(Entity player, Entity selected) {
+    selectionMenu.addLabel("Empire: " + selected.getComponent(Name.class).name);
+    Diplomacy playerDiplo = player.getComponent(Diplomacy.class);
+    Diplomacy selectedDiplo = selected.getComponent(Diplomacy.class);
+    selectionMenu.addLabel(" relations are " + playerDiplo.getRelationWith(selected));
+    selectionMenu.addButton(" we want ", playerDiplo.getProposalTo(selected).str, new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        displayDiplomaticActionMenu(selectionMenu, playerDiplo, selected);
+      }
+    }, true);
+    selectionMenu.addLabel(" they want " + selectedDiplo.getProposalTo(player).str);
+  }
+
+  private void displayDiplomaticActionMenu(FramedMenu parent, Diplomacy diplo, Entity target) {
+    if (actionMenu != null)
+      actionMenu.clear();
+    actionMenu = new FramedMenu(skin, 256, 128, parent);
+    boolean hasActions = false;
+    for (Action action : screen.diplomaticSystem.getPossibleActions(diplo, target)) {
+      hasActions = true;
+      actionMenu.addButton(action.str, new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          if (action != Action.NO_CHANGE)
+            diplo.proposals.put(target, action);
+          actionMenu.clear();
+          inputManager.reloadMenus();
+        }
+      }, true);
+    }
+    if (!hasActions)
+      actionMenu.addLabel("No possible actions!");
+
+    actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
   }
 
   public void buildDialog(String title, int minWidth, int minHeight, String message, Button ... buttons) {

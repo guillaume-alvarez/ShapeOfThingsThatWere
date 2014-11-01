@@ -47,7 +47,7 @@ public class InputManager {
 
     manager = new InputMultiplexer(stage, drag, select);
 
-    menuBuilder = new MenuBuilder(menuProcessor, stage, world, map, screen);
+    menuBuilder = new MenuBuilder(menuProcessor, stage, world, map, screen, this);
 
     Gdx.input.setInputProcessor(manager);
   }
