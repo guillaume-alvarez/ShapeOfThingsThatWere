@@ -127,9 +127,6 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.initialize();
     empires = fillWorldWithEntities();
-    iaInfluence.process();
-    iaDiscovery.process();
-    iaDiplomacy.process();
     discoverySystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
