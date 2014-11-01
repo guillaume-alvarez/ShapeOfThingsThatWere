@@ -114,7 +114,8 @@ public final class DiplomaticSystem extends EntitySystem {
   @Override
   protected void inserted(Entity e) {
     super.inserted(e);
-    relations.get(e).knownStates.addAll(Arrays.asList(State.values()));
+    if (startWithDiplomacy)
+      relations.get(e).knownStates.addAll(Arrays.asList(State.values()));
   }
 
   @Override
