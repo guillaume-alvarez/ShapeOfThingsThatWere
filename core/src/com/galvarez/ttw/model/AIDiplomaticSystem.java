@@ -73,14 +73,26 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
       }
     }
     if (diplo.knownStates.contains(State.WAR) && !neighbors.isEmpty()) {
-      // declare war to half the neighbors
+      // try to be at war with somebody, and only that somebody
+      Entity atWarWith = getCurrentWar(diplo);
       Entity target = empire(neighbors.get(neighbors.size() - 1));
-      if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.DECLARE_WAR)) {
-        log.info("{} wants to declare war to {}", entity.getComponent(Name.class), target.getComponent(Name.class));
-        diplo.proposals.put(target, Action.DECLARE_WAR);
+      if (atWarWith == null) {
+        if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.DECLARE_WAR)) {
+          log.info("{} wants to declare war to {}", entity.getComponent(Name.class), target.getComponent(Name.class));
+          diplo.proposals.put(target, Action.DECLARE_WAR);
+        }
+      } else if (atWarWith != target) {
+        // to change our war target, first make peace with preceding one
+        diplo.proposals.put(atWarWith, Action.MAKE_PEACE);
       }
-
     }
+  }
+
+  private static Entity getCurrentWar(Diplomacy diplo) {
+    for (java.util.Map.Entry<Entity, State> e : diplo.relations.entrySet())
+      if (e.getValue() == State.WAR)
+        return e.getKey();
+    return null;
   }
 
   private Entity empire(Entity source) {
