@@ -85,6 +85,10 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     return e.getId() == mainInfluenceSource;
   }
 
+  public boolean hasMainInfluence() {
+    return mainInfluenceSource >= 0;
+  }
+
   public boolean hasInfluence(Entity source) {
     return influence.get(source.getId(), 0) > 0;
   }

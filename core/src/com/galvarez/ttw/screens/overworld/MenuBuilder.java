@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
@@ -122,7 +123,7 @@ public class MenuBuilder {
     selectionMenu.clear();
 
     addTileDescription(tile);
-    addInfluences(tile);
+    Influence influence = addInfluences(tile);
 
     if (e != null) {
       addDescription(e);
@@ -134,10 +135,26 @@ public class MenuBuilder {
                 + "%)");
     }
 
+    if (influence.hasMainInfluence()) {
+      Entity source = world.getEntity(influence.getMainInfluenceSource());
+      Entity empire = source.getComponent(InfluenceSource.class).empire;
+      if (empire != screen.player && screen.player != null)
+        addEmpire(screen.player, empire);
+    }
+
     selectionMenu.addToStage(stage, MENU_PADDING, empireMenu.getY() - MENU_PADDING, true);
   }
 
-  private void addInfluences(MapPosition tile) {
+  private void addEmpire(Entity player, Entity selected) {
+    selectionMenu.addLabel("Empire: " + selected.getComponent(Name.class).name);
+    Diplomacy playerDiplo = player.getComponent(Diplomacy.class);
+    Diplomacy selectedDiplo = selected.getComponent(Diplomacy.class);
+    selectionMenu.addLabel(" relations are " + playerDiplo.getRelationWith(selected));
+    selectionMenu.addLabel(" we want " + playerDiplo.getProposalTo(selected));
+    selectionMenu.addLabel(" they want " + selectedDiplo.getProposalTo(player));
+  }
+
+  private Influence addInfluences(MapPosition tile) {
     Influence influence = map.getInfluenceAt(tile);
     int mainSource = influence.getMainInfluenceSource();
     StringBuilder sb = new StringBuilder("Influence: ");
@@ -158,6 +175,7 @@ public class MenuBuilder {
         sb.append(" (main)");
     }
     selectionMenu.addLabel(sb.toString());
+    return influence;
   }
 
   private static Empire empire(Entity source) {
