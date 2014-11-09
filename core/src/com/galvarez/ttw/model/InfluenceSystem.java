@@ -143,7 +143,7 @@ public final class InfluenceSystem extends EntitySystem {
     if (tile.isMainInfluencer(e))
       return false;
 
-    InfluenceSource influencer = sources.get(world.getEntity(tile.getMainInfluenceSource()));
+    InfluenceSource influencer = sources.get(tile.getMainInfluenceSource(world));
     if (source.empire == influencer.empire)
       return false;
 
@@ -168,9 +168,9 @@ public final class InfluenceSystem extends EntitySystem {
     }
     tile.applyDelta();
     // do not forget to update the main source
-    int main = tile.getMainInfluenceSource();
-    if (main != -1)
-      sources.get(world.getEntity(main)).influencedTiles.add(map.getPositionAt(x, y));
+    Entity main = tile.getMainInfluenceSource(world);
+    if (main != null)
+      sources.get(main).influencedTiles.add(map.getPositionAt(x, y));
   }
 
   /**
@@ -266,8 +266,7 @@ public final class InfluenceSystem extends EntitySystem {
 
     // cannot influence on tiles from empires we have a treaty with
     Diplomacy treaties = relations.get(sources.get(source).empire);
-    if (influence.hasMainInfluence()
-        && treaties.getRelationWith(world.getEntity(influence.getMainInfluenceSource())) == State.TREATY)
+    if (treaties.getRelationWith(influence.getMainInfluenceSource(world)) == State.TREATY)
       return false;
 
     // need s neighbor we already have influence on
@@ -291,7 +290,7 @@ public final class InfluenceSystem extends EntitySystem {
         if (!inf.hasMainInfluence())
           set.add(neighbor);
         else {
-          InfluenceSource neighborSource = sources.get(world.getEntity(inf.getMainInfluenceSource()));
+          InfluenceSource neighborSource = sources.get(inf.getMainInfluenceSource(world));
           if (treaties.getRelationWith(neighborSource.empire) != State.TREATY)
             set.add(neighbor);
         }

@@ -5,6 +5,7 @@ import static java.lang.Math.max;
 import java.util.Iterator;
 
 import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.IntIntMap.Entry;
 
@@ -72,6 +73,13 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
 
   public int getMainInfluenceSource() {
     return mainInfluenceSource;
+  }
+
+  public Entity getMainInfluenceSource(World world) {
+    if (hasMainInfluence())
+      return world.getEntity(mainInfluenceSource);
+    else
+      return null;
   }
 
   public int requiredInfluence(Entity e) {

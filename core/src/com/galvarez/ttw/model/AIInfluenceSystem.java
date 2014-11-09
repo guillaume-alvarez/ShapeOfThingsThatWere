@@ -23,7 +23,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 @Wire
 public final class AIInfluenceSystem extends EntityProcessingSystem {
-  
+
   private static final Logger log = LoggerFactory.getLogger(AIInfluenceSystem.class);
 
   private final GameMap map;
@@ -101,8 +101,8 @@ public final class AIInfluenceSystem extends EntityProcessingSystem {
       return false;
 
     // no need to influence other city in same empire
-    int main = inf.getMainInfluenceSource();
-    return main == -1 || sources.get(world.getEntity(main)).empire != source.empire;
+    Entity main = inf.getMainInfluenceSource(world);
+    return main == null || sources.get(main).empire != source.empire;
   }
 
   private List<MapPosition> estimateFlaggableTiles(Entity e, MapPosition pos) {

@@ -26,6 +26,8 @@ public final class Diplomacy extends Component {
   }
 
   public State getRelationWith(Entity other) {
+    if (other == null)
+      return State.NONE;
     State state = relations.get(other);
     return state != null ? state : State.NONE;
   }

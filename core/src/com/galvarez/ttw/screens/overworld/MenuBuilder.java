@@ -143,8 +143,8 @@ public class MenuBuilder {
                 + "%)");
     }
 
-    if (influence.hasMainInfluence()) {
-      Entity source = world.getEntity(influence.getMainInfluenceSource());
+    Entity source = influence.getMainInfluenceSource(world);
+    if (source != null) {
       Entity empire = source.getComponent(InfluenceSource.class).empire;
       if (empire != screen.player && screen.player != null)
         addEmpire(screen.player, empire);

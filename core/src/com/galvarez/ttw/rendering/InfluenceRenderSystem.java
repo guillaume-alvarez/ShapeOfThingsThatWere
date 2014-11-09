@@ -104,9 +104,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     for (int x = 0; x < map.map.length; x++) {
       for (int y = 0; y < map.map[0].length; y++) {
         Influence inf = map.getInfluenceAt(x, y);
-        int main = inf.getMainInfluenceSource();
-        if (main != -1) {
-          Entity source = world.getEntity(main);
+        Entity source = inf.getMainInfluenceSource(world);
+        if (source != null) {
           Empire empire = empire(source);
           for (Border b : Border.values()) {
             MapPosition neighbor = MapTools.getNeighbor(b, x, y);
@@ -131,10 +130,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
   }
 
   private Empire getMainEmpire(Influence tile) {
-    int main = tile.getMainInfluenceSource();
-    if (main == -1)
-      return null;
-    return empire(world.getEntity(main));
+    Entity main = tile.getMainInfluenceSource(world);
+    return main == null ? null : empire(main);
   }
 
   @Override

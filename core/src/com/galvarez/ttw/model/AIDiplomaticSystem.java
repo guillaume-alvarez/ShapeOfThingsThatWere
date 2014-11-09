@@ -119,7 +119,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
 
   private void addInfluencer(IntIntMap neighbors, Entity capital, int x, int y) {
     Influence inf = map.getInfluenceAt(x, y);
-    if (inf != null && !inf.isMainInfluencer(capital) && inf.getMainInfluenceSource() != -1)
-      neighbors.getAndIncrement(inf.getMainInfluenceSource(), 0, 1);
+    if (inf != null && !inf.isMainInfluencer(capital) && inf.hasMainInfluence())
+      neighbors.getAndIncrement(inf.getMainInfluenceSource(world).getId(), 0, 1);
   }
 }
