@@ -1,7 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,13 +111,15 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     }
     List<Entry> entries = new ArrayList<>();
     neighbors.entries().forEach(e -> entries.add(e));
-    return entries.stream().filter(e -> e.key != capital.getId())
-        .sorted((e1, e2) -> Integer.compare(e1.value, e2.value)).map(e -> world.getEntity(e.key)).collect(toList());
+    entries.sort((e1, e2) -> Integer.compare(e1.value, e2.value));
+    List<Entity> res = new ArrayList<>(entries.size());
+    entries.forEach(e -> res.add(world.getEntity(e.key)));
+    return res;
   }
 
   private void addInfluencer(IntIntMap neighbors, Entity capital, int x, int y) {
     Influence inf = map.getInfluenceAt(x, y);
     if (inf != null && !inf.isMainInfluencer(capital) && inf.hasMainInfluence())
-      neighbors.getAndIncrement(inf.getMainInfluenceSource(world).getId(), 0, 1);
+      neighbors.getAndIncrement(inf.getMainInfluenceSource(), 0, 1);
   }
 }
