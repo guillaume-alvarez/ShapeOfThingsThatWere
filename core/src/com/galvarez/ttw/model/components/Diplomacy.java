@@ -1,8 +1,11 @@
 package com.galvarez.ttw.model.components;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.artemis.Component;
 import com.artemis.Entity;
@@ -30,6 +33,16 @@ public final class Diplomacy extends Component {
   public Action getProposalTo(Entity other) {
     Action action = proposals.get(other);
     return action != null ? action : Action.NO_CHANGE;
+  }
+
+  /** Get all empires whose state is the one passed as a parameter. */
+  public List<Entity> getEmpires(State state) {
+    List<Entity> others = new ArrayList<Entity>();
+    for (Entry<Entity, State> e : relations.entrySet()) {
+      if (e.getValue() == state)
+        others.add(e.getKey());
+    }
+    return others;
   }
 
 }
