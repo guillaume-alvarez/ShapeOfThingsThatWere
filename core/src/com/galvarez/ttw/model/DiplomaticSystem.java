@@ -60,7 +60,7 @@ public final class DiplomaticSystem extends EntitySystem {
     SIGN_TREATY("sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE),
         a -> a == MAKE_PEACE),
 
-    SURRENDER("surrender", State.TRIBUTE, State.NONE, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
+    SURRENDER("surrender", State.TRIBUTE, State.TREATY, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
 
     public final String str;
 
