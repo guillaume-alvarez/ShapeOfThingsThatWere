@@ -66,10 +66,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
       // sign treaty with half the neighbors, not the last one (WAR for him!)
       for (int i = 0; i < neighbors.size() / 2 && i < neighbors.size() - 1; i++) {
         Entity target = empire(neighbors.get(i));
-        if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.SIGN_TREATY)) {
-          log.info("{} wants to sign treaty with {}", entity.getComponent(Name.class), target.getComponent(Name.class));
-          diplo.proposals.put(target, Action.SIGN_TREATY);
-        }
+        makeProposal(entity, diplo, target, Action.SIGN_TREATY);
       }
     }
     if (diplo.knownStates.contains(State.WAR) && !neighbors.isEmpty()) {
@@ -77,15 +74,22 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
       Entity atWarWith = getCurrentWar(diplo);
       Entity target = empire(neighbors.get(neighbors.size() - 1));
       if (atWarWith == null) {
-        if (diplomaticSystem.getPossibleActions(diplo, target).contains(Action.DECLARE_WAR)) {
-          log.info("{} wants to declare war to {}", entity.getComponent(Name.class), target.getComponent(Name.class));
-          diplo.proposals.put(target, Action.DECLARE_WAR);
-        }
+        makeProposal(entity, diplo, target, Action.DECLARE_WAR);
       } else if (atWarWith != target) {
         // to change our war target, first make peace with preceding one
-        log.info("{} wants to make peace with {}", entity.getComponent(Name.class), atWarWith.getComponent(Name.class));
-        diplo.proposals.put(atWarWith, Action.MAKE_PEACE);
+        makeProposal(entity, diplo, atWarWith, Action.MAKE_PEACE);
       }
+    }
+  }
+
+  private void makeProposal(Entity entity, Diplomacy diplo, Entity target, Action action) {
+    if (diplomaticSystem.getPossibleActions(diplo, target).contains(action)
+    // do not change status if same proposal is already on the table
+        && diplo.proposals.get(target) != action
+        // do no make proposal to ourself
+        && entity != target) {
+      log.info("{} wants to {} with {}", entity.getComponent(Name.class), action.str, target.getComponent(Name.class));
+      diplo.proposals.put(target, action);
     }
   }
 
@@ -115,7 +119,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     }
     List<Entry> entries = new ArrayList<>();
     neighbors.entries().forEach(e -> entries.add(e));
-    return entries.stream().filter(e -> e.key != entity.getId())
+    return entries.stream().filter(e -> e.key != capital.getId())
         .sorted((e1, e2) -> Integer.compare(e1.value, e2.value)).map(e -> world.getEntity(e.key)).collect(toList());
   }
 
