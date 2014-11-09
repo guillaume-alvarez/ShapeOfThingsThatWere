@@ -1,9 +1,11 @@
 package com.galvarez.ttw.model;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -21,6 +23,8 @@ import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.DiplomaticSystem.State;
+import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.InfluenceSource.Modifiers;
@@ -72,6 +76,8 @@ public final class InfluenceSystem extends EntitySystem {
   private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<MapPosition> positions;
+
+  private ComponentMapper<Capital> capitals;
 
   private final GameMap map;
 
@@ -220,7 +226,20 @@ public final class InfluenceSystem extends EntitySystem {
   private void accumulatePower(Entity e) {
     InfluenceSource source = sources.get(e);
 
-    source.powerAdvancement += source.influencedTiles.size() - source.power / 10;
+    int increase = source.influencedTiles.size() - source.power / 10;
+    if (increase > 0) {
+      Diplomacy diplomacy = relations.get(source.empire);
+      List<Entity> tributes = diplomacy.getEmpires(State.TRIBUTE);
+      int remains = increase;
+      for (Entity other : tributes) {
+        int tribute = min(remains, increase / tributes.size());
+        sources.get(capitals.get(other).capital).powerAdvancement += tribute;
+        remains -= tribute;
+      }
+      increase = remains;
+    }
+
+    source.powerAdvancement += increase;
     if (source.powerAdvancement < 0) {
       source.power--;
       source.powerAdvancement = getRequiredPowerAdvancement(source);
