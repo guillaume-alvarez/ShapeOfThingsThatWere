@@ -134,22 +134,21 @@ public final class DiplomaticSystem extends EntitySystem {
         Diplomacy targetDiplo = relations.get(target);
         if (action.compatibleWith(targetDiplo.proposals.get(entity))) {
           diplo.relations.put(target, action.afterMe);
-          targetDiplo.relations.put(target, action.afterYou);
+          targetDiplo.relations.put(entity, action.afterYou);
           // remove the accepted proposal
           it.remove();
           targetDiplo.proposals.remove(entity);
           // prevent changing state for a few turns
           diplo.lastChange.put(target, Integer.valueOf(screen.turnNumber));
           targetDiplo.lastChange.put(entity, Integer.valueOf(screen.turnNumber));
+          log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
+              target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
           if (!ai.has(entity))
             notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
                 target.getComponent(Name.class), action.afterMe);
           else if (!ai.has(target))
             notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
                 entity.getComponent(Name.class), action.afterYou);
-          else
-            log.info("Relation between {} and {} is now {}", entity.getComponent(Name.class),
-                target.getComponent(Name.class), action.afterMe);
         }
       }
     }
