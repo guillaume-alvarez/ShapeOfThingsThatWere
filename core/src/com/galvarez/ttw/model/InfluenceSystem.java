@@ -256,13 +256,21 @@ public final class InfluenceSystem extends EntitySystem {
 
   /**
    * Can only influence a tile if it belongs to the source or one of its
-   * neighbor does.
+   * neighbor does. Cannot influence if we have a treaty.
    */
   public boolean canInfluence(Entity source, MapPosition pos) {
     // that tile should never be null: there is a flag on it
-    if (map.getInfluenceAt(pos).isMainInfluencer(source))
+    Influence influence = map.getInfluenceAt(pos);
+    if (influence.isMainInfluencer(source))
       return true;
 
+    // cannot influence on tiles from empires we have a treaty with
+    Diplomacy treaties = relations.get(sources.get(source).empire);
+    if (influence.hasMainInfluence()
+        && treaties.getRelationWith(world.getEntity(influence.getMainInfluenceSource())) == State.TREATY)
+      return false;
+
+    // need s neighbor we already have influence on
     for (Border b : Border.values()) {
       MapPosition neighbor = MapTools.getNeighbor(b, pos.x, pos.y);
       Influence tile = map.getInfluenceAt(neighbor);
@@ -276,9 +284,18 @@ public final class InfluenceSystem extends EntitySystem {
   public Array<MapPosition> getFlaggableTiles(Entity e) {
     Set<MapPosition> set = new HashSet<>();
     InfluenceSource source = sources.get(e);
+    Diplomacy treaties = relations.get(source.empire);
     for (MapPosition pos : source.influencedTiles) {
-      for (MapPosition neighbor : MapTools.getNeighbors(pos))
-        set.add(neighbor);
+      for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
+        Influence inf = map.getInfluenceAt(neighbor);
+        if (!inf.hasMainInfluence())
+          set.add(neighbor);
+        else {
+          InfluenceSource neighborSource = sources.get(world.getEntity(inf.getMainInfluenceSource()));
+          if (treaties.getRelationWith(neighborSource.empire) != State.TREATY)
+            set.add(neighbor);
+        }
+      }
     }
     return new Array<>(set.toArray(new MapPosition[0]));
   }
