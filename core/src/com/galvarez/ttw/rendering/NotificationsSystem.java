@@ -25,6 +25,10 @@ import com.galvarez.ttw.rendering.ui.FramedMenu;
  */
 public final class NotificationsSystem extends VoidEntitySystem {
 
+  private static final int MENU_MAX_HEIGHT = 512;
+
+  private static final int MENU_WIDTH = 400;
+
   private static final Logger log = LoggerFactory.getLogger(NotificationsSystem.class);
 
   public enum Type {
@@ -49,7 +53,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
     this.stage = stage;
 
     this.skin = new Skin(new FileHandle("resources/uiskin/uiskin.json"));
-    this.menu = new FramedMenu(skin, 400, 512);
+    this.menu = new FramedMenu(skin, MENU_WIDTH, MENU_MAX_HEIGHT);
 
     this.icons = new EnumMap<>(Type.class);
     icons.put(Type.DISCOVERY, skin.getDrawable("discovery-bulb"));
