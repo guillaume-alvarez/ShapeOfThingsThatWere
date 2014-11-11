@@ -19,8 +19,6 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
@@ -145,13 +143,8 @@ public final class DiscoverySystem extends EntitySystem {
     Research next = discovery.next;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
-      notifications.addNotification(new ChangeListener() {
-        @Override
-        public void changed(ChangeEvent event, Actor actor) {
-          screen.discoveryMenu();
-        }
-      }, "Discovery!", "You discovered %s from %s. %s", next.target, previousString(discovery, next.target),
-          effectsString(next.target));
+      notifications.addNotification(() -> screen.discoveryMenu(), "Discovery!", "You discovered %s from %s. %s",
+          next.target, previousString(discovery, next.target), effectsString(next.target));
     discovery.done.add(next.target);
     discovery.next = null;
 

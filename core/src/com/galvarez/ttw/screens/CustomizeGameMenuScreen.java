@@ -3,6 +3,7 @@ package com.galvarez.ttw.screens;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ListIterator;
+import java.util.function.Consumer;
 
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -80,11 +81,10 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
   private void updateMenu() {
     map.clear();
-    map.addSelectBox("Map type:", settings.mapType.get(), Generator.values(), new ChangeListener() {
-      @SuppressWarnings("unchecked")
+    map.addSelectBox("Map type:", settings.mapType.get(), Generator.values(), new Consumer<Generator>() {
       @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        settings.mapType.set(((SelectBox<Generator>) actor).getSelected());
+      public void accept(Generator t) {
+        settings.mapType.set(t);
         updateMenu();
       }
     });
@@ -105,25 +105,11 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     stage.setScrollFocus(empires.getTable());
 
     actions.clear();
-    actions.addBooleanSelectBox("Start with diplomacy?", settings.startWithDiplomacy.get(), new ChangeListener() {
-      @SuppressWarnings("unchecked")
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        settings.startWithDiplomacy.set(((SelectBox<Boolean>) actor).getSelected());
-      }
-    });
-    actions.addButton("Add new empire", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        createNewEmpire();
-      }
-    }, settings.empires.size() < SessionSettings.COLORS.size());
-    actions.addButton("Start new game", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        game.startGame(settings);
-      }
-    }, true);
+    actions.addBooleanSelectBox("Start with diplomacy?", settings.startWithDiplomacy.get(),
+        s -> settings.startWithDiplomacy.set(s));
+    actions.addButton("Add new empire", "", () -> createNewEmpire(),
+        settings.empires.size() < SessionSettings.COLORS.size());
+    actions.addButton("Start new game", () -> game.startGame(settings));
     actions.addToStage(stage, 30, empires.getY() - 30, false);
   }
 

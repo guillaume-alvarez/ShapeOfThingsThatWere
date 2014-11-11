@@ -21,8 +21,6 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
@@ -94,8 +92,6 @@ public final class DiplomaticSystem extends EntitySystem {
 
   private final OverworldScreen screen;
 
-  private final ChangeListener showDiploScreen;
-
   private final boolean startWithDiplomacy;
 
   @SuppressWarnings("unchecked")
@@ -103,12 +99,6 @@ public final class DiplomaticSystem extends EntitySystem {
     super(Aspect.getAspectForAll(Diplomacy.class, Capital.class));
     this.screen = screen;
     this.startWithDiplomacy = startWithDiplomacy;
-    this.showDiploScreen = new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        screen.diplomacyMenu();
-      }
-    };
   }
 
   @Override
@@ -144,11 +134,11 @@ public final class DiplomaticSystem extends EntitySystem {
           log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
               target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
           if (!ai.has(entity))
-            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
-                target.getComponent(Name.class), action.afterMe);
+            notifications.addNotification(() -> screen.diplomacyMenu(), "Relation change!",
+                "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
           else if (!ai.has(target))
-            notifications.addNotification(showDiploScreen, "Relation change!", "Your relation with %s is now %s!",
-                entity.getComponent(Name.class), action.afterYou);
+            notifications.addNotification(() -> screen.diplomacyMenu(), "Relation change!",
+                "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
         }
       }
     }

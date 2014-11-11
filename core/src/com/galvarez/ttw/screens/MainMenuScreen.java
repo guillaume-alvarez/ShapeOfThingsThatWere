@@ -4,10 +4,8 @@ import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.data.SessionSettings;
@@ -41,18 +39,8 @@ public final class MainMenuScreen extends AbstractScreen {
 
   private void initMenu() {
     menu.clear();
-    menu.addButton("Start new game (default parameters)", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        game.startGame(new SessionSettings());
-      }
-    }, true);
-    menu.addButton("Start new game (custom parameters)", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        game.setScreen(customGame);
-      }
-    }, true);
+    menu.addButton("Start new game (default parameters)", () -> game.startGame(new SessionSettings()));
+    menu.addButton("Start new game (custom parameters)", () -> game.setScreen(customGame));
     menu.addToStage(stage, 30, stage.getHeight() - 30, false);
   }
 
@@ -80,9 +68,12 @@ public final class MainMenuScreen extends AbstractScreen {
      * The GUI use a ScreenViewport, meaning it won't scale when screen size
      * change. This is fine because we don't want the GUI size to change,
      * becoming zoomed in and ugly or zoomed and unreadable. However it has a
-     * small side effect: the existing menu were placed according to the vertical stage size. The stage size changed with the screen (game window) one. So we must recompute the GUI elements coordinates. The simlest way to do it is to recreate the menu. 
+     * small side effect: the existing menu were placed according to the
+     * vertical stage size. The stage size changed with the screen (game window)
+     * one. So we must recompute the GUI elements coordinates. The simlest way
+     * to do it is to recreate the menu.
      */
-   initMenu(); 
+    initMenu();
   }
 
   @Override

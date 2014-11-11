@@ -14,8 +14,6 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
@@ -60,12 +58,7 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     if (actionMenu != null)
       actionMenu.clear();
     topMenu.clear();
-    topMenu.addButton("Resume game", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        resumeGame();
-      }
-    }, true);
+    topMenu.addButton("Resume game", () -> resumeGame());
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     menus.forEach(m -> m.clear());
@@ -84,12 +77,8 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
         FramedMenu menu = new FramedMenu(skin, maxWidth, 128);
         menu.addLabel(empire.getComponent(Name.class).name);
         if (playerDiplo != null) {
-          menu.addButton(playerDiplo.getRelationWith(empire).toString(), new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-              displayActionsMenu(menu, playerDiplo, empire);
-            }
-          }, true);
+          menu.addButton(playerDiplo.getRelationWith(empire).toString(),
+              () -> displayActionsMenu(menu, playerDiplo, empire));
           // TODO needs a smaller font for these labels
           Action mine = playerDiplo.getProposalTo(empire);
           if (mine != Action.NO_CHANGE)
@@ -119,15 +108,15 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     boolean hasActions = false;
     for (Action action : diplomaticSystem.getPossibleActions(diplo, target)) {
       hasActions = true;
-      actionMenu.addButton(action.str, new ChangeListener() {
+      actionMenu.addButton(action.str, new Runnable() {
         @Override
-        public void changed(ChangeEvent event, Actor actor) {
+        public void run() {
           if (action != Action.NO_CHANGE)
             diplo.proposals.put(target, action);
           actionMenu.clear();
           initMenu();
         }
-      }, true);
+      });
     }
     if (!hasActions)
       actionMenu.addLabel("No possible actions!");

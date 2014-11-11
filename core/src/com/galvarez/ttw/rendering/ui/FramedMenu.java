@@ -1,8 +1,11 @@
 package com.galvarez.ttw.rendering.ui;
 
+import java.util.function.Consumer;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -75,7 +78,7 @@ public class FramedMenu {
     return table;
   }
 
-  public <E extends Enum<E>> void addSelectBox(String label, E selected, E[] values, ChangeListener lis) {
+  public <E extends Enum<E>> void addSelectBox(String label, E selected, E[] values, Consumer<E> lis) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
@@ -83,7 +86,12 @@ public class FramedMenu {
     SelectBox<E> sb = new SelectBox<E>(skin.get(SelectBoxStyle.class));
     sb.setItems(values);
     sb.setSelected(selected);
-    sb.addListener(lis);
+    sb.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        lis.accept(sb.getSelected());
+      }
+    });
     Cell<SelectBox<E>> right = table.add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
     if (nbColumns > 2)
       right.colspan(nbColumns - 1);
@@ -91,7 +99,7 @@ public class FramedMenu {
     table.row();
   }
 
-  public void addBooleanSelectBox(String label, boolean selected, ChangeListener lis) {
+  public void addBooleanSelectBox(String label, boolean selected, Consumer<Boolean> lis) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
@@ -99,7 +107,12 @@ public class FramedMenu {
     SelectBox<Boolean> sb = new SelectBox<Boolean>(skin.get(SelectBoxStyle.class));
     sb.setItems(Boolean.TRUE, Boolean.FALSE);
     sb.setSelected(selected);
-    sb.addListener(lis);
+    sb.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        lis.accept(sb.getSelected());
+      }
+    });
     Cell<SelectBox<Boolean>> right = table.add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
     if (nbColumns > 2)
       right.colspan(nbColumns - 1);
@@ -123,23 +136,30 @@ public class FramedMenu {
   }
 
   /** Adds a button to the menu */
-  public void addButton(String label, ChangeListener listener, boolean active) {
-    addButton(label, "", listener, active);
+  public void addButton(String label, Runnable action) {
+    addButton(label, null, action, true);
   }
 
   /**
    * Adds a button to the menu, with a secondary label (like MP cost) aligned to
    * the right
    */
-  public void addButton(String label, String secondaryLabel, ChangeListener listener, boolean active) {
+  public void addButton(String label, String secondaryLabel, Runnable action, boolean active) {
     LabelStyle style = active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class);
 
     Button b = new Button(skin.get(ButtonStyle.class));
-    b.addListener(listener);
+    if (action != null)
+      b.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          action.run();
+        }
+      });
     b.setDisabled(!active);
 
     b.add(new Label(label, style)).left();
-    b.add(new Label(secondaryLabel, style)).padRight(15f);
+    if (secondaryLabel != null && !secondaryLabel.isEmpty())
+      b.add(new Label(secondaryLabel, style)).padRight(15f);
 
     table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
     table.row();
@@ -184,11 +204,17 @@ public class FramedMenu {
     table.row();
   }
 
-  public void addCheckBox(String text, boolean checked, ChangeListener lis) {
+  public void addCheckBox(String text, boolean checked, Consumer<Boolean> lis) {
     CheckBoxStyle style = skin.get(CheckBoxStyle.class);
     CheckBox cb = new CheckBox(text, style);
     cb.setChecked(checked);
-    cb.addListener(lis);
+    if (lis != null)
+      cb.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          lis.accept(Boolean.valueOf(cb.isChecked()));
+        }
+      });
 
     table.add(cb).colspan(nbColumns).minHeight(cb.getMinHeight()).prefHeight(cb.getPrefHeight());
     table.row();

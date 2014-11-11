@@ -2,8 +2,6 @@ package com.galvarez.ttw.screens;
 
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
@@ -33,24 +31,9 @@ public final class PauseMenuScreen extends AbstractPausedScreen<AbstractScreen> 
   @Override
   protected void initMenu() {
     menu.clear();
-    menu.addButton("Resume game", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        resumeGame();
-      }
-    }, true);
-    menu.addButton("Return to main menu", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        game.returnToMainMenu(settings);
-      }
-    }, true);
-    menu.addButton("Exit game", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        game.exit();
-      }
-    }, true);
+    menu.addButton("Resume game", () -> resumeGame());
+    menu.addButton("Return to main menu", () -> game.returnToMainMenu(settings));
+    menu.addButton("Exit game", () -> game.exit());
     menu.addToStage(stage, 30, stage.getHeight() - 30, false);
   }
 }

@@ -56,12 +56,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
   @Override
   protected void initMenu() {
     topMenu.clear();
-    topMenu.addButton("Resume game", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        resumeGame();
-      }
-    }, true);
+    topMenu.addButton("Resume game", () -> resumeGame());
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     empireChoices.clear();
@@ -81,9 +76,9 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
         for (Entry<Discovery, Integer> next : possible.entrySet())
           discoveryChoices.addButton("Combine: ",
               discoverySystem.previousString(empire, next.getKey()) + " (~" + next.getValue() + " turns)", //
-              new ChangeListener() {
+              new Runnable() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor) {
+                public void run() {
                   empire.next = new Research(next.getKey());
                   resumeGame();
                 }

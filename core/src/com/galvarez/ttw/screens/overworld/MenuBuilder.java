@@ -7,7 +7,6 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -81,13 +80,7 @@ public class MenuBuilder {
     turnMenu.clear();
 
     // EndTurn button
-    ChangeListener turnListener = new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        menuProcessor.endTurn();
-      }
-    };
-    turnMenu.addButton("End turn", turnListener, true);
+    turnMenu.addButton("End turn", () -> menuProcessor.endTurn());
 
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
   }
@@ -96,33 +89,19 @@ public class MenuBuilder {
     empireMenu.clear();
 
     // here present a new screen with diplomatic relations
-    empireMenu.addButton("Diplomacy", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        menuProcessor.diplomacyMenu();
-      }
-    }, true);
+    empireMenu.addButton("Diplomacy", () -> menuProcessor.diplomacyMenu());
 
     // here present a new screen with army preferences
     Army army = screen.player.getComponent(Army.class);
-    empireMenu.addButton("Army (power=" + army.militaryPower + ")", new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        // TODO add a army menu when we know what to do with it
-        // menuProcessor.armyMenu();
-      }
-    }, true);
+    // TODO add a army menu when we know what to do with it
+    // menuProcessor.armyMenu();
+    empireMenu.addButton("Army (power=" + army.militaryPower + ")", null);
 
     // here present a sub-menu to see current discovery and be able to change it
     Discoveries discoveries = screen.player.getComponent(Discoveries.class);
     empireMenu.addButton("Discovery "
         + (discoveries != null && discoveries.next != null ? "(" + discoveries.next.progress + "%)" : "(NONE)"),
-        new ChangeListener() {
-          @Override
-          public void changed(ChangeEvent event, Actor actor) {
-            menuProcessor.discoveryMenu();
-          }
-        }, true);
+        () -> menuProcessor.discoveryMenu());
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }
@@ -207,12 +186,8 @@ public class MenuBuilder {
     Diplomacy playerDiplo = player.getComponent(Diplomacy.class);
     Diplomacy selectedDiplo = selected.getComponent(Diplomacy.class);
     selectionMenu.addLabel(" relations are " + playerDiplo.getRelationWith(selected));
-    selectionMenu.addButton(" we want ", playerDiplo.getProposalTo(selected).str, new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        displayDiplomaticActionMenu(selectionMenu, playerDiplo, selected);
-      }
-    }, true);
+    selectionMenu.addButton(" we want ", playerDiplo.getProposalTo(selected).str,
+        () -> displayDiplomaticActionMenu(selectionMenu, playerDiplo, selected), true);
     selectionMenu.addLabel(" they want " + selectedDiplo.getProposalTo(player).str);
   }
 
@@ -223,15 +198,15 @@ public class MenuBuilder {
     boolean hasActions = false;
     for (Action action : screen.diplomaticSystem.getPossibleActions(diplo, target)) {
       hasActions = true;
-      actionMenu.addButton(action.str, new ChangeListener() {
+      actionMenu.addButton(action.str, new Runnable() {
         @Override
-        public void changed(ChangeEvent event, Actor actor) {
+        public void run() {
           if (action != Action.NO_CHANGE)
             diplo.proposals.put(target, action);
           actionMenu.clear();
           inputManager.reloadMenus();
         }
-      }, true);
+      });
     }
     if (!hasActions)
       actionMenu.addLabel("No possible actions!");
