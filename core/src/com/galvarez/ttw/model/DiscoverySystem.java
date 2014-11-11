@@ -33,6 +33,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
+import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -143,7 +144,7 @@ public final class DiscoverySystem extends EntitySystem {
     Research next = discovery.next;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
-      notifications.addNotification(() -> screen.discoveryMenu(), "Discovery!", "You discovered %s from %s. %s",
+      notifications.addNotification(() -> screen.discoveryMenu(), Type.DISCOVERY, "You discovered %s from %s. %s",
           next.target, previousString(discovery, next.target), effectsString(next.target));
     discovery.done.add(next.target);
     discovery.next = null;

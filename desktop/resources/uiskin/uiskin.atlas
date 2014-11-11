@@ -1,26 +1,40 @@
 
 uiskin.png
-size: 149,138
+size: 215,138
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 check-off
   rotate: false
-  xy: 132, 121
+  xy: 198, 121
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 132, 104
+  xy: 198, 104
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
+diplomacy-handshake
+  rotate: false
+  xy: 132, 72
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+discovery-bulb
+  rotate: false
+  xy: 132, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 frame
   rotate: false
-  xy: 132, 93
+  xy: 198, 93
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9

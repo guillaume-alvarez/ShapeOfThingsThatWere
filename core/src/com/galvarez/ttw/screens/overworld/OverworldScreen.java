@@ -101,6 +101,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final DiscoveryMenuScreen discoveryScreen;
 
+  private final NotificationsSystem notificationsSystem;
+
   public Entity player;
 
   private final List<Entity> empires;
@@ -114,7 +116,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
-    world.setSystem(new NotificationsSystem(stage));
+    notificationsSystem = world.setSystem(new NotificationsSystem(stage), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
@@ -131,6 +133,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomaticSystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
+    notificationsSystem.process();
     log.info("The world is initialized");
 
     inputManager = new InputManager(camera, world, this, stage, gameMap);
@@ -208,6 +211,7 @@ public final class OverworldScreen extends AbstractScreen {
      * to do it is to recreate the menu.
      */
     inputManager.reloadMenus();
+    notificationsSystem.reload();
   }
 
   @Override
@@ -278,6 +282,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomaticSystem.process();
     influenceSystem.process();
     influenceRenderSystem.preprocess();
+    notificationsSystem.process();
     turnNumber++;
 
   }

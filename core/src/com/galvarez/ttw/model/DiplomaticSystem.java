@@ -25,6 +25,7 @@ import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.NotificationsSystem;
+import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -134,10 +135,10 @@ public final class DiplomaticSystem extends EntitySystem {
           log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
               target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
           if (!ai.has(entity))
-            notifications.addNotification(() -> screen.diplomacyMenu(), "Relation change!",
+            notifications.addNotification(() -> screen.diplomacyMenu(), Type.DIPLOMACY,
                 "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
           else if (!ai.has(target))
-            notifications.addNotification(() -> screen.diplomacyMenu(), "Relation change!",
+            notifications.addNotification(() -> screen.diplomacyMenu(), Type.DIPLOMACY,
                 "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
         }
       }
