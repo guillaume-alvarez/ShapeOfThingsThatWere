@@ -141,8 +141,12 @@ public class MenuBuilder {
       // is fixed
       Entity source = world.getEntity(e.key);
       Empire empire = empire(source);
-      sb.append("\n [#").append(empire.color.toString()).append(']').append(source.getComponent(Name.class).name)
-          .append("[]: ").append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
+      // FIXME color [] flags seems not to be taken into account, whereas it
+      // follows guidelines from
+      // https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
+      sb.append("\n [#").append(empire.color.toString().toUpperCase()).append(']')
+          .append(source.getComponent(Name.class).name).append("[]: ")
+          .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
       int delta = influence.getDelta(source);
       if (delta > 0)
         sb.append(" +").append(100 * delta / InfluenceSystem.INITIAL_POWER).append('%');
@@ -151,6 +155,7 @@ public class MenuBuilder {
       // ignore == 0
       if (e.key == mainSource)
         sb.append(" (main)");
+      sb.append("[]");
     }
     selectionMenu.addLabel(sb.toString());
     return influence;
