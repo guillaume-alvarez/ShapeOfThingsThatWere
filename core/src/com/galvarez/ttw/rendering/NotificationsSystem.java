@@ -85,7 +85,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
   }
 
   public void reload() {
-    // reload state when screen size changes
+    // TODO recreate menu when screen size changes or some action was performed by user
   }
 
 }
