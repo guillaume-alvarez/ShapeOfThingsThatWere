@@ -43,23 +43,23 @@ public class FramedMenu {
   private final Skin skin;
 
   /** max's represent the largest we want the menu getting */
-  private final float maxHeight, maxWidth;
+  private final float maxHeight, width;
 
   /** The parent menu is the one we will focus on if the user closes this one */
   private final FramedMenu parent;
 
-  public FramedMenu(Skin skin, float maxWidth, float maxHeight) {
-    this(skin, maxWidth, maxHeight, null);
+  public FramedMenu(Skin skin, float width, float maxHeight) {
+    this(skin, width, maxHeight, null);
   }
 
-  public FramedMenu(Skin skin, float maxWidth, float maxHeight, FramedMenu parent) {
+  public FramedMenu(Skin skin, float width, float maxHeight, FramedMenu parent) {
     this.skin = skin;
 
     this.table = new Table();
     table.defaults().expandX().fillX().left();
 
     this.maxHeight = maxHeight;
-    this.maxWidth = maxWidth;
+    this.width = width;
     this.parent = parent;
   }
 
@@ -182,7 +182,9 @@ public class FramedMenu {
     b.setDisabled(!active);
 
     b.add(new Image(icon, Scaling.fit)).left();
-    b.add(new Label(label, style)).padLeft(8).right();
+    Label l = new Label(label, style);
+    l.setWrap(true);
+    b.add(l).padLeft(8).right().expandX().fillX();
 
     table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
     table.row();
@@ -305,8 +307,8 @@ public class FramedMenu {
       scrollPane.setHeight(maxHeight);
     }
 
-    // For now, no matter what, the width is set to maxWidth
-    scrollPane.setWidth(maxWidth);
+    // For now, no matter what, the width is set from constuctor
+    scrollPane.setWidth(width);
 
     table.setBackground(skin.getTiledDrawable("menuTexture"));
 
