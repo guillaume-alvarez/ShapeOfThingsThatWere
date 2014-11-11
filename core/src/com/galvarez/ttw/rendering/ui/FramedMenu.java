@@ -38,7 +38,7 @@ public class FramedMenu {
 
   private ScrollPane scrollPane;
 
-  private final Table table;
+  private Table table;
 
   private final Skin skin;
 
@@ -322,8 +322,8 @@ public class FramedMenu {
 
   /** Wipe all the buttons off, and remove widgets from stage. */
   public void clear() {
-    table.clear();
-    table.setColor(1f, 1f, 1f, 1);
+    table = new Table();
+    table.defaults().expandX().fillX().left();
     if (scrollPane != null)
       scrollPane.remove();
     if (frame != null)
