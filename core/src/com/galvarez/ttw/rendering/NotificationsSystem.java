@@ -8,12 +8,9 @@ import java.util.List;
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
-import com.galvarez.ttw.rendering.ui.FramedMenu;
 
 /**
  * Store notifications until processed.
@@ -26,7 +23,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
 
   private final List<String> notifications = new ArrayList<>();
 
-  private final List<ChangeListener> listeners = new ArrayList<>();
+  private final List<Runnable> listeners = new ArrayList<>();
 
   private final Stage stage;
 
@@ -55,23 +52,13 @@ public final class NotificationsSystem extends VoidEntitySystem {
     addNotification(null, title, msg, args);
   }
 
-  public void addNotification(SelectAction action, String title, String msg, Object ... args) {
+  public void addNotification(Runnable action, String title, String msg, Object ... args) {
     titles.add(title);
-    if (action != null)
-      listeners.add(new ChangeListener() {
-        @Override
-        public void changed(ChangeEvent event, Actor actor) {
-          action.select();
-        }
-      });
+    listeners.add(action);
     if (args == null || args.length == 0)
       notifications.add(msg);
     else
       notifications.add(format(msg, args));
-  }
-
-  public interface SelectAction {
-    void select();
   }
 
 }

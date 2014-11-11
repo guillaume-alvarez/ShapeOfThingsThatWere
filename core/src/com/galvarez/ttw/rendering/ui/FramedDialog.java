@@ -52,15 +52,14 @@ public class FramedDialog {
     dialog.key(key, result);
   }
 
-  public void addButton(String text, ChangeListener changeListener) {
+  public void addButton(String text, Runnable listener) {
     TextButton button = new TextButton(text, skin);
-
-    if (changeListener != null)
-      button.addListener(changeListener);
 
     button.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
+        if (listener != null)
+          listener.run();
         fadeOut();
       }
     });
