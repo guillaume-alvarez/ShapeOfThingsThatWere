@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
+import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -74,6 +75,8 @@ public final class InfluenceSystem extends EntitySystem {
 
   // TODO apply diplomacy effects to influence propagation
   private ComponentMapper<Diplomacy> relations;
+
+  private ComponentMapper<Army> armies;
 
   private ComponentMapper<MapPosition> positions;
 
@@ -126,9 +129,16 @@ public final class InfluenceSystem extends EntitySystem {
     // then compute the delta for every entity and tile
     for (Entity e : entities) {
       InfluenceSource source = sources.get(e);
+      Entity empire = source.empire;
+
+      IntIntMap armyInfluenceOn = new IntIntMap();
+      Diplomacy diplo = relations.get(empire);
+      int armyPower = armies.get(empire).militaryPower;
+      for (Entity enemy : diplo.getEmpires(State.WAR))
+        armyInfluenceOn.put(enemy.getId(), armyPower - armies.get(enemy).militaryPower);
 
       if (!checkInfluencedByOther(source, e)) {
-        addDistanceDelta(source, e);
+        addDistanceDelta(source, e, armyInfluenceOn);
         addFlagDelta(source, e);
       }
     }
@@ -178,7 +188,7 @@ public final class InfluenceSystem extends EntitySystem {
    * or next to one we compute the minimal distance to the source. Then from the
    * distance we compute the target influence level. Then apply the delta.
    */
-  private void addDistanceDelta(InfluenceSource source, Entity e) {
+  private void addDistanceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     Map<MapPosition, Integer> distances = getDistances(e, positions.get(e));
 
     for (Entry<MapPosition, Integer> entry : distances.entrySet()) {
@@ -186,6 +196,10 @@ public final class InfluenceSystem extends EntitySystem {
       int target = canInfluence(e, entry.getKey()) ? target = max(0, source.power - max(0, entry.getValue().intValue()))
           // start losing influence when no neighboring tile
           : 0;
+      // do not forget the military from war
+      if (tile.hasMainInfluence())
+        target += armyInfluenceOn.get(sources.get(tile.getMainInfluenceSource(world)).empire.getId(), 0);
+
       int current = tile.getInfluence(e);
       if (target > current)
         tile.addInfluenceDelta(e, max(1, (target - current) / 10));
