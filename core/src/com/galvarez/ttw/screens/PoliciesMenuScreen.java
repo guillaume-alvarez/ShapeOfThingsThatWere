@@ -1,7 +1,8 @@
 package com.galvarez.ttw.screens;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -58,21 +59,25 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
       Label l = new Label(choice.msg, skin.get(LabelStyle.class));
       empirePolicies.getTable().add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
 
-      SelectBox<Discovery> sb = new SelectBox<Discovery>(skin.get(SelectBoxStyle.class));
+      SelectBox<Item> sb = new SelectBox<Item>(skin.get(SelectBoxStyle.class));
+
+      Map<Discovery, Item> items = new HashMap<Discovery, Item>();
+      for (Discovery d : policiesSystem.getAvailablePolicies(empire, choice))
+        items.put(d, new Item(d));
+
       if (policies.policies.containsKey(choice)) {
-        sb.setItems(policiesSystem.getAvailablePolicies(empire, choice).toArray(new Discovery[0]));
-        sb.setSelected(policies.policies.get(choice));
+        sb.setItems(items.values().toArray(new Item[items.size()]));
+        sb.setSelected(items.get(policies.policies.get(choice)));
       } else {
-        List<Discovery> possible = policiesSystem.getAvailablePolicies(empire, choice);
-        possible.add(NONE);
-        sb.setItems(possible.toArray(new Discovery[0]));
+        items.put(NONE.discovery, NONE);
+        sb.setItems(items.values().toArray(new Item[items.size()]));
         sb.setSelected(NONE);
       }
       sb.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
           if (sb.getSelected() != NONE)
-            policiesSystem.applyPolicy(empire, choice, sb.getSelected());
+            policiesSystem.applyPolicy(empire, choice, sb.getSelected().discovery);
         }
       });
       empirePolicies.getTable().add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
@@ -82,6 +87,24 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     empirePolicies.addToStage(stage, 30, topMenu.getY() - 30, false);
   }
 
-  private static final Discovery NONE = new Discovery("NONE", new ArrayList<String>());
+  private static final class Item {
+
+    private final Discovery discovery;
+
+    public Item(Discovery discovery) {
+      this.discovery = discovery;
+    }
+
+    @Override
+    public String toString() {
+      if (discovery.effects.isEmpty())
+        return discovery.name + " (no effect)";
+      else
+        return discovery.name + " " + discovery.effects;
+    }
+
+  }
+
+  private static final Item NONE = new Item(new Discovery("NONE", new ArrayList<String>()));
 
 }
