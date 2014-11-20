@@ -29,6 +29,7 @@ import com.galvarez.ttw.rendering.ui.FramedMenu;
  */
 public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScreen> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DiplomacyMenuScreen.class);
 
   private final FramedMenu topMenu;

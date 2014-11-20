@@ -173,8 +173,16 @@ public final class DiscoverySystem extends EntitySystem {
         else
           army.militaryPower += delta;
       } else if ("diplomacy".equalsIgnoreCase(name)) {
+        // cannot revert that one
         Diplomacy diplomacy = entity.getComponent(Diplomacy.class);
         diplomacy.knownStates.add(State.valueOf((String) effect.getValue()));
+      } else if ("growth".equalsIgnoreCase(name)) {
+        InfluenceSource source = getInfluence(entity);
+        int delta = ((Number) effect.getValue()).intValue();
+        if (revert)
+          source.growth -= delta;
+        else
+          source.growth += delta;
       } else {
         InfluenceSource source = getInfluence(entity);
         Terrain t = Terrain.valueOf(name);

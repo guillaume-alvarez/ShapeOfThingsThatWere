@@ -15,17 +15,20 @@
   name: War,
   previous: [City, WEAPON],
   terrains: [GRASSLAND, PLAIN],
+  groups: [RELATION],
   effects: {diplomacy: WAR, militaryPower: 3}
 },
 {
   name: Treaty,
   previous: [War, GOVERNMENT],
+  groups: [RELATION],
   effects: {diplomacy: TREATY}
 },
 {
   name: Trade,
   previous: [City, Road],
-  terrains: [GRASSLAND, PLAIN, SHALLOW_WATER]
+  terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
+  effects: {growth: 2}
 },
 {
   name: Money,
@@ -34,6 +37,7 @@
 {
   name: Tribute,
   previous: [LUXURY, War],
+  groups: [RELATION],
   effects: {diplomacy: TRIBUTE, militaryPower: 1}
 },
 {
@@ -60,15 +64,18 @@
 {
   name: "Grain Mill",
   previous: [Stone, CEREAL, Wheel],
+  effects: {growth: 1}
 },
 {
   name: "Water Mill",
   previous: ["Grain Mill", River],
-  terrains: [HILLS]
+  terrains: [HILLS],
+  effects: {growth: 1}
 },
 {
   name: Floor,
   previous: ["Grain Mill", CEREAL],
+  effects: {growth: 1}
 },
 {
   name: Gods,

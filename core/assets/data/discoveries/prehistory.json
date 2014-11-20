@@ -3,18 +3,19 @@
   name: Hunt,
   previous: [Animal, Wood],
   terrains: [GRASSLAND, PLAIN, FOREST],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, growth: 1}
 },
 {
   name: Gathering,
   previous: [Forest, Grassland],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
 },
 {
   name: Fishing,
   previous: [Fish, Wood],
   terrains: [DEEP_WATER, SHALLOW_WATER],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, growth: 1}
 },
 {
   name: Knife,
@@ -36,36 +37,42 @@
 {
   name: Agriculture,
   previous: [Grassland, Gathering],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 2}
 },
 {
   name: Breeding,
   previous: [Agriculture, Animal],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 2}
 },
 {
   name: Horse,
   previous: [Breeding, Grassland],
   groups: [FOOD, MOVE],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1, militaryPower: 1}
 },
 {
   name: Goat,
   previous: [Breeding, Grassland],
   groups: [FOOD],
-  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT]
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT],
+  effects: {growth: 1}
 },
 {
   name: Ox,
   previous: [Breeding, Grassland],
   groups: [FOOD, MOVE],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 2}
 },
 {
   name: Sheep,
   previous: [Breeding, Grassland],
   groups: [FOOD],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 2}
 },
 {
   name: Fire,
@@ -76,7 +83,8 @@
 {
   name: House,
   previous: [MATERIAL, Fire, Wood],
-  terrains: [GRASSLAND, FOREST, PLAIN, HILLS]
+  terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
+  effects: {growth: 1}
 },
 {
   name: Village,
@@ -86,7 +94,8 @@
 {
   name: Crop,
   previous: [Village, Agriculture],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
 },
 {
   name: Slavery,
@@ -103,25 +112,29 @@
 {
   name: "Elders Council",
   previous: [Village, Fire],
-  groups: [GOVERNMENT]
+  groups: [GOVERNMENT],
+  effects: {growth: 1}
 },
 {
   name: Wheat,
   previous: [Agriculture, Plain],
   groups: [CEREAL],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
 },
 {
   name: Oat,
   previous: [Agriculture, Plain],
   groups: [CEREAL],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
 },
 {
   name: Rye,
   previous: [Agriculture, Plain],
   groups: [CEREAL],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
 },
 {
   name: Trail,
@@ -136,15 +149,18 @@
 {
   name: Cooking,
   previous: [Fire, FOOD],
+  effects: {growth: 1}
 },
 {
   name: Oven,
   previous: [Stone, Cooking],
+  effects: {growth: 1}
 },
 {
   name: Bread,
   previous: [Floor, Oven],
-  groups: [FOOD]
+  groups: [FOOD],
+  effects: {growth: 2}
 },
 {
   name: Death,
@@ -189,5 +205,6 @@
 {
   name: Ritual,
   previous: [Shamanism, Village],
+  effects: {growth: 1}
 },
 ]

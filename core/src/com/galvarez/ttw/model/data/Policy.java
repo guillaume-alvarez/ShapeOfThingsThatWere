@@ -10,6 +10,8 @@ public enum Policy {
 
   TERRAIN("Our preferred terrain is "),
 
+  RELATION("Our preferred relation is "),
+
   GOVERNMENT("We are governed by ");
 
   public final String msg;

@@ -226,7 +226,7 @@ public final class InfluenceSystem extends EntitySystem {
   private void accumulatePower(Entity e) {
     InfluenceSource source = sources.get(e);
 
-    int increase = source.influencedTiles.size() - source.power / 10;
+    int increase = source.growth + source.influencedTiles.size() - source.power / 10;
     if (increase > 0) {
       Diplomacy diplomacy = relations.get(source.empire);
       List<Entity> tributes = diplomacy.getEmpires(State.TRIBUTE);

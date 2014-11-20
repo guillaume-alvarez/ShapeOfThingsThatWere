@@ -90,7 +90,8 @@
   name: Wood,
   previous: [Forest],
   groups: [MATERIAL],
-  terrains: [FOREST]
+  terrains: [FOREST],
+  effects: {growth: 1}
 },
 {
   name: Dirt,
@@ -109,7 +110,8 @@
   name: Clay,
   previous: [Hills, River],
   groups: [MATERIAL],
-  terrains: [PLAIN, HILLS]
+  terrains: [PLAIN, HILLS],
+  effects: {growth: 1}
 },
 {
   name: Animal,
@@ -119,6 +121,7 @@
   name: Fish,
   previous: [River, Sea],
   terrains: [DEEP_WATER, SHALLOW_WATER],
-  groups: [FOOD]
+  groups: [FOOD],
+  effects: {SHALLOW_WATER: 1, growth: 1}
 },
 ]
