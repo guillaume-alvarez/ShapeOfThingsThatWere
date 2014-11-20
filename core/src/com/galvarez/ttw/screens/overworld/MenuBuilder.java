@@ -20,6 +20,7 @@ import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -102,6 +103,10 @@ public class MenuBuilder {
     empireMenu.addButton("Discovery "
         + (discoveries != null && discoveries.next != null ? "(" + discoveries.next.progress + "%)" : "(NONE)"),
         () -> menuProcessor.discoveryMenu());
+
+    // here present a new screen to choose policies
+    Policies policies = screen.player.getComponent(Policies.class);
+    empireMenu.addButton("Policies (stability " + policies.stability + "%)", () -> menuProcessor.policiesMenu());
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }

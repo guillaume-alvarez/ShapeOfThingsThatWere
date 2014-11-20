@@ -27,7 +27,6 @@ import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.model.data.Choice;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -144,10 +143,11 @@ public final class DiscoverySystem extends EntitySystem {
     Research next = discovery.next;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
     if (!ai.has(entity))
-      notifications.addNotification(() -> screen.discoveryMenu(), Type.DISCOVERY, "You discovered %s from %s. %s",
-          next.target, previousString(discovery, next.target), effectsString(next.target));
+      notifications.addNotification(() -> screen.discoveryMenu(), Type.DISCOVERY, "You discovered %s: %s", next.target,
+          effectsString(next.target));
     discovery.done.add(next.target);
     discovery.next = null;
+    discovery.last = next;
 
     applyDiscoveryEffects(next.target, entity, false);
   }
@@ -162,7 +162,7 @@ public final class DiscoverySystem extends EntitySystem {
     return sb.toString();
   }
 
-  private void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
+  void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
     for (Entry<String, Object> effect : discovery.effects.entrySet()) {
       String name = effect.getKey();
       if ("militaryPower".equalsIgnoreCase(name)) {
@@ -235,13 +235,5 @@ public final class DiscoverySystem extends EntitySystem {
       if (d.groups.contains(previous))
         return d;
     return null;
-  }
-
-  public void choose(Entity entity, Choice choice, Discovery selected) {
-    Discoveries empire = empires.get(entity);
-    Discovery old = empire.choices.put(choice, selected);
-    if (old != null)
-      applyDiscoveryEffects(old, entity, true);
-    applyDiscoveryEffects(selected, entity, false);
   }
 }

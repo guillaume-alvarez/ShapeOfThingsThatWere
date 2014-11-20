@@ -10,6 +10,7 @@ import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.components.ColorAnimation;
@@ -73,8 +74,8 @@ public class EntityFactory {
   public static Entity createEmpire(World world, Entity capital, Empire empire) {
     Entity e = world.createEntity();
 
-    e.edit().add(empire).add(new Discoveries()).add(new Diplomacy()).add(new Army()).add(new Capital(capital))
-        .add(new Name(capital.getComponent(Name.class).name));
+    e.edit().add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new Army())
+        .add(new Capital(capital)).add(new Name(capital.getComponent(Name.class).name));
 
     // link the capital to its empire
     capital.getComponent(InfluenceSource.class).empire = e;

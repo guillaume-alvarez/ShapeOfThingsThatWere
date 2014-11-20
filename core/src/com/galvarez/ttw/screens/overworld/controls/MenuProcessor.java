@@ -37,4 +37,8 @@ public class MenuProcessor {
     screen.discoveryMenu();
   }
 
+  public void policiesMenu() {
+    screen.policiesMenu();
+  }
+
 }
