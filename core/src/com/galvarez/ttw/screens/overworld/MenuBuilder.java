@@ -219,14 +219,11 @@ public class MenuBuilder {
     boolean hasActions = false;
     for (Action action : screen.diplomaticSystem.getPossibleActions(diplo, target)) {
       hasActions = true;
-      actionMenu.addButton(action.str, new Runnable() {
-        @Override
-        public void run() {
-          if (action != Action.NO_CHANGE)
-            diplo.proposals.put(target, action);
-          actionMenu.clear();
-          inputManager.reloadMenus();
-        }
+      actionMenu.addButton(action.str, () -> {
+        if (action != Action.NO_CHANGE)
+          diplo.proposals.put(target, action);
+        actionMenu.clear();
+        inputManager.reloadMenus();
       });
     }
     if (!hasActions)
@@ -242,13 +239,10 @@ public class MenuBuilder {
       notifMenu.addLabel("No notifications");
     else
       for (Notification n : notifs) {
-        notifMenu.addButtonSprite(n.type, n.msg, new Runnable() {
-          @Override
-          public void run() {
-            inputManager.reloadMenus();
-            if (n.action != null)
-              n.action.run();
-          }
+        notifMenu.addButtonSprite(n.type, n.msg, () -> {
+          inputManager.reloadMenus();
+          if (n.action != null)
+            n.action.run();
         }, true);
       }
     notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
