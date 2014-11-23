@@ -65,7 +65,9 @@ public final class PoliciesSystem extends EntitySystem {
       discoveriesSystem.applyDiscoveryEffects(old, entity, true);
       empire.stability -= 20;
     }
-    discoveriesSystem.applyDiscoveryEffects(selected, entity, false);
+    if (selected != null) {
+      discoveriesSystem.applyDiscoveryEffects(selected, entity, false);
+    }
   }
 
   public List<Discovery> getAvailablePolicies(Entity empire, Policy choice) {
