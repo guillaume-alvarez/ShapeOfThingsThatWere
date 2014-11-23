@@ -96,7 +96,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
 
   public boolean canFinishTurn() {
     for (Notification n : current)
-      if (n.discard == null || !n.discard.canDiscard())
+      if (n.discard != null && !n.discard.canDiscard())
         return false;
     return true;
   }
