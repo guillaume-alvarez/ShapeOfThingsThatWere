@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,6 +55,11 @@ public final class NotificationsSystem extends VoidEntitySystem {
   }
 
   public List<Notification> getNotifications() {
+    for (Iterator<Notification> i = current.iterator(); i.hasNext();) {
+      Notification n = i.next();
+      if (n.discard != null && n.discard.canDiscard())
+        i.remove();
+    }
     return Collections.unmodifiableList(current);
   }
 
@@ -95,9 +101,8 @@ public final class NotificationsSystem extends VoidEntitySystem {
     return true;
   }
 
-  public void reload() {
-    // TODO recreate menu when screen size changes or some action was performed
-    // by user
+  public void discard(Notification n) {
+    current.remove(n);
   }
 
 }

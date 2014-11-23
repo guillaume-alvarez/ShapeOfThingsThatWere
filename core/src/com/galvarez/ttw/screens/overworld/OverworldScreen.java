@@ -221,7 +221,6 @@ public final class OverworldScreen extends AbstractScreen {
      * to do it is to recreate the menu.
      */
     inputManager.reloadMenus();
-    notificationsSystem.reload();
   }
 
   @Override
