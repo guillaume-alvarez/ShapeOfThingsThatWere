@@ -1,10 +1,15 @@
 package com.galvarez.ttw.screens.overworld;
 
+import static java.lang.Math.min;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,6 +31,8 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
+import com.galvarez.ttw.rendering.NotificationsSystem;
+import com.galvarez.ttw.rendering.NotificationsSystem.Notification;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.Sprite;
@@ -46,7 +53,7 @@ public class MenuBuilder {
 
   private final Skin skin;
 
-  private final FramedMenu turnMenu, empireMenu;
+  private final FramedMenu turnMenu, empireMenu, notifMenu;
 
   private final FramedMenu selectionMenu;
 
@@ -60,6 +67,8 @@ public class MenuBuilder {
 
   private final InputManager inputManager;
 
+  private final NotificationsSystem notifications;
+
   public MenuBuilder(MenuProcessor menuProcessor, Stage stage, World world, GameMap map, OverworldScreen screen,
       InputManager inputManager) {
     this.menuProcessor = menuProcessor;
@@ -68,6 +77,7 @@ public class MenuBuilder {
     this.map = map;
     this.screen = screen;
     this.inputManager = inputManager;
+    this.notifications = screen.notificationsSystem;
 
     FileHandle skinFile = new FileHandle("resources/uiskin/uiskin.json");
     skin = new Skin(skinFile);
@@ -75,13 +85,14 @@ public class MenuBuilder {
     turnMenu = new FramedMenu(skin, 256, 128);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
+    notifMenu = new FramedMenu(skin, 400, 512);
   }
 
   public void buildTurnMenu() {
     turnMenu.clear();
 
     // EndTurn button
-    turnMenu.addButton("End turn", () -> menuProcessor.endTurn());
+    turnMenu.addButton("End turn", null, () -> menuProcessor.endTurn(), notifications.canFinishTurn());
 
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
   }
@@ -222,6 +233,25 @@ public class MenuBuilder {
       actionMenu.addLabel("No possible actions!");
 
     actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+  }
+
+  public void buildNotificationMenu() {
+    List<Notification> notifs = notifications.getNotifications();
+    notifMenu.clear();
+    if (notifs.isEmpty())
+      notifMenu.addLabel("No notifications");
+    else
+      for (Notification n : notifs) {
+        notifMenu.addButtonSprite(n.type, n.msg, new Runnable() {
+          @Override
+          public void run() {
+            inputManager.reloadMenus();
+            if (n.action != null)
+              n.action.run();
+          }
+        }, true);
+      }
+    notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
   }
 
   public void buildDialog(String title, int minWidth, int minHeight, String message, Button ... buttons) {

@@ -93,6 +93,16 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   @Override
+  protected void inserted(Entity e) {
+    super.inserted(e);
+    if (e == screen.player) {
+      Discoveries d = empires.get(e);
+      notifications.addNotification(() -> screen.discoveryMenu(), () -> d.next != null, Type.DISCOVERY,
+          "No research selected!");
+    }
+  }
+
+  @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
@@ -141,25 +151,16 @@ public final class DiscoverySystem extends EntitySystem {
 
   private void discoverNext(Entity entity, Discoveries discovery) {
     Research next = discovery.next;
-    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), next.target, next.previous);
+    Discovery target = next.target;
+    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
     if (!ai.has(entity))
-      notifications.addNotification(() -> screen.discoveryMenu(), Type.DISCOVERY, "You discovered %s: %s", next.target,
-          effectsString(next.target));
-    discovery.done.add(next.target);
+      notifications.addNotification(() -> screen.discoveryMenu(), () -> discovery.next != null, Type.DISCOVERY,
+          "Discovered %s: %s", target, target.effects.isEmpty() ? "No effect." : target.effects.toString());
+    discovery.done.add(target);
     discovery.next = null;
     discovery.last = next;
 
-    applyDiscoveryEffects(next.target, entity, false);
-  }
-
-  private String effectsString(Discovery target) {
-    if (target.effects.isEmpty())
-      return "It has no special effect.";
-
-    StringBuilder sb = new StringBuilder("It has the following effects:");
-    for (Entry<String, Object> effect : target.effects.entrySet())
-      sb.append("\n ").append(effect.getKey()).append(" ").append(effect.getValue());
-    return sb.toString();
+    applyDiscoveryEffects(target, entity, false);
   }
 
   void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {

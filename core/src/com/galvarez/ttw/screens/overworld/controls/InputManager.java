@@ -65,6 +65,8 @@ public class InputManager {
 
     menuBuilder.buildTurnMenu();
     menuBuilder.buildEmpireMenu();
+    menuBuilder.buildTurnMenu();
+    menuBuilder.buildNotificationMenu();
     if (screen.selectedTile != null)
       menuBuilder.buildSelectionMenu(screen.selectedTile, selectedEntity);
 

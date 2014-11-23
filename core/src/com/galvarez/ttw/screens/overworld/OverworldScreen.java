@@ -107,7 +107,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final PoliciesMenuScreen policiesScreen;
 
-  private final NotificationsSystem notificationsSystem;
+  public final NotificationsSystem notificationsSystem;
 
   public Entity player;
 
@@ -122,7 +122,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
-    notificationsSystem = world.setSystem(new NotificationsSystem(stage), true);
+    notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
@@ -146,6 +146,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     inputManager = new InputManager(camera, world, this, stage, gameMap);
     inputManager.menuBuilder.buildTurnMenu();
+    inputManager.menuBuilder.buildNotificationMenu();
     inputManager.menuBuilder.buildEmpireMenu();
 
     world.setManager(new PlayerManager());
