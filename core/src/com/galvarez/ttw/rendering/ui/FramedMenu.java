@@ -78,7 +78,7 @@ public class FramedMenu {
     return table;
   }
 
-  public <E extends Enum<E>> void addSelectBox(String label, E selected, E[] values, Consumer<E> lis) {
+  public <E> void addSelectBox(String label, E selected, E[] values, Consumer<E> lis) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
