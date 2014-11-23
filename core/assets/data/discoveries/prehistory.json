@@ -51,34 +51,34 @@
   previous: [Breeding, Grassland],
   groups: [FOOD, MOVE],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 1, militaryPower: 1}
+  effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1}
 },
 {
   name: Goat,
   previous: [Breeding, Grassland],
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT],
-  effects: {growth: 1}
+  effects: {growth: 1, MOUNTAIN: 1, HILLS: 1, DESERT: 1}
 },
 {
   name: Ox,
   previous: [Breeding, Grassland],
   groups: [FOOD, MOVE],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 2}
+  effects: {growth: 3, FOREST: -1, MOUNTAIN: -1, HILLS: -1, DESERT: -1}
 },
 {
   name: Sheep,
   previous: [Breeding, Grassland],
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 2}
+  effects: {growth: 2, FOREST: -1, MOUNTAIN: -1, DESERT: -1}
 },
 {
   name: Fire,
   previous: [Wood],
   terrains: [GRASSLAND, FOREST],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, growth: 1}
 },
 {
   name: House,
@@ -89,7 +89,7 @@
 {
   name: Village,
   previous: [House, Agriculture],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, growth: 1}
 },
 {
   name: Crop,
@@ -137,14 +137,23 @@
   effects: {growth: 1}
 },
 {
+  name: Rice,
+  previous: [Agriculture, Plain],
+  groups: [CEREAL],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
+},
+{
   name: Trail,
   previous: [Forest, Plain, Animal],
   terrains: [GRASSLAND, FOREST],
+  effects: {FOREST: 1, MOUNTAIN: 1}
 },
 {
   name: Path,
   previous: [Trail, FOOD],
   terrains: [GRASSLAND, FOREST, HILLS],
+  effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, MOUNTAIN: -1}
 },
 {
   name: Cooking,
@@ -155,12 +164,6 @@
   name: Oven,
   previous: [Stone, Cooking],
   effects: {growth: 1}
-},
-{
-  name: Bread,
-  previous: [Floor, Oven],
-  groups: [FOOD],
-  effects: {growth: 2}
 },
 {
   name: Death,

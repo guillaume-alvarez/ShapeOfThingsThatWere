@@ -65,26 +65,28 @@
   previous: [Copper, Tin],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 2}
 },
 {
   name: Iron,
   previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 2}
+  effects: {militaryPower: 3}
 },
 {
   name: Gold,
   previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
-  terrains: [MOUNTAIN, HILLS]
+  terrains: [MOUNTAIN, HILLS],
+  effects: {growth: 1}
 },
 {
   name: Silver,
   previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
-  terrains: [MOUNTAIN, HILLS]
+  terrains: [MOUNTAIN, HILLS],
+  effects: {growth: 1}
 },
 {
   name: Wood,
@@ -115,7 +117,8 @@
 },
 {
   name: Animal,
-  previous: [TERRAIN]
+  previous: [TERRAIN],
+  effects: {GRASSLAND: -1, PLAIN: -1, HILLS: -1, MOUNTAIN: -1, FOREST: -1}
 },
 {
   name: Fish,

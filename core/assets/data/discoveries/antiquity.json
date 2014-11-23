@@ -6,10 +6,16 @@
   effects: {militaryPower: 1}
 },
 {
+  name: Lance,
+  previous: [WEAPON, Bronze, Iron],
+  groups: [WEAPON],
+  effects: {militaryPower: 1}
+},
+{
   name: City,
   previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2}
+  effects: {militaryPower: 2, growth: 1}
 },
 {
   name: War,
@@ -32,7 +38,8 @@
 },
 {
   name: Money,
-  previous: [Trade, LUXURY]
+  previous: [Trade, LUXURY],
+  effects: {growth: 1, militaryPower: -2}
 },
 {
   name: Tribute,
@@ -49,17 +56,19 @@
 {
   name: Wheel,
   previous: [MATERIAL],
-  terrains: [GRASSLAND, PLAIN],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Cart,
   previous: [Wheel, Wood, MOVE],
   terrains: [GRASSLAND, PLAIN],
+  effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, FOREST: -1, MOUNTAIN: -1}
 },
 {
   name: Road,
   previous: [Stone, Path, Wheel],
   terrains: [GRASSLAND, PLAIN],
+  effects: {PLAIN: 1, GRASSLAND: 1, FOREST: -1, MOUNTAIN: -1}
 },
 {
   name: "Grain Mill",
@@ -67,14 +76,20 @@
   effects: {growth: 1}
 },
 {
-  name: "Water Mill",
-  previous: ["Grain Mill", River],
-  terrains: [HILLS],
+  name: Floor,
+  previous: ["Grain Mill", CEREAL],
   effects: {growth: 1}
 },
 {
-  name: Floor,
-  previous: ["Grain Mill", CEREAL],
+  name: Bread,
+  previous: [Floor, Oven],
+  groups: [FOOD],
+  effects: {growth: 2}
+},
+{
+  name: "Water Mill",
+  previous: ["Grain Mill", River],
+  terrains: [HILLS],
   effects: {growth: 1}
 },
 {
@@ -97,5 +112,6 @@
 {
   name: Priest,
   previous: [Religion, LEADER],
+  groups: [GOVERNMENT, LEADER],
 },
 ]
