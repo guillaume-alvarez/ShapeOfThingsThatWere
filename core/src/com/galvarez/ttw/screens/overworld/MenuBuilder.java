@@ -92,7 +92,7 @@ public class MenuBuilder {
     turnMenu.clear();
 
     // EndTurn button
-    turnMenu.addButton("End turn", null, () -> menuProcessor.endTurn(), notifications.canFinishTurn());
+    turnMenu.addButton("End turn", null, () -> menuProcessor.endTurn(), screen.canFinishTurn());
 
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
   }

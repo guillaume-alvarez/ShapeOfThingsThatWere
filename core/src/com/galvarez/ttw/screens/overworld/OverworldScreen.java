@@ -312,15 +312,23 @@ public final class OverworldScreen extends AbstractScreen {
       highlightedTiles.put(tile, String.valueOf(gameMap.getInfluenceAt(tile).requiredInfluence(source)));
     renderHighlighter = true;
     setHighlightColor(0f, 0f, 0.2f, 0.3f);
+    inputManager.reloadMenus();
   }
 
   public void stopHighlighing() {
     renderHighlighter = false;
     highlightedTiles.clear();
+    inputManager.reloadMenus();
   }
 
   public Map<MapPosition, String> getHighlightedTiles() {
     return highlightedTiles;
+  }
+
+  public boolean canFinishTurn() {
+    return notificationsSystem.canFinishTurn()
+    // make sure no player action on map is waiting for input
+        && !renderHighlighter;
   }
 
   public Entity addComponent(Component component, Entity entity) {

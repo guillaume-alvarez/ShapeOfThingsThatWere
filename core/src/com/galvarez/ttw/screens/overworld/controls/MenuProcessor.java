@@ -19,7 +19,7 @@ public class MenuProcessor {
   }
 
   public void endTurn() {
-    if (screen.notificationsSystem.canFinishTurn())
+    if (screen.canFinishTurn())
       screen.processTurn();
 
     // update the menu data
