@@ -52,7 +52,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     if (empire.last == null) {
       lastDiscovery.addLabel("- No last discovery -");
     } else {
-      lastDiscovery.addLabel("- Last discovery: " + empire.last.target.name + " -");
+      lastDiscovery.addLabel("- Last discovery (effect doubled): " + empire.last.target.name + " -");
       lastDiscovery.addLabel("Discovered from " + discoverySystem.previousString(empire, empire.last.target));
       lastDiscovery.addLabel("Effects:");
       for (Entry<String, Object> entry : empire.last.target.effects.entrySet())

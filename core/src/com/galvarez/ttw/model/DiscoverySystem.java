@@ -162,8 +162,15 @@ public final class DiscoverySystem extends EntitySystem {
     }
     discovery.done.add(target);
     discovery.next = null;
+
+    // remove last discovery 2x bonus (to keep only the basic effect)
+    if (discovery.last != null)
+      applyDiscoveryEffects(discovery.last.target, entity, true);
     discovery.last = next;
 
+    // apply new discovery
+    applyDiscoveryEffects(target, entity, false);
+    // ... and bonus time until next discovery!
     applyDiscoveryEffects(target, entity, false);
   }
 
