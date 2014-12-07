@@ -2,6 +2,7 @@ apply plugin: "java"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "resources/" ]
 
 project.ext.mainClassName = "com.galvarez.ttw.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets");
