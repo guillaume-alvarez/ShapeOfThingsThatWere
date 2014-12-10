@@ -1,0 +1,34 @@
+[
+{
+  name: "City Council",
+  previous: ["Elders Council", City],
+},
+{
+  name: Election,
+  previous: ["City Council"],
+},
+{
+  name: Republic,
+  previous: [Election, City],
+  groups: [GOVERNMENT]
+},
+{
+  name: Democracy,
+  previous: [Election, City],
+  groups: [GOVERNMENT]
+},
+{
+  name: Nobility,
+  previous: [City, War, Crop],
+  groups: [GOVERNMENT, LEADER]
+},
+{
+  name: Oligarchy,
+  previous: [Nobility, Trade],
+  groups: [GOVERNMENT, LEADER]
+},
+{
+  name: Citizenship,
+  previous: [City, Republic]
+}
+]

@@ -91,7 +91,7 @@ public final class SessionSettings implements Cloneable {
     // TODO The mythic discoveries could be used as 'totem' animals
     json.setSerializer(Discovery.class, Discovery.SER);
     List<Discovery> discoveries = new ArrayList<>();
-    for (FileHandle f : files("data/discoveries/", "nature.json", "prehistory.json", "antiquity.json"))
+    for (FileHandle f : files("data/discoveries/", "nature.json", "prehistory.json", "antiquity.json", "classic.json"))
       discoveries.addAll(Arrays.asList(json.fromJson(Discovery[].class, f)));
     return discoveries;
   }

@@ -113,5 +113,5 @@
   name: Priest,
   previous: [Religion, LEADER],
   groups: [GOVERNMENT, LEADER],
-},
+}
 ]
