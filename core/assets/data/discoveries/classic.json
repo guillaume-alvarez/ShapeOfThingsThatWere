@@ -2,6 +2,7 @@
 {
   name: "City Council",
   previous: ["Elders Council", City],
+  effects: {growth: 1}
 },
 {
   name: Election,
@@ -14,21 +15,29 @@
 },
 {
   name: Democracy,
-  previous: [Election, City],
+  previous: [Citizens],
   groups: [GOVERNMENT]
 },
 {
-  name: Nobility,
-  previous: [City, War, Crop],
-  groups: [GOVERNMENT, LEADER]
+  name: Aristocracy,
+  previous: [War, Crop],
+  groups: [GOVERNMENT, LEADER],
+  effects: {growth: 1, militaryPower: 1}
 },
 {
   name: Oligarchy,
-  previous: [Nobility, Trade],
-  groups: [GOVERNMENT, LEADER]
+  previous: [Aristocracy, Trade],
+  groups: [GOVERNMENT, LEADER],
+  effects: {growth: 1}
 },
 {
-  name: Citizenship,
-  previous: [City, Republic]
+  name: Citizens,
+  previous: [City, Liberty]
+},
+{
+  name: Tyranny,
+  previous: [King, War],
+  groups: [GOVERNMENT],
+  effects: {militaryPower: 2}
 }
 ]

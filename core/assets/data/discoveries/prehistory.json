@@ -87,6 +87,12 @@
   effects: {growth: 1}
 },
 {
+  name: Family,
+  previous: [House],
+  groups: [VALUE],
+  effects: {growth: 1}
+},
+{
   name: Village,
   previous: [House, Agriculture],
   effects: {militaryPower: 1, growth: 1}
@@ -96,6 +102,17 @@
   previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
+},
+{
+  name: Liberty,
+  previous: [Crop, Hunt],
+  groups: [VALUE],
+  effects: {militaryPower: -1}
+},
+{
+  name: Equality,
+  previous: [Village],
+  groups: [VALUE]
 },
 {
   name: Slavery,
@@ -207,7 +224,7 @@
 },
 {
   name: Ritual,
-  previous: [Shamanism, Village],
+  previous: [Shamanism, Crop],
   effects: {growth: 1}
 },
 ]

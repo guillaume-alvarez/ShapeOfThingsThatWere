@@ -12,6 +12,8 @@ public enum Policy {
 
   RELATION("Our preferred relation is "),
 
+  VALUE("Our most honored value is "),
+
   GOVERNMENT("We are governed by ");
 
   public final String msg;

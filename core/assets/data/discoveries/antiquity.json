@@ -110,8 +110,29 @@
   effects: {militaryPower: 1}
 },
 {
+  name: Piety,
+  previous: [Religion, Village],
+  groups: [VALUE],
+  effects: {}
+},
+{
   name: Priest,
   previous: [Religion, LEADER],
   groups: [GOVERNMENT, LEADER],
-}
+},
+{
+  name: Honor,
+  previous: [RELATION, Gods],
+  groups: [VALUE],
+  effects: {militaryPower: 1}
+},
+{
+  name: Writing,
+  previous: [RELATION, City],
+},
+{
+  name: Law,
+  previous: [City, Writing],
+  effects: {growth: 3}
+},
 ]
