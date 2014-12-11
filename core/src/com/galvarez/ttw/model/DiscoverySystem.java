@@ -117,9 +117,7 @@ public final class DiscoverySystem extends EntitySystem {
   private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
     int progress = PROGRESS_PER_TURN;
     Set<Terrain> terrains = discovery.next.target.terrains;
-    if (terrains == null || terrains.isEmpty())
-      progress = influence.influencedTiles.size();
-    else {
+    if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles) {
         if (terrains.contains(map.getTerrainAt(pos)))
           progress += PROGRESS_PER_TILE;
@@ -133,9 +131,7 @@ public final class DiscoverySystem extends EntitySystem {
     InfluenceSource influence = getInfluence(empire);
 
     int progressPerTurn = PROGRESS_PER_TURN;
-    if (terrains == null || terrains.isEmpty()) {
-      progressPerTurn = influence.influencedTiles.size();
-    } else {
+    if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles)
         if (terrains.contains(map.getTerrainAt(pos)))
           progressPerTurn += PROGRESS_PER_TILE;
