@@ -78,7 +78,7 @@
   name: Fire,
   previous: [Wood],
   terrains: [GRASSLAND, FOREST],
-  effects: {militaryPower: 1, growth: 1}
+  effects: {militaryPower: 1, growth: 1, FOREST: 1}
 },
 {
   name: House,
@@ -102,6 +102,12 @@
   previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
+},
+{
+  name: "Slash-and-burn cultivation",
+  previous: [Crop, Fire],
+  terrains: [GRASSLAND, PLAIN],
+  effects: {growth: -1, GRASSLAND: 1, PLAIN: 1}
 },
 {
   name: Liberty,
