@@ -10,6 +10,9 @@ public final class Discoveries extends Component {
 
   public final List<Discovery> done = new ArrayList<>();
 
+  /** Increase to speed progress up. */
+  public int progressPerTurn = 10;
+
   public Research next;
 
   public Research last;

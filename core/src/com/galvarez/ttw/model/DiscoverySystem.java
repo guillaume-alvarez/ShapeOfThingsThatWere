@@ -1,6 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.max;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -53,9 +52,6 @@ public final class DiscoverySystem extends EntitySystem {
 
   /** This value permits to display values as percentages. */
   private static final int DISCOVERY_THRESHOLD = 100;
-
-  /** Increase to speed progress up. */
-  private static final int PROGRESS_PER_TURN = 10;
 
   /** Increase to speed progress up. */
   private static final int PROGRESS_PER_TILE = 1;
@@ -115,7 +111,7 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
-    int progress = PROGRESS_PER_TURN;
+    int progress = discovery.progressPerTurn;
     Set<Terrain> terrains = discovery.next.target.terrains;
     if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles) {
@@ -123,21 +119,21 @@ public final class DiscoverySystem extends EntitySystem {
           progress += PROGRESS_PER_TILE;
       }
     }
-    discovery.next.progress += max(PROGRESS_PER_TURN, progress);
+    discovery.next.progress += progress;
     return discovery.next.progress >= DISCOVERY_THRESHOLD;
   }
 
-  private int guessNbTurns(Entity empire, Set<Terrain> terrains) {
+  private int guessNbTurns(Discoveries discovery, Entity empire, Set<Terrain> terrains) {
     InfluenceSource influence = getInfluence(empire);
 
-    int progressPerTurn = PROGRESS_PER_TURN;
+    int progressPerTurn = discovery.progressPerTurn;
     if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles)
         if (terrains.contains(map.getTerrainAt(pos)))
           progressPerTurn += PROGRESS_PER_TILE;
     }
 
-    return DISCOVERY_THRESHOLD / max(PROGRESS_PER_TURN, progressPerTurn);
+    return DISCOVERY_THRESHOLD / progressPerTurn;
   }
 
   private InfluenceSource getInfluence(Entity empire) {
@@ -215,7 +211,7 @@ public final class DiscoverySystem extends EntitySystem {
     Predicate<Discovery> canBeDiscovered = d -> !done.contains(d.name) && done.containsAll(d.previous)
         && hasTerrain(entity, d.terrains);
     return discoveries.values().stream().filter(canBeDiscovered).sorted((d1, d2) -> rand.nextInt(3) - 1).limit(nb)
-        .collect(toMap(d -> d, d -> guessNbTurns(entity, d.terrains)));
+        .collect(toMap(d -> d, d -> guessNbTurns(empire, entity, d.terrains)));
   }
 
   private boolean hasTerrain(Entity entity, Set<Terrain> terrains) {
