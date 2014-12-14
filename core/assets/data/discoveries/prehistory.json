@@ -95,7 +95,7 @@
 {
   name: Village,
   previous: [House, Agriculture],
-  effects: {militaryPower: 1, growth: 1}
+  effects: {militaryPower: 1, growth: 1, discovery: 1}
 },
 {
   name: Crop,
@@ -113,7 +113,7 @@
   name: Liberty,
   previous: [Crop, Hunt],
   groups: [VALUE],
-  effects: {militaryPower: -1}
+  effects: {militaryPower: -1, discovery: 1}
 },
 {
   name: Equality,

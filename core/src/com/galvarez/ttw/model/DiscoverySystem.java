@@ -187,6 +187,13 @@ public final class DiscoverySystem extends EntitySystem {
           source.growth -= delta;
         else
           source.growth += delta;
+      } else if ("discovery".equalsIgnoreCase(name)) {
+        Discoveries empire = empires.get(entity);
+        int delta = ((Number) effect.getValue()).intValue();
+        if (revert)
+          empire.progressPerTurn -= delta;
+        else
+          empire.progressPerTurn += delta;
       } else {
         InfluenceSource source = getInfluence(entity);
         Terrain t = Terrain.valueOf(name);

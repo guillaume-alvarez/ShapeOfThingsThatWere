@@ -15,7 +15,7 @@
   name: City,
   previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2, growth: 1}
+  effects: {militaryPower: 2, growth: 1, discovery: 1}
 },
 {
   name: War,
@@ -40,7 +40,7 @@
   name: Trade,
   previous: [City, Road],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
-  effects: {growth: 2}
+  effects: {growth: 2, discovery: 1}
 },
 {
   name: Money,
@@ -109,6 +109,7 @@
 {
   name: Mysticism,
   previous: [Magic, "Elders council"],
+  effect: {discovery: 1}
 },
 {
   name: Religion,
@@ -135,6 +136,7 @@
 {
   name: Writing,
   previous: [RELATION, City],
+  effect: {discovery: 1}
 },
 {
   name: Law,
