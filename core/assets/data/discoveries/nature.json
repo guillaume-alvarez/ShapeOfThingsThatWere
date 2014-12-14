@@ -53,42 +53,42 @@
   previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {growth: 1, HILLS: 1, MOUNTAINS: 1}
+  effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Tin,
   previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {HILLS: 1, MOUNTAINS: 1}
+  effects: {HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Bronze,
   previous: [Copper, Tin],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 2, HILLS: 1, MOUNTAINS: 1}
+  effects: {militaryPower: 2, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Iron,
   previous: [HIGH_TERRAIN, Fire],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 3, HILLS: 1, MOUNTAINS: 1}
+  effects: {militaryPower: 3, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Gold,
   previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS],
-  effects: {growth: 1, HILLS: 1, MOUNTAINS: 1}
+  effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Silver,
   previous: [HIGH_TERRAIN, River],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS],
-  effects: {growth: 1, HILLS: 1, MOUNTAINS: 1}
+  effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Wood,
@@ -108,7 +108,7 @@
   previous: [Hills, Mountain],
   groups: [MATERIAL],
   terrains: [HILLS, MOUNTAIN],
-  effects: {militaryPower: 1, HILLS: 1, MOUNTAINS: 1}
+  effects: {militaryPower: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Clay,
