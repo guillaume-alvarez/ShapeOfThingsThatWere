@@ -129,4 +129,22 @@
   groups: [FOOD],
   effects: {SHALLOW_WATER: 1, growth: 1}
 },
+{
+  name: Beach,
+  previous: [Sea],
+  terrains: [SHALLOW_WATER]
+},
+{
+  name: Crustaceans,
+  previous: [Beach, SHALLOW_WATER],
+  terrains: [SHALLOW_WATER],
+  groups: [FOOD],
+  effects: {growth: 1, SHALLOW_WATER: 1}
+},
+{
+  name: Cave,
+  previous: [HIGH_TERRAIN],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {militaryPower: 1, growth: 1, HILLS: 1, MOUNTAIN: 1}
+},
 ]

@@ -1,11 +1,5 @@
 [
 {
-  name: Cave,
-  previous: [HIGH_TERRAIN],
-  terrains: [HILLS, MOUNTAIN],
-  effects: {militaryPower: 1, growth: 1, HILLS: 1, MOUNTAIN: 1}
-},
-{
   name: Hunt,
   previous: [Animal, Wood],
   terrains: [GRASSLAND, PLAIN, FOREST],
@@ -22,6 +16,13 @@
   previous: [Fish, Wood],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   effects: {militaryPower: 1, growth: 1}
+},
+{
+  name: Boat,
+  previous: [Fish, Wood],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  groups: [MOVE],
+  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1}
 },
 {
   name: Knife,
