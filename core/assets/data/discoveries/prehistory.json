@@ -30,6 +30,20 @@
   effects: {militaryPower: 1}
 },
 {
+  name: Skin,
+  previous: [Knife, Animal]
+},
+{
+  name: Clothing,
+  previous: [Skin],
+  effects: {growth: 1, MOUNTAIN: 1}  
+},
+{
+  name: Tent,
+  previous: [Skin],
+  effects: {growth: 1}
+},
+{
   name: Stick,
   previous: [Hunt, Wood],
   groups: [WEAPON],
