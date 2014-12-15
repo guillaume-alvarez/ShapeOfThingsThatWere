@@ -68,7 +68,8 @@
   name: Cart,
   previous: [Wheel, Wood, MOVE],
   terrains: [GRASSLAND, PLAIN],
-  effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, FOREST: -1, MOUNTAIN: -1}
+  groups: [MOVE],
+  effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, FOREST: -1, MOUNTAIN: -1, growth: 1}
 },
 {
   name: Road,
@@ -135,7 +136,7 @@
 },
 {
   name: Writing,
-  previous: [RELATION, City],
+  previous: [RELATION, City, Art],
   effect: {discovery: 1}
 },
 {
