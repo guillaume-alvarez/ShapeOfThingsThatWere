@@ -1,5 +1,11 @@
 [
 {
+  name: Cave,
+  previous: [HIGH_TERRAIN],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {militaryPower: 1, growth: 1, HILLS: 1, MOUNTAIN: 1}
+},
+{
   name: Hunt,
   previous: [Animal, Wood],
   terrains: [GRASSLAND, PLAIN, FOREST],
@@ -82,7 +88,7 @@
 },
 {
   name: House,
-  previous: [MATERIAL, Fire, Wood],
+  previous: [MATERIAL, Fire],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
   effects: {growth: 1}
 },
@@ -206,6 +212,18 @@
 {
   name: Beliefs,
   previous: [Death, Sky, Underworld],
+},
+{
+  name: Art,
+  previous: [Beliefs],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {discovery: 1}
+},
+{
+  name: "Parietal art",
+  previous: [Art, Cave],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Symbols,
