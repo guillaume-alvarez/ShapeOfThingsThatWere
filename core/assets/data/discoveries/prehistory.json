@@ -72,7 +72,7 @@
   previous: [Breeding, Grassland],
   groups: [FOOD, MOVE],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1}
+  effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
 },
 {
   name: Goat,
@@ -94,6 +94,13 @@
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 2, FOREST: -1, MOUNTAIN: -1, DESERT: -1}
+},
+{
+  name: Camel,
+  previous: [Breeding, Desert],
+  groups: [MOVE],
+  terrains: [DESERT],
+  effects: {DESERT: 5}
 },
 {
   name: Fire,
@@ -145,7 +152,7 @@
   name: Slavery,
   previous: [Crop, WEAPON],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, growth: 1, stability: -1}
 },
 {
   name: Chief,
@@ -232,13 +239,20 @@
   name: Art,
   previous: [Beliefs],
   terrains: [HILLS, MOUNTAIN],
-  effects: {discovery: 1}
+  effects: {discovery: 1, stability: 1}
 },
 {
   name: "Parietal art",
   previous: [Art, Cave],
   terrains: [HILLS, MOUNTAIN],
+  groups: [ART],
   effects: {HILLS: 1, MOUNTAIN: 1}
+},
+{
+  name: Storytelling,
+  previous: [Beliefs],
+  groups: [ART],
+  effects: {discovery: 1}
 },
 {
   name: Symbols,
@@ -255,6 +269,7 @@
 {
   name: Shamanism,
   previous: [Spirits, "Elders council"],
+  effects: {stability: 1}
 },
 {
   name: Burying,

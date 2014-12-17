@@ -144,4 +144,10 @@
   previous: [City, Writing],
   effects: {growth: 3}
 },
+{
+  name: Music,
+  previous: [River, Art],
+  groups: [ART],
+  effects: {stability: 1}
+}
 ]

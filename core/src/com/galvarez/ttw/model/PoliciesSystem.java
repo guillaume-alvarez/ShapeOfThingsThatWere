@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.min;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public final class PoliciesSystem extends EntitySystem {
     for (Entity entity : entities) {
       Policies empire = policies.get(entity);
       if (empire.stability < 100)
-        empire.stability += 1;
+        empire.stability = min(100, empire.stability + empire.stabilityGrowth);
     }
   }
 

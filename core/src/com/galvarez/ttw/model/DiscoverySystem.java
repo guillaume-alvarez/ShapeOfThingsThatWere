@@ -25,6 +25,7 @@ import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.GameMap;
@@ -67,6 +68,8 @@ public final class DiscoverySystem extends EntitySystem {
   private NotificationsSystem notifications;
 
   private ComponentMapper<Discoveries> empires;
+
+  private ComponentMapper<Policies> policies;
 
   private ComponentMapper<Army> armies;
 
@@ -194,6 +197,13 @@ public final class DiscoverySystem extends EntitySystem {
           empire.progressPerTurn -= delta;
         else
           empire.progressPerTurn += delta;
+      } else if ("stability".equalsIgnoreCase(name)) {
+        Policies empire = policies.get(entity);
+        int delta = ((Number) effect.getValue()).intValue();
+        if (revert)
+          empire.stabilityGrowth -= delta;
+        else
+          empire.stabilityGrowth += delta;
       } else {
         InfluenceSource source = getInfluence(entity);
         Terrain t = Terrain.valueOf(name);

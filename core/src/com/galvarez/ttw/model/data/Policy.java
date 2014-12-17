@@ -14,6 +14,8 @@ public enum Policy {
 
   VALUE("Our most honored value is "),
 
+  ART("Our most excellent art is "),
+
   GOVERNMENT("We are governed by ");
 
   public final String msg;

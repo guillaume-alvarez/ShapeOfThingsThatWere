@@ -14,6 +14,8 @@ public final class Policies extends Component {
   /** Stability percentage, decrease when changing policies, increase with time. */
   public int stability = 100;
 
+  public int stabilityGrowth = 1;
+
   public Policies() {
   }
 
