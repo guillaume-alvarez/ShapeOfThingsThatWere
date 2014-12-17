@@ -75,15 +75,19 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
       Map<Discovery, Item> items = new HashMap<Discovery, Item>();
       for (Discovery d : policiesSystem.getAvailablePolicies(empire, choice))
         items.put(d, new Item(d));
-      Item selected = NONE;
-      if (policies.policies.containsKey(choice)) {
-        selected = items.get(policies.policies.get(choice));
+      if (items.isEmpty()) {
+        empirePolicies.addLabel("  No policy available");
       } else {
-        items.put(NONE.discovery, NONE);
-        selected = NONE;
+        Item selected = NONE;
+        if (policies.policies.containsKey(choice)) {
+          selected = items.get(policies.policies.get(choice));
+        } else {
+          items.put(NONE.discovery, NONE);
+          selected = NONE;
+        }
+        empirePolicies.addSelectBox("  ", selected, items.values().toArray(new Item[items.size()]),
+            i -> policiesSystem.applyPolicy(empire, choice, i != NONE ? i.discovery : null));
       }
-      empirePolicies.addSelectBox("", selected, items.values().toArray(new Item[items.size()]),
-          i -> policiesSystem.applyPolicy(empire, choice, i != NONE ? i.discovery : null));
     }
     empirePolicies.addToStage(stage, 30, topMenu.getY() - 30, false);
   }
