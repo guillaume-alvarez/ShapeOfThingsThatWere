@@ -10,7 +10,6 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -53,7 +52,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       lastDiscovery.addLabel("- No last discovery -");
     } else {
       lastDiscovery.addLabel("- Last discovery (effect doubled): " + empire.last.target.name + " -");
-      lastDiscovery.addLabel("Discovered from " + discoverySystem.previousString(empire, empire.last.target));
+      lastDiscovery.addLabel("Discovered from " + discoverySystem.previousString(empire.last));
       lastDiscovery.addLabel("Effects:");
       for (Entry<String, Object> entry : empire.last.target.effects.entrySet())
         lastDiscovery.addLabel(" - " + entry.getKey() + ": " + entry.getValue());
@@ -62,21 +61,21 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
 
     discoveryChoices.clear();
     if (empire.next != null) {
-      discoveryChoices.addLabel("Progress toward new discovery from "
-          + discoverySystem.previousString(empire, empire.next.target) + ": " + empire.next.progress + "%");
+      discoveryChoices.addLabel("Progress toward new discovery from " + discoverySystem.previousString(empire.next)
+          + ": " + empire.next.progress + "%");
     } else {
-      Map<Discovery, Integer> possible = discoverySystem.possibleDiscoveries(entity, empire, 3);
+      Map<Research, Integer> possible = discoverySystem.possibleDiscoveries(entity, empire, 3);
       if (possible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
         discoveryChoices.addLabel("Choose discoveries to combine:");
-        for (Entry<Discovery, Integer> next : possible.entrySet())
+        for (Entry<Research, Integer> next : possible.entrySet())
           discoveryChoices.addButton("Combine: ",
-              discoverySystem.previousString(empire, next.getKey()) + " (~" + next.getValue() + " turns)", //
+              discoverySystem.previousString(next.getKey()) + " (~" + next.getValue() + " turns)", //
               new Runnable() {
                 @Override
                 public void run() {
-                  empire.next = new Research(next.getKey());
+                  empire.next = next.getKey();
                   resumeGame();
                 }
               }, true);

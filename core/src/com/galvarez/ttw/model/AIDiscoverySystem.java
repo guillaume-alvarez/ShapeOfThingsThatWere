@@ -10,7 +10,6 @@ import com.artemis.systems.EntityProcessingSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.model.data.Discovery;
 
 @Wire
 public final class AIDiscoverySystem extends EntityProcessingSystem {
@@ -33,9 +32,9 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   protected void process(Entity e) {
     Discoveries d = discoveries.get(e);
     if (d.next == null) {
-      Map<Discovery, Integer> possible = discoverySystem.possibleDiscoveries(e, d, 1);
+      Map<Research, Integer> possible = discoverySystem.possibleDiscoveries(e, d, 1);
       if (!possible.isEmpty())
-        d.next = new Research(possible.keySet().iterator().next());
+        d.next = possible.keySet().iterator().next();
     }
   }
 

@@ -13,9 +13,9 @@ public class Research extends Component {
 
   public int progress = 0;
 
-  public Research(Discovery target) {
-    this.previous = target.previous;
+  public Research(Discovery target,Collection<String> previous) {
     this.target = target;
+    this.previous = previous;
   }
 
   @Override

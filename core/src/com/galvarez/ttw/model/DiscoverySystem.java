@@ -1,8 +1,10 @@
 package com.galvarez.ttw.model;
 
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -126,19 +128,6 @@ public final class DiscoverySystem extends EntitySystem {
     return discovery.next.progress >= DISCOVERY_THRESHOLD;
   }
 
-  private int guessNbTurns(Discoveries discovery, Entity empire, Set<Terrain> terrains) {
-    InfluenceSource influence = getInfluence(empire);
-
-    int progressPerTurn = discovery.progressPerTurn;
-    if (terrains != null && !terrains.isEmpty()) {
-      for (MapPosition pos : influence.influencedTiles)
-        if (terrains.contains(map.getTerrainAt(pos)))
-          progressPerTurn += PROGRESS_PER_TILE;
-    }
-
-    return DISCOVERY_THRESHOLD / progressPerTurn;
-  }
-
   private InfluenceSource getInfluence(Entity empire) {
     Entity capital = capitals.get(empire).capital;
     InfluenceSource influence = influences.get(capital);
@@ -221,14 +210,39 @@ public final class DiscoverySystem extends EntitySystem {
    * Compute the 'nb' first possible discoveries for the empire, associated to
    * the expected number of turns to get them.
    */
-  public Map<Discovery, Integer> possibleDiscoveries(Entity entity, Discoveries empire, int nb) {
-    Set<String> done = empire.done.stream().map(Discovery::getName).collect(toSet());
-    empire.done.forEach(d -> done.addAll(d.groups));
+  public Map<Research, Integer> possibleDiscoveries(Entity entity, Discoveries empire, int nb) {
+    // collect current state
+    Set<String> done = new HashSet<>();
+    Map<String, List<String>> groups = new HashMap<>();
+    for (Discovery d : empire.done) {
+      done.add(d.name);
+      done.addAll(d.groups);
+      for (String g : d.groups) {
+        List<String> list = groups.get(g);
+        if (list == null)
+          groups.put(g, list = new ArrayList<>());
+        list.add(d.name);
+      }
+    }
 
-    Predicate<Discovery> canBeDiscovered = d -> !done.contains(d.name) && done.containsAll(d.previous)
-        && hasTerrain(entity, d.terrains);
-    return discoveries.values().stream().filter(canBeDiscovered).sorted((d1, d2) -> rand.nextInt(3) - 1).limit(nb)
-        .collect(toMap(d -> d, d -> guessNbTurns(empire, entity, d.terrains)));
+    // select new possible discoveries
+    Predicate<Discovery> cannotBeDiscovered = d -> done.contains(d.name) || !done.containsAll(d.previous)
+        || !hasTerrain(entity, d.terrains);
+    List<Discovery> possible = new ArrayList<>(discoveries.values());
+    possible.removeIf(cannotBeDiscovered);
+    Collections.shuffle(possible, rand);
+
+    Map<Research, Integer> res = new HashMap<>();
+    for (int i = 0; i < possible.size() && i < nb; i++) {
+      Discovery d = possible.get(i);
+      List<String> previous = new ArrayList<>(d.previous.size());
+      d.previous.forEach(p -> {
+        List<String> group = groups.get(p);
+        previous.add(group == null ? p : group.get(rand.nextInt(group.size())));
+      });
+      res.put(new Research(d, previous), guessNbTurns(empire, entity, d.terrains));
+    }
+    return res;
   }
 
   private boolean hasTerrain(Entity entity, Set<Terrain> terrains) {
@@ -243,26 +257,28 @@ public final class DiscoverySystem extends EntitySystem {
     return false;
   }
 
-  public String previousString(Discoveries empire, Discovery next) {
+  private int guessNbTurns(Discoveries discovery, Entity empire, Set<Terrain> terrains) {
+    InfluenceSource influence = getInfluence(empire);
+
+    int progressPerTurn = discovery.progressPerTurn;
+    if (terrains != null && !terrains.isEmpty()) {
+      for (MapPosition pos : influence.influencedTiles)
+        if (terrains.contains(map.getTerrainAt(pos)))
+          progressPerTurn += PROGRESS_PER_TILE;
+    }
+
+    return DISCOVERY_THRESHOLD / progressPerTurn;
+  }
+
+  public String previousString(Research next) {
     if (next.previous.isEmpty())
       return "NOTHING";
 
     StringBuilder sb = new StringBuilder();
-    for (String previous : next.previous) {
-      if (previous.matches("[A-Z]+"))
-        sb.append(getDiscoveryForGroup(empire, previous).name);
-      else
-        sb.append(previous);
-      sb.append(", ");
-    }
+    for (String previous : next.previous)
+      sb.append(previous).append(", ");
     sb.setLength(sb.length() - 2);
     return sb.toString();
   }
 
-  private Discovery getDiscoveryForGroup(Discoveries empire, String previous) {
-    for (Discovery d : empire.done)
-      if (d.groups.contains(previous))
-        return d;
-    return null;
-  }
 }
