@@ -8,6 +8,7 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiscoverySystem;
+import com.galvarez.ttw.model.Faction;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
@@ -64,18 +65,20 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       discoveryChoices.addLabel("Progress toward new discovery from " + discoverySystem.previousString(empire.next)
           + ": " + empire.next.progress + "%");
     } else {
-      Map<Research, Integer> possible = discoverySystem.possibleDiscoveries(entity, empire, 3);
+      Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(entity, empire);
       if (possible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
         discoveryChoices.addLabel("Choose discoveries to combine:");
-        for (Entry<Research, Integer> next : possible.entrySet())
-          discoveryChoices.addButton("Combine: ",
-              discoverySystem.previousString(next.getKey()) + " (~" + next.getValue() + " turns)", //
+        for (Entry<Faction, Research> next : possible.entrySet())
+          discoveryChoices.addButton(
+              next.getKey() + " faction advises: ",
+              discoverySystem.previousString(next.getValue()) + " (~"
+                  + discoverySystem.guessNbTurns(empire, entity, next.getValue().target) + " turns)", //
               new Runnable() {
                 @Override
                 public void run() {
-                  empire.next = next.getKey();
+                  empire.next = next.getValue();
                   resumeGame();
                 }
               }, true);
@@ -83,5 +86,4 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     }
     discoveryChoices.addToStage(stage, 30, lastDiscovery.getY() - 30, false);
   }
-
 }

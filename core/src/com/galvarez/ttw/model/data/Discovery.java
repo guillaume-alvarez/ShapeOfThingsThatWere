@@ -12,6 +12,9 @@ import java.util.Set;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectFloatMap;
+import com.galvarez.ttw.model.DiscoverySystem;
+import com.galvarez.ttw.model.Faction;
 import com.galvarez.ttw.model.map.Terrain;
 
 public final class Discovery {
@@ -23,6 +26,8 @@ public final class Discovery {
   public final Set<String> groups;
 
   public final Set<String> previous;
+
+  public final ObjectFloatMap<Faction> factions;
 
   /**
    * Indexed by effect name, contains the delta for the corresponding variable.
@@ -38,6 +43,8 @@ public final class Discovery {
     this.groups = set(groups);
     if (terrains != null)
       this.terrains.addAll(terrains);
+
+    factions = DiscoverySystem.getFactionsScores(this);
   }
 
   @SuppressWarnings("unchecked")

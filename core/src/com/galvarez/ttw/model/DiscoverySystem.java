@@ -1,7 +1,10 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.max;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +23,7 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
+import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
@@ -30,6 +34,7 @@ import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Discovery;
+import com.galvarez.ttw.model.data.Policy;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
@@ -58,6 +63,16 @@ public final class DiscoverySystem extends EntitySystem {
 
   /** Increase to speed progress up. */
   private static final int PROGRESS_PER_TILE = 1;
+
+  private static final String EFFECT_STABILITY = "stability";
+
+  private static final String EFFECT_DISCOVERY = "discovery";
+
+  private static final String EFFECT_GROWTH = "growth";
+
+  private static final String EFFECT_DIPLOMACY = "diplomacy";
+
+  private static final String EFFECT_MILITARY_POWER = "militaryPower";
 
   private final OverworldScreen screen;
 
@@ -139,8 +154,7 @@ public final class DiscoverySystem extends EntitySystem {
     Discovery target = next.target;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
     if (!ai.has(entity)) {
-      Condition condition = !possibleDiscoveries(entity, discovery, 1).isEmpty() ? (() -> discovery.next != null)
-          : null;
+      Condition condition = !possibleDiscoveries(entity, discovery).isEmpty() ? (() -> discovery.next != null) : null;
       notifications.addNotification(() -> screen.discoveryMenu(), condition, Type.DISCOVERY, "Discovered %s: %s",
           target, target.effects.isEmpty() ? "No effect." : target.effects.toString());
     }
@@ -161,32 +175,32 @@ public final class DiscoverySystem extends EntitySystem {
   void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
     for (Entry<String, Object> effect : discovery.effects.entrySet()) {
       String name = effect.getKey();
-      if ("militaryPower".equalsIgnoreCase(name)) {
+      if (EFFECT_MILITARY_POWER.equalsIgnoreCase(name)) {
         int delta = ((Number) effect.getValue()).intValue();
         Army army = armies.get(entity);
         if (revert)
           army.militaryPower -= delta;
         else
           army.militaryPower += delta;
-      } else if ("diplomacy".equalsIgnoreCase(name)) {
+      } else if (EFFECT_DIPLOMACY.equalsIgnoreCase(name)) {
         // cannot revert that one
         Diplomacy diplomacy = entity.getComponent(Diplomacy.class);
         diplomacy.knownStates.add(State.valueOf((String) effect.getValue()));
-      } else if ("growth".equalsIgnoreCase(name)) {
+      } else if (EFFECT_GROWTH.equalsIgnoreCase(name)) {
         InfluenceSource source = getInfluence(entity);
         int delta = ((Number) effect.getValue()).intValue();
         if (revert)
           source.growth -= delta;
         else
           source.growth += delta;
-      } else if ("discovery".equalsIgnoreCase(name)) {
+      } else if (EFFECT_DISCOVERY.equalsIgnoreCase(name)) {
         Discoveries empire = empires.get(entity);
         int delta = ((Number) effect.getValue()).intValue();
         if (revert)
           empire.progressPerTurn -= delta;
         else
           empire.progressPerTurn += delta;
-      } else if ("stability".equalsIgnoreCase(name)) {
+      } else if (EFFECT_STABILITY.equalsIgnoreCase(name)) {
         Policies empire = policies.get(entity);
         int delta = ((Number) effect.getValue()).intValue();
         if (revert)
@@ -207,10 +221,10 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   /**
-   * Compute the 'nb' first possible discoveries for the empire, associated to
-   * the expected number of turns to get them.
+   * Compute the possible discoveries for the empire, associated to the faction
+   * that recommends them.
    */
-  public Map<Research, Integer> possibleDiscoveries(Entity entity, Discoveries empire, int nb) {
+  public Map<Faction, Research> possibleDiscoveries(Entity entity, Discoveries empire) {
     // collect current state
     Set<String> done = new HashSet<>();
     Map<String, List<String>> groups = new HashMap<>();
@@ -232,15 +246,25 @@ public final class DiscoverySystem extends EntitySystem {
     possible.removeIf(cannotBeDiscovered);
     Collections.shuffle(possible, rand);
 
-    Map<Research, Integer> res = new HashMap<>();
-    for (int i = 0; i < possible.size() && i < nb; i++) {
-      Discovery d = possible.get(i);
-      List<String> previous = new ArrayList<>(d.previous.size());
-      d.previous.forEach(p -> {
-        List<String> group = groups.get(p);
-        previous.add(group == null ? p : group.get(rand.nextInt(group.size())));
-      });
-      res.put(new Research(d, previous), guessNbTurns(empire, entity, d.terrains));
+    Map<Faction, Research> res = new EnumMap<>(Faction.class);
+    for (Faction f : Faction.values()) {
+      float max = Float.NEGATIVE_INFINITY;
+      Discovery chosen = null;
+      for (Discovery d : possible) {
+        float score = d.factions.get(f, Float.NEGATIVE_INFINITY);
+        if (score > max) {
+          chosen = d;
+          max = score;
+        }
+      }
+      if (chosen != null) {
+        List<String> previous = new ArrayList<>(chosen.previous.size());
+        chosen.previous.forEach(p -> {
+          List<String> group = groups.get(p);
+          previous.add(group == null ? p : group.get(rand.nextInt(group.size())));
+        });
+        res.put(f, new Research(chosen, previous));
+      }
     }
     return res;
   }
@@ -257,9 +281,10 @@ public final class DiscoverySystem extends EntitySystem {
     return false;
   }
 
-  private int guessNbTurns(Discoveries discovery, Entity empire, Set<Terrain> terrains) {
+  public int guessNbTurns(Discoveries discovery, Entity empire, Discovery d) {
     InfluenceSource influence = getInfluence(empire);
 
+    Set<Terrain> terrains = d.terrains;
     int progressPerTurn = discovery.progressPerTurn;
     if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles)
@@ -279,6 +304,49 @@ public final class DiscoverySystem extends EntitySystem {
       sb.append(previous).append(", ");
     sb.setLength(sb.length() - 2);
     return sb.toString();
+  }
+
+  public static ObjectFloatMap<Faction> getFactionsScores(Discovery discovery) {
+    ObjectFloatMap<Faction> scores = new ObjectFloatMap<>(Faction.values().length);
+    for (Entry<String, Object> effect : discovery.effects.entrySet()) {
+      String name = effect.getKey();
+      if (EFFECT_MILITARY_POWER.equalsIgnoreCase(name)) {
+        float delta = ((Number) effect.getValue()).intValue();
+        scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
+        scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
+      } else if (EFFECT_DIPLOMACY.equalsIgnoreCase(name)) {
+        scores.getAndIncrement(Faction.MILITARY, 0, 3f);
+        scores.getAndIncrement(Faction.ECONOMIC, 0, 1f);
+        scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
+      } else if (EFFECT_GROWTH.equalsIgnoreCase(name)) {
+        float delta = ((Number) effect.getValue()).intValue();
+        scores.getAndIncrement(Faction.ECONOMIC, 0, delta * 2);
+        scores.getAndIncrement(Faction.CULTURAL, 0, delta / 2);
+      } else if (EFFECT_DISCOVERY.equalsIgnoreCase(name)) {
+        float delta = ((Number) effect.getValue()).intValue();
+        scores.getAndIncrement(Faction.CULTURAL, 0, delta * 2);
+      } else if (EFFECT_STABILITY.equalsIgnoreCase(name)) {
+        float delta = ((Number) effect.getValue()).intValue();
+        scores.getAndIncrement(Faction.MILITARY, 0, delta / 2);
+        scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
+        scores.getAndIncrement(Faction.CULTURAL, 0, delta);
+      } else {
+        float delta = ((Number) effect.getValue()).intValue();
+        scores.getAndIncrement(Faction.MILITARY, 0, max(0f, delta));
+        scores.getAndIncrement(Faction.ECONOMIC, 0, max(0f, delta / 2));
+      }
+    }
+    for (String group : discovery.groups) {
+      if (Policy.get(group) != null) {
+        scores.getAndIncrement(Faction.CULTURAL, 0, 1);
+        scores.getAndIncrement(Faction.ECONOMIC, 0, 0.5f);
+      }
+    }
+    return scores;
+  }
+
+  private static final Integer inc(int delta, Integer i) {
+    return (i != null ? i.intValue() : 0) + delta;
   }
 
 }

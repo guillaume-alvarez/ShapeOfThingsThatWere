@@ -32,9 +32,9 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   protected void process(Entity e) {
     Discoveries d = discoveries.get(e);
     if (d.next == null) {
-      Map<Research, Integer> possible = discoverySystem.possibleDiscoveries(e, d, 1);
+      Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(e, d);
       if (!possible.isEmpty())
-        d.next = possible.keySet().iterator().next();
+        d.next = possible.values().iterator().next();
     }
   }
 
