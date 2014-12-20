@@ -3,6 +3,7 @@ package com.galvarez.ttw.model;
 import static java.lang.Math.max;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -247,17 +248,26 @@ public final class DiscoverySystem extends EntitySystem {
     Collections.shuffle(possible, rand);
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
-    for (Faction f : Faction.values()) {
+    // shuffle factions list so that result changes every time
+    List<Faction> factions = Arrays.asList(Faction.values());
+    Collections.shuffle(factions, rand);
+    for (Faction f : factions) {
       float max = Float.NEGATIVE_INFINITY;
       Discovery chosen = null;
       for (Discovery d : possible) {
-        float score = d.factions.get(f, Float.NEGATIVE_INFINITY);
+        float score = d.factions.get(f, 0);
+        for (String p : d.previous) {
+          Discovery previous = discoveries.get(p);
+          if (previous != null)
+            score += previous.factions.get(f, 0);
+        }
         if (score > max) {
           chosen = d;
           max = score;
         }
       }
       if (chosen != null) {
+        possible.remove(chosen);
         List<String> previous = new ArrayList<>(chosen.previous.size());
         chosen.previous.forEach(p -> {
           List<String> group = groups.get(p);
@@ -314,6 +324,7 @@ public final class DiscoverySystem extends EntitySystem {
         float delta = ((Number) effect.getValue()).intValue();
         scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
         scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
+        scores.getAndIncrement(Faction.CULTURAL, 0, max(0, -delta));
       } else if (EFFECT_DIPLOMACY.equalsIgnoreCase(name)) {
         scores.getAndIncrement(Faction.MILITARY, 0, 3f);
         scores.getAndIncrement(Faction.ECONOMIC, 0, 1f);
@@ -342,11 +353,9 @@ public final class DiscoverySystem extends EntitySystem {
         scores.getAndIncrement(Faction.ECONOMIC, 0, 0.5f);
       }
     }
+    if (scores.size == 0)
+      scores.getAndIncrement(Faction.CULTURAL, 0, 1);
     return scores;
-  }
-
-  private static final Integer inc(int delta, Integer i) {
-    return (i != null ? i.intValue() : 0) + delta;
   }
 
 }
