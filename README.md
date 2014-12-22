@@ -24,7 +24,7 @@ Too many games produce stable and predictible situations. Stable situations are 
 
 That is not to mean anything should happen. When anything can happen you do not know what may happen and cannot take decision.
 
-Thus the game should always be moving, in short and long terme directions that are clear to the player. It should be complex enough so that the player cannot predict it and micro-manage his way to victory, but it should provide clear clues as to which direction it is heading.
+Thus the game should always be moving, in short and long term directions that are clear to the player. It should be complex enough so that the player cannot predict it and micro-manage his way to victory, but it should provide clear clues as to which direction it is heading.
 
 In few words: it must be a chaotic system, logical but impredictible.
 
