@@ -3,17 +3,21 @@ Shape Of Things That Were
 
 Open source strategy game
 
+To start the game from sources:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:run`
+
+To create an executable jar:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:dist`
+ * jar is built in directory `desktop/build/libs/`
+
 To start the game in Eclipse:
  * checkout github repository
  * execute `gradlew.bat eclipse` and import projects
  * or use Eclipse Gradle plugin to import projects
  * launch `desktop/ImagePacker.launch`
  * launch `desktop/Things That Were.launch`
-
-To create an executable jar:
- * checkout github repository
- * execute `gradlew.bat :desktop:dist`
- * jar is built in directory `desktop/build/distributions/`
 
 ## Design objectives
 
