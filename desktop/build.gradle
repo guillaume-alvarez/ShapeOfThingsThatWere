@@ -7,7 +7,12 @@ sourceSets.main.resources.srcDirs = [ "resources/" ]
 project.ext.mainClassName = "com.galvarez.ttw.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets");
 
-task run(dependsOn: classes, type: JavaExec) {
+task packImages(type: JavaExec) {
+    main = "com.galvarez.ttw.desktop.ImagePacker"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task run(type: JavaExec, dependsOn: [classes, packImages]) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -15,7 +20,7 @@ task run(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
-task dist(type: Jar, dependsOn: classes) {
+task dist(type: Jar, dependsOn: [classes, packImages]) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}

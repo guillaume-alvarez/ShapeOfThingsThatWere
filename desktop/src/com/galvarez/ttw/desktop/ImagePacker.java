@@ -18,6 +18,9 @@ public class ImagePacker {
   }
 
   public static void main(String[] args) {
+    System.out.println("Start packing textures...");
     run();
+    System.out.println("Textures packed in 'resources' directory.");
+    System.exit(0);
   }
 }
