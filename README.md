@@ -3,12 +3,17 @@ Shape Of Things That Were
 
 Open source strategy game
 
-To start game on Eclipse:
+To start the game in Eclipse:
  * checkout github repository
  * execute `gradlew.bat eclipse` and import projects
  * or use Eclipse Gradle plugin to import projects
  * launch `desktop/ImagePacker.launch`
  * launch `desktop/Things That Were.launch`
+
+To create an executable jar:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:dist`
+ * jar is built in directory `desktop/build/distributions/`
 
 ## Design objectives
 
@@ -24,7 +29,7 @@ Too many games produce stable and predictible situations. Stable situations are 
 
 That is not to mean anything should happen. When anything can happen you do not know what may happen and cannot take decision.
 
-Thus the game should always be moving, in short and long terme directions that are clear to the player. It should be complex enough so that the player cannot predict it and micro-manage his way to victory, but it should provide clear clues as to which direction it is heading.
+Thus the game should always be moving, in short and long term directions that are clear to the player. It should be complex enough so that the player cannot predict it and micro-manage his way to victory, but it should provide clear clues as to which direction it is heading.
 
 In few words: it must be a chaotic system, logical but impredictible.
 
