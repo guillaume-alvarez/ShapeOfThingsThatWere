@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -40,7 +40,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
   private final EnumMap<Type, Drawable> icons;
 
   public NotificationsSystem() {
-    Skin skin = new Skin(new FileHandle("resources/uiskin/uiskin.json"));
+    Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
     this.icons = new EnumMap<>(Type.class);
     icons.put(Type.DISCOVERY, skin.getDrawable("discovery-bulb"));

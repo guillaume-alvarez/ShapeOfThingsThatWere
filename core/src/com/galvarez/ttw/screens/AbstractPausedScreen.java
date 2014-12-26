@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -31,7 +30,7 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
     this.stage = new Stage(new ScreenViewport(), batch);
     this.renderer = new ShapeRenderer();
 
-    this.skin = new Skin(new FileHandle("resources/uiskin/uiskin.json"));
+    this.skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
   }
 
   abstract protected void initMenu();

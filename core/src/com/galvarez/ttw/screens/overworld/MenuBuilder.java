@@ -79,8 +79,7 @@ public class MenuBuilder {
     this.inputManager = inputManager;
     this.notifications = screen.notificationsSystem;
 
-    FileHandle skinFile = new FileHandle("resources/uiskin/uiskin.json");
-    skin = new Skin(skinFile);
+    skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
     turnMenu = new FramedMenu(skin, 256, 128);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);

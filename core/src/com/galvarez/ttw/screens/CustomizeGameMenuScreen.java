@@ -56,7 +56,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
     stage = new Stage(new ScreenViewport(), batch);
 
-    Skin skin = new Skin(Gdx.files.internal("resources/uiskin/uiskin.json"));
+    Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
     map = new FramedMenu(skin, 800, 160).nbColumns(2);
     empires = new FramedMenu(skin, 800, 480).nbColumns(3);
     actions = new FramedMenu(skin, 800, 160);

@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
@@ -17,7 +18,7 @@ import com.galvarez.ttw.utils.Font;
 
 public class MapHighlighter extends AbstractRenderer {
 
-  private final Texture highlight;
+  private final AtlasRegion highlight;
 
   private float t;
 
@@ -28,7 +29,8 @@ public class MapHighlighter extends AbstractRenderer {
   public MapHighlighter(OrthographicCamera camera, SpriteBatch batch) {
     super(camera, batch);
 
-    highlight = new Texture(Gdx.files.internal("textures/misc/hex_blank.png"));
+    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("textures/maptiles.atlas"), Gdx.files.internal("textures"));
+    highlight = atlas.findRegion("hex_blank");
     font = Font.IRIS_UPC.get();
     font.setColor(Color.BLACK);
 
@@ -54,7 +56,7 @@ public class MapHighlighter extends AbstractRenderer {
       if (tile.x < x0 || tile.x > x1 || tile.y < y0 || tile.y > y1)
         continue;
       FloatPair coords = MapTools.world2window(tile.x, tile.y);
-      batch.draw(highlight, coords.x - highlight.getWidth() / 2, coords.y - highlight.getHeight() / 2);
+      batch.draw(highlight, coords.x - highlight.getRegionWidth() / 2, coords.y - highlight.getRegionHeight() / 2);
 
       // then draw the remaining cost for each cell
       String msg = e.getValue();
