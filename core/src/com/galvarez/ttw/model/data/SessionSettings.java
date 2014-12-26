@@ -79,6 +79,7 @@ public final class SessionSettings implements Cloneable {
   }
 
   private static List<Culture> cultures(Json json) {
+    json.setSerializer(Culture.class, Culture.SER);
     List<Culture> cultures = new ArrayList<>();
     for (FileHandle f : files("data/cultures/", "antiquity.json"))
       cultures.addAll(Arrays.asList(json.fromJson(Culture[].class, f)));

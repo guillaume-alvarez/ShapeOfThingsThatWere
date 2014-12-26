@@ -1,20 +1,27 @@
 package com.galvarez.ttw.model.data;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
+import com.badlogic.gdx.utils.JsonValue;
+import com.galvarez.ttw.model.Faction;
 
 // TODO do not allow modification after loading
 public final class Culture {
 
-  public String name;
+  public final String name;
 
-  public Array<String> cities;
+  public final Array<String> cities;
 
-  public Culture() {
-  }
+  public final Map<Faction, Integer> ai;
 
-  public Culture(String name, Array<String> cities) {
+  public Culture(String name, Array<String> cities, Map<Faction, Integer> ai) {
     this.name = name;
     this.cities = cities;
+    this.ai = ai;
   }
 
   public String getName() {
@@ -44,4 +51,19 @@ public final class Culture {
     else
       return false;
   }
+
+  public static final ReadOnlySerializer<Culture> SER = new ReadOnlySerializer<Culture>() {
+    @SuppressWarnings({ "unchecked", "rawtypes", "unused" })
+    @Override
+    public Culture read(Json json, JsonValue data, Class type) {
+      Map<Faction, Integer> ai = new EnumMap<>(Faction.class);
+      for (JsonValue child : data.get("ai")) {
+        ai.put(Faction.valueOf(child.name), child.asInt());
+      }
+      return new Culture(data.getString("name"), //
+          json.readValue(Array.class, data.get("cities")), //
+          ai //
+      );
+    }
+  };
 }

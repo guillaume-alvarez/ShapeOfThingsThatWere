@@ -1,38 +1,47 @@
 [
 {
   name: Greek,
-  cities: [Mycenae, Athens, Sparta, Corinth]
+  cities: [Mycenae, Athens, Sparta, Corinth],
+  ai: {MILITARY: 2, ECONOMIC: 1, CULTURAL: 3}
 },
 {
   name: Minoan,
-  cities: [Knossos, Phaistos, "Kato Zakros"]
+  cities: [Knossos, Phaistos, "Kato Zakros"],
+  ai: {MILITARY: 2, ECONOMIC: 3, CULTURAL: 2}
 },
 {
   name: Roman,
-  cities: [Roma, Neapolis, Pompeii]
+  cities: [Roma, Neapolis, Pompeii],
+  ai: {MILITARY: 3, ECONOMIC: 1, CULTURAL: 2}
 },
 {
   name: Macedonian,
-  cities: [Pella, Amphipolis]
+  cities: [Pella, Amphipolis],
+  ai: {MILITARY: 3, ECONOMIC: 2, CULTURAL: 1}
 },
 {
   name: Egyptian,
-  cities: [Thebes, Memphis, Alexandria]
+  cities: [Thebes, Memphis, Alexandria],
+  ai: {MILITARY: 2, ECONOMIC: 2, CULTURAL: 2}
 },
 {
   name: Hebraic,
-  cities: [Jerusalem, Samaria]
+  cities: [Jerusalem, Samaria],
+  ai: {MILITARY: 2, ECONOMIC: 1, CULTURAL: 3}
 },
 {
   name: Sumerian,
-  cities: [Sumer, Ur]
+  cities: [Sumer, Ur],
+  ai: {MILITARY: 1, ECONOMIC: 3, CULTURAL: 2}
 },
 {
   name: Celtic,
-  cities: [Bibracte, Tolosa, Gergovia]
+  cities: [Bibracte, Tolosa, Gergovia],
+  ai: {MILITARY: 3, ECONOMIC: 2, CULTURAL: 1}
 },
 {
   name: Babylonian,
-  cities: [Babylon, Kazallu]
+  cities: [Babylon, Kazallu],
+  ai: {MILITARY: 3, ECONOMIC: 1, CULTURAL: 2}
 },
 ]
