@@ -105,7 +105,7 @@
 },
 {
   name: Stone,
-  previous: [Hills, Mountain],
+  previous: [HIGH_TERRAIN],
   groups: [MATERIAL],
   terrains: [HILLS, MOUNTAIN],
   effects: {militaryPower: 1, HILLS: 1, MOUNTAIN: 1}

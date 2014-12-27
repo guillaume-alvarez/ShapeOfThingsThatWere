@@ -104,6 +104,10 @@
   previous: [Spirits, LEADER],
 },
 {
+  name: Sanctuary,
+  previous: [Gods, House],
+},
+{
   name: Magic,
   previous: [Symbols, Beliefs],
 },

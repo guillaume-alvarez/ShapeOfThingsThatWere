@@ -123,7 +123,7 @@ public final class OverworldScreen extends AbstractScreen {
     gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
-    discoverySystem = world.setSystem(new DiscoverySystem(settings.getDiscoveries(), gameMap, this), true);
+    discoverySystem = world.setSystem(new DiscoverySystem(settings, gameMap, this), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);

@@ -232,6 +232,10 @@
   effects: {militaryPower: -1}
 },
 {
+  name: "Stone circle",
+  previous: [Sky, Stone],
+},
+{
   name: Beliefs,
   previous: [Death, Sky, Underworld],
 },

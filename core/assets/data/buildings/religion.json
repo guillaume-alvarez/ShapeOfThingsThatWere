@@ -1,0 +1,22 @@
+[
+{
+  name: "Stone circle",
+  type: religion,
+  effects: {stability: 1},
+  conditions: {terrain: HILLS},
+},
+{
+  name: Sanctuary,
+  type: religion,
+  effects: {stability: 2},
+  conditions: {power: 50},
+  previous: "Stone circle"
+},
+{
+  name: Temple,
+  type: religion,
+  effects: {stability: 3},
+  conditions: {power: 50},
+  previous: Sanctuary
+},
+]

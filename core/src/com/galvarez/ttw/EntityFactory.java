@@ -6,6 +6,7 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.ExpiringSystem.Expires;
 import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -66,7 +67,7 @@ public class EntityFactory {
     edit.add(sprite);
 
     edit.add(new MapPosition(x, y)).add(new Description("City of " + name)).add(new InfluenceSource())
-        .add(new Name(name));
+        .add(new Buildings()).add(new Name(name));
 
     return e;
   }

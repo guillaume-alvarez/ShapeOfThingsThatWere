@@ -1,0 +1,15 @@
+[
+{
+  name: Theatre,
+  type: culture,
+  effects: {stability: 1},
+  conditions: {power: 50},
+},
+{
+  name: Amphitheatre,
+  type: culture,
+  effects: {stability: 2},
+  conditions: {power: 75},
+  previous: Theatre
+},
+]
