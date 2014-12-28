@@ -3,6 +3,7 @@ package com.galvarez.ttw.screens.overworld;
 import static java.lang.Math.min;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,12 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
+import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -56,6 +59,8 @@ public class MenuBuilder {
 
   private final FramedMenu selectionMenu;
 
+  private final FramedMenu buildingsMenu;
+
   private FramedMenu actionMenu;
 
   private final World world;
@@ -83,6 +88,7 @@ public class MenuBuilder {
     turnMenu = new FramedMenu(skin, 256, 128);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
+    buildingsMenu = new FramedMenu(skin, 256, 1024);
     notifMenu = new FramedMenu(skin, 400, 512);
   }
 
@@ -228,6 +234,24 @@ public class MenuBuilder {
       actionMenu.addLabel("No possible actions!");
 
     actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+  }
+
+  public void buildBuildingsMenu(Entity e) {
+    buildingsMenu.clear();
+
+    if (e != null) {
+      Buildings buildings = e.getComponent(Buildings.class);
+      if (buildings != null) {
+        buildingsMenu.addLabel("Buildings in " + e.getComponent(Name.class));
+        if (buildings.built.isEmpty())
+          buildingsMenu.addLabel("- no buildings -");
+        else
+          for (Entry<String, Building> b : buildings.built.entrySet())
+            buildingsMenu.addLabel(" " + b.getValue().getName() + " (" + b.getKey() + ")");
+
+        buildingsMenu.addToStage(stage, stage.getWidth() - 256, stage.getHeight() - MENU_PADDING, false);
+      }
+    }
   }
 
   public void buildNotificationMenu() {

@@ -82,6 +82,7 @@ public class InputManager {
     menuBuilder.buildNotificationMenu();
     if (screen.selectedTile != null)
       menuBuilder.buildSelectionMenu(screen.selectedTile, selectedEntity);
+    menuBuilder.buildBuildingsMenu(selectedEntity);
 
     stage.setKeyboardFocus(keyboardFocus);
     stage.setScrollFocus(scrollFocus);
@@ -123,6 +124,7 @@ public class InputManager {
 
     // Put up a menu for the selected entity
     menuBuilder.buildSelectionMenu(coords, entity);
+    menuBuilder.buildBuildingsMenu(entity);
 
     if (entity != null && entity.getComponent(InfluenceSource.class) != null
     // player cannot control AI empires
