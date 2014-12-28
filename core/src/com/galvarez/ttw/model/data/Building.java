@@ -23,15 +23,24 @@ public final class Building {
 
   public final String type;
 
-  public Building(String name, String previous, String type, Map<String, Object> effects, Map<String, Object> conditions) {
+  public final int turns;
+
+  public Building(String name, String previous, String type, int turns, Map<String, Object> effects,
+      Map<String, Object> conditions) {
     this.name = name;
     this.previous = previous;
     this.type = type;
+    this.turns = turns;
     this.effects = effects;
     this.conditions = conditions;
   }
 
   public String getName() {
+    return name;
+  }
+
+  @Override
+  public String toString() {
     return name;
   }
 
@@ -42,7 +51,8 @@ public final class Building {
       return new Building( //
           data.getString("name"), //
           data.getString("previous", null), //
-          data.getString("type", null), //
+          data.getString("type"), //
+          data.getInt("turns"), //
           json.readValue(HashMap.class, data.get("effects")), //
           json.readValue(HashMap.class, data.get("conditions")) //
       );

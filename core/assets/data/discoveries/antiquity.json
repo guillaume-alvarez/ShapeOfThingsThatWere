@@ -1,5 +1,11 @@
 [
 {
+  name: Harbor,
+  previous: [Boat, Beach],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1, growth: 1}
+},
+{
   name: Sword,
   previous: [WEAPON, Bronze, Iron],
   groups: [WEAPON],

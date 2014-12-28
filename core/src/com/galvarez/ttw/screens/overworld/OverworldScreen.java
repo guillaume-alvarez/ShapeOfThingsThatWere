@@ -23,6 +23,7 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
 import com.galvarez.ttw.model.AIInfluenceSystem;
+import com.galvarez.ttw.model.BuildingsSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.InfluenceSystem;
@@ -65,6 +66,7 @@ public final class OverworldScreen extends AbstractScreen {
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
 
   private final DiscoverySystem discoverySystem;
+  private final BuildingsSystem buildingsSystem;
 
   private final PoliciesSystem policiesSystem;
 
@@ -124,6 +126,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, gameMap, this), true);
+    buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
@@ -137,6 +140,7 @@ public final class OverworldScreen extends AbstractScreen {
     world.initialize();
     empires = fillWorldWithEntities();
     discoverySystem.process();
+    buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
@@ -288,6 +292,7 @@ public final class OverworldScreen extends AbstractScreen {
     iaDiscovery.process();
     iaDiplomacy.process();
     discoverySystem.process();
+    buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
@@ -352,6 +357,11 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void policiesMenu() {
     game.setScreen(policiesScreen);
+  }
+
+  public void select(Entity e) {
+    inputManager.select(e.getComponent(MapPosition.class), e);
+    cameraMovementSystem.move(selectedTile.x, selectedTile.y);
   }
 
 }

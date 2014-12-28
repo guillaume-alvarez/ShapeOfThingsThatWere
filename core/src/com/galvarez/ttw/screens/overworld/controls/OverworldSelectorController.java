@@ -1,31 +1,19 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Entity;
-import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.galvarez.ttw.EntityFactory;
-import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
-import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 public final class OverworldSelectorController extends InputAdapter {
 
-  private static final Logger log = LoggerFactory.getLogger(OverworldSelectorController.class);
-
   private final OrthographicCamera camera;
-
-  private final World world;
 
   private final GameMap gameMap;
 
@@ -40,10 +28,9 @@ public final class OverworldSelectorController extends InputAdapter {
 
   private final MenuProcessor menuProcessor;
 
-  public OverworldSelectorController(OrthographicCamera camera, World world, GameMap gameMap, OverworldScreen screen,
+  public OverworldSelectorController(OrthographicCamera camera, GameMap gameMap, OverworldScreen screen,
       InputManager inputManager, MenuProcessor menuProcessor) {
     this.camera = camera;
-    this.world = world;
     this.gameMap = gameMap;
     this.screen = screen;
     this.inputManager = inputManager;
@@ -72,38 +59,9 @@ public final class OverworldSelectorController extends InputAdapter {
 
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
-
-      // user clicked on the map :-)
-      screen.selectedTile = coords;
-      EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f);
-
       // Check the entityID of the tile they click on
       Entity entity = gameMap.getEntityAt(coords.x, coords.y);
-      // Now select the current entity (may be null)
-      inputManager.selectedEntity = entity;
-
-      if (entity != null)
-        log.info("Selected {}: {}", coords, entity.getComponent(Description.class));
-      else
-        log.info("Selected {}: no entity", coords);
-
-      // Put up a menu for the selected entity
-      inputManager.menuBuilder.buildSelectionMenu(coords, entity);
-
-      if (entity != null && entity.getComponent(InfluenceSource.class) != null
-      // player cannot control AI empires
-          && entity.getComponent(AIControlled.class) == null) {
-        screen.highlightFlagRange(entity);
-        inputManager.prependInputSystems(inputManager.flag);
-      } else {
-        // Make sure we drop any of the highlighted tiles
-        screen.stopHighlighing();
-      }
-
-      // Need to keep the focus on the map
-      inputManager.stage.setScrollFocus(null);
-      inputManager.stage.setKeyboardFocus(null);
-
+      inputManager.select(coords, entity);
       return true;
     }
 

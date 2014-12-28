@@ -93,7 +93,7 @@ public final class SessionSettings implements Cloneable {
   private static List<Building> buildings(Json json) {
     json.setSerializer(Building.class, Building.SER);
     List<Building> buildings = new ArrayList<>();
-    for (FileHandle f : files("data/buildings/", "culture.json", "religion.json"))
+    for (FileHandle f : files("data/buildings/", "culture.json", "religion.json", "trade.json"))
       buildings.addAll(Arrays.asList(json.fromJson(Building[].class, f)));
     return buildings;
   }

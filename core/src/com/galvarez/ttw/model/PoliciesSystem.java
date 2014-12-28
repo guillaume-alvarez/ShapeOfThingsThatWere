@@ -63,11 +63,11 @@ public final class PoliciesSystem extends EntitySystem {
     Policies empire = policies.get(entity);
     Discovery old = empire.policies.put(policy, selected);
     if (old != null) {
-      discoveriesSystem.applyDiscoveryEffects(old, entity, true);
+      discoveriesSystem.applyDiscoveryEffects(old.effects, entity, true);
       empire.stability -= 20;
     }
     if (selected != null) {
-      discoveriesSystem.applyDiscoveryEffects(selected, entity, false);
+      discoveriesSystem.applyDiscoveryEffects(selected.effects, entity, false);
     }
   }
 

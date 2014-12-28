@@ -1,5 +1,8 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -9,11 +12,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
+import com.galvarez.ttw.model.map.MapPosition;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.MenuBuilder;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 public class InputManager {
+
+  private static final Logger log = LoggerFactory.getLogger(InputManager.class);
 
   final Stage stage;
 
@@ -31,9 +41,12 @@ public class InputManager {
 
   private final OverworldScreen screen;
 
+  private final World world;
+
   Entity selectedEntity;
 
   public InputManager(OrthographicCamera camera, World world, OverworldScreen screen, Stage stage, GameMap map) {
+    this.world = world;
     this.screen = screen;
     this.stage = stage;
 
@@ -41,7 +54,7 @@ public class InputManager {
 
     menuProcessor = new MenuProcessor(screen, this, stage);
 
-    select = new OverworldSelectorController(camera, world, map, screen, this, menuProcessor);
+    select = new OverworldSelectorController(camera, map, screen, this, menuProcessor);
     drag = new OverworldDragController(camera);
     flag = new OverworldFlagController(camera, screen, this);
 
@@ -93,6 +106,37 @@ public class InputManager {
   public void removeInputSystems(InputProcessor ... processors) {
     for (int i = 0; i < processors.length; i++)
       manager.removeProcessor(processors[i]);
+  }
+
+  public void select(MapPosition coords, Entity entity) {
+    // user clicked on the map :-)
+    screen.selectedTile = coords;
+    EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f);
+
+    // Now select the current entity (may be null)
+    selectedEntity = entity;
+
+    if (entity != null)
+      log.info("Selected {}: {}", coords, entity.getComponent(Description.class));
+    else
+      log.info("Selected {}: no entity", coords);
+
+    // Put up a menu for the selected entity
+    menuBuilder.buildSelectionMenu(coords, entity);
+
+    if (entity != null && entity.getComponent(InfluenceSource.class) != null
+    // player cannot control AI empires
+        && entity.getComponent(AIControlled.class) == null) {
+      screen.highlightFlagRange(entity);
+      prependInputSystems(flag);
+    } else {
+      // Make sure we drop any of the highlighted tiles
+      screen.stopHighlighing();
+    }
+
+    // Need to keep the focus on the map
+    stage.setScrollFocus(null);
+    stage.setKeyboardFocus(null);
   }
 
 }

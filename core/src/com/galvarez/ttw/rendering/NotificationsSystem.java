@@ -28,7 +28,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
   private static final Logger log = LoggerFactory.getLogger(NotificationsSystem.class);
 
   public enum Type {
-    DISCOVERY, DIPLOMACY;
+    DISCOVERY, DIPLOMACY, BUILDINGS;
   }
 
   /** Notifications registered for next turn. */
@@ -45,6 +45,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
     this.icons = new EnumMap<>(Type.class);
     icons.put(Type.DISCOVERY, skin.getDrawable("discovery-bulb"));
     icons.put(Type.DIPLOMACY, skin.getDrawable("diplomacy-handshake"));
+    icons.put(Type.BUILDINGS, skin.getDrawable("buildings-hammer"));
   }
 
   @Override

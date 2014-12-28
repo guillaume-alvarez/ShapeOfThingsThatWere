@@ -309,21 +309,21 @@ public final class DiscoverySystem extends EntitySystem {
 
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
-      applyDiscoveryEffects(discovery.last.target, entity, true);
+      applyDiscoveryEffects(discovery.last.target.effects, entity, true);
     discovery.last = next;
 
     // apply new discovery
-    applyDiscoveryEffects(target, entity, false);
+    applyDiscoveryEffects(target.effects, entity, false);
     // ... and bonus time until next discovery!
-    applyDiscoveryEffects(target, entity, false);
+    applyDiscoveryEffects(target.effects, entity, false);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  void applyDiscoveryEffects(Discovery discovery, Entity entity, boolean revert) {
-    for (Entry<String, Object> effect : discovery.effects.entrySet()) {
+  void applyDiscoveryEffects(Map<String, Object> effects, Entity empire, boolean revert) {
+    for (Entry<String, Object> effect : effects.entrySet()) {
       String name = effect.getKey();
       Effect e = EFFECTS.get(name);
-      e.apply(effect.getValue(), this, entity, revert);
+      e.apply(effect.getValue(), this, empire, revert);
     }
   }
 
