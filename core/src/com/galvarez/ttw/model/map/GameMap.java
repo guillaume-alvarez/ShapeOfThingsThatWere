@@ -2,17 +2,12 @@ package com.galvarez.ttw.model.map;
 
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.galvarez.ttw.model.data.Empire;
 
 public final class GameMap {
-
-  private static final Logger log = LoggerFactory.getLogger(GameMap.class);
 
   public final Terrain[][] map;
 

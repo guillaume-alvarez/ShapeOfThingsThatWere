@@ -8,9 +8,6 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.Gdx;
@@ -24,8 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 @Wire
 public final class NotificationsSystem extends VoidEntitySystem {
-
-  private static final Logger log = LoggerFactory.getLogger(NotificationsSystem.class);
 
   public enum Type {
     DISCOVERY, DIPLOMACY, BUILDINGS;

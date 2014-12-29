@@ -5,9 +5,6 @@ import static java.lang.Math.min;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -44,8 +41,6 @@ import com.galvarez.ttw.screens.overworld.controls.InputManager;
 import com.galvarez.ttw.screens.overworld.controls.MenuProcessor;
 
 public class MenuBuilder {
-
-  private static final Logger log = LoggerFactory.getLogger(MenuBuilder.class);
 
   private static final int MENU_PADDING = 15;
 

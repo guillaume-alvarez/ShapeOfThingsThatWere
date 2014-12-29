@@ -2,9 +2,6 @@ package com.galvarez.ttw.rendering;
 
 import static java.lang.Math.min;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -13,8 +10,6 @@ import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.utils.FloatPair;
 
 public final class CameraMovementSystem extends VoidEntitySystem {
-
-  private static final Logger log = LoggerFactory.getLogger(CameraMovementSystem.class);
 
   private float t;
 

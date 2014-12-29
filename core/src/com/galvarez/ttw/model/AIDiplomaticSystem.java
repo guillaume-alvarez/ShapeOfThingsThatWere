@@ -35,8 +35,6 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
 
   private ComponentMapper<MapPosition> positions;
 
-  private ComponentMapper<AIControlled> ai;
-
   private ComponentMapper<InfluenceSource> sources;
 
   private DiplomaticSystem diplomaticSystem;
