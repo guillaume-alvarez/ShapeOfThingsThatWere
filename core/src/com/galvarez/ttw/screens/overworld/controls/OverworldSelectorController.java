@@ -61,7 +61,7 @@ public final class OverworldSelectorController extends InputAdapter {
     if (gameMap.isOnMap(coords)) {
       // Check the entityID of the tile they click on
       Entity entity = gameMap.getEntityAt(coords.x, coords.y);
-      inputManager.select(coords, entity);
+      inputManager.select(coords, entity, true);
       return true;
     }
 

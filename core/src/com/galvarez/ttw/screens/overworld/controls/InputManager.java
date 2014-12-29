@@ -109,7 +109,7 @@ public class InputManager {
       manager.removeProcessor(processors[i]);
   }
 
-  public void select(MapPosition coords, Entity entity) {
+  public void select(MapPosition coords, Entity entity, boolean flagIfCity) {
     // user clicked on the map :-)
     screen.selectedTile = coords;
     EntityFactory.createClick(world, coords.x, coords.y, 0.1f, 4f);
@@ -126,7 +126,7 @@ public class InputManager {
     menuBuilder.buildSelectionMenu(coords, entity);
     menuBuilder.buildBuildingsMenu(entity);
 
-    if (entity != null && entity.getComponent(InfluenceSource.class) != null
+    if (flagIfCity && entity != null && entity.getComponent(InfluenceSource.class) != null
     // player cannot control AI empires
         && entity.getComponent(AIControlled.class) == null) {
       screen.highlightFlagRange(entity);

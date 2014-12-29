@@ -66,6 +66,7 @@ public final class OverworldScreen extends AbstractScreen {
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
 
   private final DiscoverySystem discoverySystem;
+
   private final BuildingsSystem buildingsSystem;
 
   private final PoliciesSystem policiesSystem;
@@ -360,7 +361,7 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   public void select(Entity e) {
-    inputManager.select(e.getComponent(MapPosition.class), e);
+    inputManager.select(e.getComponent(MapPosition.class), e, false);
     cameraMovementSystem.move(selectedTile.x, selectedTile.y);
   }
 
