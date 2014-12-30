@@ -3,22 +3,6 @@ Shape Of Things That Were
 
 Open source strategy game
 
-To start the game from sources:
- * checkout github repository
- * execute `gradlew.bat :desktop:run`
-
-To create an executable jar:
- * checkout github repository
- * execute `gradlew.bat :desktop:dist`
- * jar is built in directory `desktop/build/libs/`
-
-To start the game in Eclipse:
- * checkout github repository
- * execute `gradlew.bat eclipse` and import projects
- * or use Eclipse Gradle plugin to import projects
- * launch `desktop/ImagePacker.launch`
- * launch `desktop/Things That Were.launch`
-
 ## Design objectives
 
 The goal is to produce a strategy video game. It should emphasize macro over micro management and chaos over stability.
@@ -43,6 +27,29 @@ PRE-ALPHA.
 
  * Map display is nice.
  * Menu API is working.
- * Influence system basics are working but far to stable.
- * Diplomacy is all but a stub.
- * Discovery is all but a stub.
+ * Influence system basics are working
+ * Diplomacy is working once discoverd but quite erratic
+ * Discovery is wrking but need graphical enhancements (and more discoveries past Antiquity)
+ * Player control is still too small.
+
+## How to?
+
+The game needs [Java 8 SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html), all other dependencies can be downloaded by gradle or are embedded into the executable jar.
+
+To start the game from sources:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:run` (windows)
+ * execute `gradlew :desktop:run` (linux/cygwin)
+
+To create an executable jar:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:dist` (windows)
+ * execute `gradlew :desktop:dist` (linux/cygwin)
+ * jar is built in directory `desktop/build/libs/`
+
+To start the game in Eclipse:
+ * checkout github repository
+ * execute `gradlew.bat eclipse` and import projects (windows, for linux remove `.bat`)
+ * or use Eclipse Gradle plugin to import projects
+ * launch `desktop/ImagePacker.launch`
+ * launch `desktop/Things That Were.launch`
