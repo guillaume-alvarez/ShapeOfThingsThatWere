@@ -1,10 +1,12 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.min;
 import static java.lang.String.join;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,29 +208,35 @@ public final class DiscoverySystem extends EntitySystem {
         || !hasTerrain(entity, d.terrains);
     List<Discovery> possible = new ArrayList<>(discoveries.values());
     possible.removeIf(cannotBeDiscovered);
-    Collections.shuffle(possible, rand);
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
     // shuffle factions list so that result changes every time
     List<Faction> factions = Arrays.asList(Faction.values());
     Collections.shuffle(factions, rand);
+
     for (Faction f : factions) {
-      float max = Float.NEGATIVE_INFINITY;
-      Discovery chosen = null;
-      for (Discovery d : possible) {
-        float score = d.factions.get(f, 0);
-        for (String p : d.previous) {
-          Discovery previous = discoveries.get(p);
-          if (previous != null)
-            score += previous.factions.get(f, 0);
+      Collections.sort(possible, new Comparator<Discovery>() {
+        @Override
+        public int compare(Discovery d1, Discovery d2) {
+          float score1 = getDiscoveryScore(d1);
+          float score2 = getDiscoveryScore(d2);
+
+          // reverse order: greatest first
+          return -Float.compare(score1, score2);
         }
-        if (score > max) {
-          chosen = d;
-          max = score;
+
+        private float getDiscoveryScore(Discovery d) {
+          float score = d.factions.get(f, Float.NEGATIVE_INFINITY);
+          for (String p : d.previous) {
+            Discovery previous = discoveries.get(p);
+            if (previous != null)
+              score += previous.factions.get(f, 0);
+          }
+          return score;
         }
-      }
-      if (chosen != null) {
-        possible.remove(chosen);
+      });
+      if (!possible.isEmpty()) {
+        Discovery chosen = possible.remove(rand.nextInt(min(3, possible.size())));
         List<String> previous = new ArrayList<>(chosen.previous.size());
         chosen.previous.forEach(p -> {
           List<String> group = groups.get(p);
