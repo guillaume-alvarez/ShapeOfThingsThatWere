@@ -1,6 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.max;
 import static java.lang.String.join;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -26,14 +24,10 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.ObjectFloatMap;
-import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
-import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
-import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Discovery;
@@ -68,155 +62,6 @@ public final class DiscoverySystem extends EntitySystem {
   /** Increase to speed progress up. */
   private static final int PROGRESS_PER_TILE = 1;
 
-  private interface Effect<V> {
-
-    void apply(V value, DiscoverySystem system, Entity entity, boolean revert);
-
-    void addFactionsScores(ObjectFloatMap<Faction> scores, V value);
-
-    String toString(V value);
-
-  }
-
-  private static final Map<String, Effect<? extends Object>> EFFECTS = new HashMap<>();
-  static {
-    EFFECTS.put("stability", new Effect<Number>() {
-      @Override
-      public void apply(Number value, DiscoverySystem system, Entity entity, boolean revert) {
-        Policies empire = system.policies.get(entity);
-        if (revert)
-          empire.stabilityGrowth -= value.intValue();
-        else
-          empire.stabilityGrowth += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.MILITARY, 0, delta / 2);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "stability: " + value;
-      }
-    });
-    EFFECTS.put("discovery", new Effect<Number>() {
-      @Override
-      public void apply(Number value, DiscoverySystem system, Entity entity, boolean revert) {
-        Discoveries empire = system.empires.get(entity);
-        if (revert)
-          empire.progressPerTurn -= value.intValue();
-        else
-          empire.progressPerTurn += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta * 2);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "discovery: " + value;
-      }
-    });
-    EFFECTS.put("growth", new Effect<Number>() {
-      @Override
-      public void apply(Number value, DiscoverySystem system, Entity entity, boolean revert) {
-        InfluenceSource source = system.getInfluence(entity);
-        if (revert)
-          source.growth -= value.intValue();
-        else
-          source.growth += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta * 2);
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta / 2);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "growth: " + value;
-      }
-    });
-    EFFECTS.put("diplomacy", new Effect<String>() {
-      @Override
-      public void apply(String value, DiscoverySystem system, Entity entity, boolean revert) {
-        // cannot revert that one
-        Diplomacy diplomacy = entity.getComponent(Diplomacy.class);
-        diplomacy.knownStates.add(State.valueOf(value));
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, String value) {
-        scores.getAndIncrement(Faction.MILITARY, 0, 3f);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, 1f);
-        scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
-      }
-
-      @Override
-      public String toString(String value) {
-        return "diplomacy: " + value;
-      }
-    });
-    EFFECTS.put("militaryPower", new Effect<Number>() {
-      @Override
-      public void apply(Number value, DiscoverySystem system, Entity entity, boolean revert) {
-        Army army = system.armies.get(entity);
-        if (revert)
-          army.militaryPower -= value.intValue();
-        else
-          army.militaryPower += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
-        scores.getAndIncrement(Faction.CULTURAL, 0, max(0, -delta));
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "militaryPower: " + value;
-      }
-    });
-
-    for (Terrain t : Terrain.values())
-      EFFECTS.put(t.name(), new Effect<Number>() {
-        @Override
-        public void apply(Number value, DiscoverySystem system, Entity entity, boolean revert) {
-          InfluenceSource source = system.getInfluence(entity);
-          int delta = value.intValue();
-          Integer current = source.modifiers.terrainBonus.get(t);
-          if (revert)
-            source.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
-          else
-            source.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
-        }
-
-        @Override
-        public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-          float delta = value.intValue();
-          scores.getAndIncrement(Faction.MILITARY, 0, max(0f, delta));
-          scores.getAndIncrement(Faction.ECONOMIC, 0, max(0f, delta / 2));
-        }
-
-        @Override
-        public String toString(Number value) {
-          return t.getDesc() + ": " + value;
-        }
-      });
-  }
-
   private final OverworldScreen screen;
 
   private final Map<String, Discovery> discoveries;
@@ -229,11 +74,9 @@ public final class DiscoverySystem extends EntitySystem {
 
   private NotificationsSystem notifications;
 
+  private EffectsSystem effects;
+
   private ComponentMapper<Discoveries> empires;
-
-  private ComponentMapper<Policies> policies;
-
-  private ComponentMapper<Army> armies;
 
   private ComponentMapper<Capital> capitals;
 
@@ -248,6 +91,27 @@ public final class DiscoverySystem extends EntitySystem {
     this.buildings = s.getBuildings();
     this.map = map;
     this.screen = screen;
+  }
+
+  @Override
+  protected void initialize() {
+    super.initialize();
+
+    for (Discovery d : discoveries.values())
+      d.factions = getFactionsScores(d);
+  }
+
+  private ObjectFloatMap<Faction> getFactionsScores(Discovery discovery) {
+    ObjectFloatMap<Faction> scores = effects.getFactionsScores(discovery.effects);
+    for (String group : discovery.groups)
+      if (Policy.get(group) != null) {
+        for (Faction f : Faction.values())
+          scores.put(f, scores.get(f, 0f) * 0.5f);
+        scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
+      }
+    if (scores.size == 0)
+      scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
+    return scores;
   }
 
   @Override
@@ -309,22 +173,13 @@ public final class DiscoverySystem extends EntitySystem {
 
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
-      applyDiscoveryEffects(discovery.last.target.effects, entity, true);
+      effects.apply(discovery.last.target.effects, entity, true);
     discovery.last = next;
 
     // apply new discovery
-    applyDiscoveryEffects(target.effects, entity, false);
+    effects.apply(target.effects, entity, false);
     // ... and bonus time until next discovery!
-    applyDiscoveryEffects(target.effects, entity, false);
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  void applyDiscoveryEffects(Map<String, Object> effects, Entity empire, boolean revert) {
-    for (Entry<String, Object> effect : effects.entrySet()) {
-      String name = effect.getKey();
-      Effect e = EFFECTS.get(name);
-      e.apply(effect.getValue(), this, empire, revert);
-    }
+    effects.apply(target.effects, entity, false);
   }
 
   /**
@@ -422,36 +277,11 @@ public final class DiscoverySystem extends EntitySystem {
     return sb.toString();
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   public List<String> effectsStrings(Discovery d) {
-    List<String> list = new ArrayList<>();
-    for (Entry<String, Object> effect : d.effects.entrySet()) {
-      String name = effect.getKey();
-      Effect e = EFFECTS.get(name);
-      list.add(e.toString(effect.getValue()));
-    }
+    List<String> list = effects.toString(d.effects);
     if (buildings.containsKey(d.name))
       list.add("building: " + d.name);
     return list;
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static ObjectFloatMap<Faction> getFactionsScores(Discovery discovery) {
-    ObjectFloatMap<Faction> scores = new ObjectFloatMap<>(Faction.values().length);
-    for (Entry<String, Object> effect : discovery.effects.entrySet()) {
-      String name = effect.getKey();
-      Effect e = EFFECTS.get(name);
-      e.addFactionsScores(scores, effect.getValue());
-    }
-    for (String group : discovery.groups) {
-      if (Policy.get(group) != null) {
-        scores.getAndIncrement(Faction.CULTURAL, 0, 1);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, 0.5f);
-      }
-    }
-    if (scores.size == 0)
-      scores.getAndIncrement(Faction.CULTURAL, 0, 1);
-    return scores;
   }
 
 }

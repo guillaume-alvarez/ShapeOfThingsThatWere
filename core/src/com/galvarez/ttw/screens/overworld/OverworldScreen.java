@@ -26,6 +26,7 @@ import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.BuildingsSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
+import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.components.AIControlled;
@@ -64,6 +65,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final InfluenceRenderSystem influenceRenderSystem;
 
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
+
+  private final EffectsSystem effectsSystem;
 
   private final DiscoverySystem discoverySystem;
 
@@ -126,6 +129,7 @@ public final class OverworldScreen extends AbstractScreen {
     gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
+    effectsSystem = world.setSystem(new EffectsSystem(), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, gameMap, this), true);
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
@@ -165,7 +169,7 @@ public final class OverworldScreen extends AbstractScreen {
     pauseScreen = new PauseMenuScreen(game, world, batch, this, settings);
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
-    policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, discoverySystem);
+    policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem);
   }
 
   @Override

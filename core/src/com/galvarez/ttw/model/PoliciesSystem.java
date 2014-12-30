@@ -31,6 +31,8 @@ import com.galvarez.ttw.model.data.Policy;
 @Wire
 public final class PoliciesSystem extends EntitySystem {
 
+  private static final int STABILITY_LOSS_WHEN_SWITCHING = 20;
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(PoliciesSystem.class);
 
@@ -38,7 +40,7 @@ public final class PoliciesSystem extends EntitySystem {
 
   private ComponentMapper<Discoveries> discoveries;
 
-  private DiscoverySystem discoveriesSystem;
+  private EffectsSystem effects;
 
   @SuppressWarnings("unchecked")
   public PoliciesSystem() {
@@ -63,11 +65,11 @@ public final class PoliciesSystem extends EntitySystem {
     Policies empire = policies.get(entity);
     Discovery old = empire.policies.put(policy, selected);
     if (old != null) {
-      discoveriesSystem.applyDiscoveryEffects(old.effects, entity, true);
-      empire.stability -= 20;
+      effects.apply(old.effects, entity, true);
+      empire.stability -= STABILITY_LOSS_WHEN_SWITCHING;
     }
     if (selected != null) {
-      discoveriesSystem.applyDiscoveryEffects(selected.effects, entity, false);
+      effects.apply(selected.effects, entity, false);
     }
   }
 

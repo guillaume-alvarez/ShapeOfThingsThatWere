@@ -10,7 +10,7 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
-import com.galvarez.ttw.model.DiscoverySystem;
+import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Discovery;
@@ -34,13 +34,13 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
 
   private final Entity empire;
 
-  private final DiscoverySystem discoverySystem;
+  private final EffectsSystem effects;
 
   public PoliciesMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      Entity empire, PoliciesSystem policiesSystem, DiscoverySystem discoverySystem) {
+      Entity empire, PoliciesSystem policiesSystem, EffectsSystem effects) {
     super(game, world, batch, gameScreen);
     this.empire = empire;
-    this.discoverySystem = discoverySystem;
+    this.effects = effects;
     this.policies = empire.getComponent(Policies.class);
     this.policiesSystem = policiesSystem;
 
@@ -61,7 +61,7 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
       if (discovery.effects.isEmpty())
         return discovery.name + " (no effect)";
       else
-        return discovery.name + " (" + join(", ", discoverySystem.effectsStrings(discovery) + ")");
+        return discovery.name + " (" + join(", ", effects.toString(discovery.effects)) + ")";
     }
 
   }

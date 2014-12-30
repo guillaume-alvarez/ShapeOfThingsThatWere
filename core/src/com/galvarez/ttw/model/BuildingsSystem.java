@@ -41,7 +41,7 @@ public final class BuildingsSystem extends EntitySystem {
 
   private NotificationsSystem notifications;
 
-  private DiscoverySystem discoverySystem;
+  private EffectsSystem effects;
 
   private final Map<String, Building> buildings;
 
@@ -71,8 +71,8 @@ public final class BuildingsSystem extends EntitySystem {
         Building newBuilding = city.construction;
         Building oldBuilding = city.built.put(newBuilding.type, newBuilding);
         if (oldBuilding != null)
-          discoverySystem.applyDiscoveryEffects(oldBuilding.effects, sources.get(e).empire, true);
-        discoverySystem.applyDiscoveryEffects(newBuilding.effects, sources.get(e).empire, false);
+          effects.apply(oldBuilding.effects, sources.get(e).empire, true);
+        effects.apply(newBuilding.effects, sources.get(e).empire, false);
         city.construction = null;
         city.constructionTurns = 0;
         log.info("{} built {}", names.get(e), newBuilding);
