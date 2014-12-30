@@ -100,7 +100,7 @@
   previous: [Breeding, Desert],
   groups: [MOVE],
   terrains: [DESERT],
-  effects: {DESERT: 5}
+  effects: {DESERT: 5, militaryPower: 1}
 },
 {
   name: Fire,
