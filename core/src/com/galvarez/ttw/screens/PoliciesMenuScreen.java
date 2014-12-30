@@ -58,10 +58,9 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
 
     @Override
     public String toString() {
-      if (discovery.effects.isEmpty())
-        return discovery.name + " (no effect)";
-      else
-        return discovery.name + " (" + join(", ", effects.toString(discovery.effects)) + ")";
+      return discovery.name + " ("
+          + (discovery.effects.isEmpty() ? "" : join(", ", effects.toString(discovery.effects)))//
+          + ")";
     }
 
   }
