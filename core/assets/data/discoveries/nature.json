@@ -132,7 +132,8 @@
 {
   name: Beach,
   previous: [Sea],
-  terrains: [SHALLOW_WATER]
+  terrains: [SHALLOW_WATER],
+  effects: {SHALLOW_WATER: 1}
 },
 {
   name: Crustaceans,
