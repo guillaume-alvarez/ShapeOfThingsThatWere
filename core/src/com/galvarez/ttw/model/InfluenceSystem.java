@@ -172,7 +172,7 @@ public final class InfluenceSystem extends EntitySystem {
     for (IntIntMap.Entry e : tile.getDelta()) {
       if (e.value != 0) {
         InfluenceSource source = sources.get(world.getEntity(e.key));
-        EntityFactory.createInfluenceLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
+        EntityFactory.createFadingTileLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
             empires.get(source.empire).color, x, y);
       }
     }

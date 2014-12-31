@@ -84,7 +84,7 @@ public class EntityFactory {
     return e;
   }
 
-  public static Entity createInfluenceLabel(World world, String label, Color color, float x, float y) {
+  public static Entity createFadingTileLabel(World world, String label, Color color, float x, float y) {
     Entity e = world.createEntity();
     EntityEdit edit = e.edit();
 

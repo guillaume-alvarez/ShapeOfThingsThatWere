@@ -12,11 +12,14 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
+import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Discovery;
+import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -38,6 +41,12 @@ public final class BuildingsSystem extends EntitySystem {
   private ComponentMapper<Discoveries> discoveries;
 
   private ComponentMapper<InfluenceSource> sources;
+
+  private ComponentMapper<Empire> empires;
+
+  private ComponentMapper<AIControlled> ai;
+
+  private ComponentMapper<MapPosition> positions;
 
   private NotificationsSystem notifications;
 
@@ -70,14 +79,19 @@ public final class BuildingsSystem extends EntitySystem {
       } else if (++city.constructionTurns >= city.construction.turns) {
         Building newBuilding = city.construction;
         Building oldBuilding = city.built.put(newBuilding.type, newBuilding);
+        InfluenceSource source = sources.get(e);
         if (oldBuilding != null)
-          effects.apply(oldBuilding.effects, sources.get(e).empire, true);
-        effects.apply(newBuilding.effects, sources.get(e).empire, false);
+          effects.apply(oldBuilding.effects, source.empire, true);
+        effects.apply(newBuilding.effects, source.empire, false);
         city.construction = null;
         city.constructionTurns = 0;
         log.info("{} built {}", names.get(e), newBuilding);
-        notifications.addNotification(() -> screen.select(e), null, Type.BUILDINGS, "Built %s in %s.", newBuilding,
-            names.get(e));
+        MapPosition pos = positions.get(e);
+        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(source.empire).color, pos.x,
+            pos.y);
+        if (!ai.has(e))
+          notifications.addNotification(() -> screen.select(e), null, Type.BUILDINGS, "Built %s in %s.", newBuilding,
+              names.get(e));
       }
     }
   }
