@@ -1,7 +1,7 @@
 [
 {
   name: Hunt,
-  previous: [Animal, Wood],
+  previous: [Animal],
   terrains: [GRASSLAND, PLAIN, FOREST],
   effects: {militaryPower: 1, growth: 1}
 },
@@ -109,9 +109,21 @@
   effects: {militaryPower: 1, growth: 1, FOREST: 1}
 },
 {
+  name: Metallurgy,
+  previous: [METAL, Fire],
+  terrains: [FOREST, HILLS],
+  effects: {militaryPower: 1, growth: 1}
+},
+{
   name: House,
   previous: [MATERIAL, Fire],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
+  effects: {growth: 1}
+},
+{
+  name: Forge,
+  previous: [Metallurgy, House],
+  terrains: [FOREST, HILLS],
   effects: {growth: 1}
 },
 {

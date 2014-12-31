@@ -7,15 +7,15 @@
 },
 {
   name: Sword,
-  previous: [WEAPON, Bronze, Iron],
+  previous: [Metallurgy, Knife],
   groups: [WEAPON],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 2}
 },
 {
   name: Lance,
-  previous: [WEAPON, Bronze, Iron],
+  previous: [Metallurgy, Stick],
   groups: [WEAPON],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 2}
 },
 {
   name: City,
