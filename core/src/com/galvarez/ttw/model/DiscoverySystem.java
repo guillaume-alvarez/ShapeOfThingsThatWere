@@ -4,7 +4,6 @@ import static java.lang.Math.min;
 import static java.lang.String.join;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -210,11 +209,7 @@ public final class DiscoverySystem extends EntitySystem {
     possible.removeIf(cannotBeDiscovered);
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
-    // shuffle factions list so that result changes every time
-    List<Faction> factions = Arrays.asList(Faction.values());
-    Collections.shuffle(factions, rand);
-
-    for (Faction f : factions) {
+    for (Faction f : Faction.values()) {
       Collections.sort(possible, new Comparator<Discovery>() {
         @Override
         public int compare(Discovery d1, Discovery d2) {
