@@ -37,6 +37,151 @@ public final class EffectsSystem extends VoidEntitySystem {
 
   private ComponentMapper<InfluenceSource> influences;
 
+  private final class TerrainEffect implements Effect<Number> {
+    private final Terrain terrain;
+
+    public TerrainEffect(Terrain t) {
+      this.terrain = t;
+    }
+
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      InfluenceSource source = getInfluence(empire);
+      int delta = value.intValue();
+      Integer current = source.modifiers.terrainBonus.get(terrain);
+      if (revert)
+        source.modifiers.terrainBonus.put(terrain, current == null ? 0 : current - delta);
+      else
+        source.modifiers.terrainBonus.put(terrain, current == null ? delta : current + delta);
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.MILITARY, 0, max(0f, delta));
+      scores.getAndIncrement(Faction.ECONOMIC, 0, max(0f, delta / 2));
+    }
+
+    @Override
+    public String toString(Number value) {
+      return terrain.getDesc() + ": " + value;
+    }
+  }
+
+  private final class StabilityEffect implements Effect<Number> {
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      Policies p = policies.get(empire);
+      if (revert)
+        p.stabilityGrowth -= value.intValue();
+      else
+        p.stabilityGrowth += value.intValue();
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.MILITARY, 0, delta / 2);
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
+      scores.getAndIncrement(Faction.CULTURAL, 0, delta);
+    }
+
+    @Override
+    public String toString(Number value) {
+      return "stability: " + value;
+    }
+  }
+
+  private final class MilitaryEffect implements Effect<Number> {
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      Army army = armies.get(empire);
+      if (revert)
+        army.militaryPower -= value.intValue();
+      else
+        army.militaryPower += value.intValue();
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
+      scores.getAndIncrement(Faction.CULTURAL, 0, max(0, -delta));
+    }
+
+    @Override
+    public String toString(Number value) {
+      return "militaryPower: " + value;
+    }
+  }
+
+  private final class DiplomacyEffect implements Effect<String> {
+    @Override
+    public void apply(String value, Entity empire, boolean revert) {
+      // cannot revert that one
+      Diplomacy diplomacy = diplomacies.get(empire);
+      diplomacy.knownStates.add(State.valueOf(value));
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, String value) {
+      scores.getAndIncrement(Faction.MILITARY, 0, 3f);
+      scores.getAndIncrement(Faction.ECONOMIC, 0, 1f);
+      scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
+    }
+
+    @Override
+    public String toString(String value) {
+      return "diplomacy: " + value;
+    }
+  }
+
+  private final class DiscoveryEffect implements Effect<Number> {
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      Discoveries d = discoveries.get(empire);
+      if (revert)
+        d.progressPerTurn -= value.intValue();
+      else
+        d.progressPerTurn += value.intValue();
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.CULTURAL, 0, delta * 2);
+    }
+
+    @Override
+    public String toString(Number value) {
+      return "discovery: " + value;
+    }
+  }
+
+  private final class GrowthEffect implements Effect<Number> {
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      InfluenceSource source = getInfluence(empire);
+      if (revert)
+        source.growth -= value.intValue();
+      else
+        source.growth += value.intValue();
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta * 2);
+      scores.getAndIncrement(Faction.CULTURAL, 0, delta / 2);
+    }
+
+    @Override
+    public String toString(Number value) {
+      return "growth: " + value;
+    }
+  }
+
   private interface Effect<V> {
 
     void apply(V value, Entity empire, boolean revert);
@@ -49,141 +194,14 @@ public final class EffectsSystem extends VoidEntitySystem {
 
   private final Map<String, Effect<?>> effects = new HashMap<>();
   {
-    effects.put("stability", new Effect<Number>() {
-      @Override
-      public void apply(Number value, Entity empire, boolean revert) {
-        Policies p = policies.get(empire);
-        if (revert)
-          p.stabilityGrowth -= value.intValue();
-        else
-          p.stabilityGrowth += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.MILITARY, 0, delta / 2);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "stability: " + value;
-      }
-    });
-    effects.put("discovery", new Effect<Number>() {
-      @Override
-      public void apply(Number value, Entity empire, boolean revert) {
-        Discoveries d = discoveries.get(empire);
-        if (revert)
-          d.progressPerTurn -= value.intValue();
-        else
-          d.progressPerTurn += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta * 2);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "discovery: " + value;
-      }
-    });
-    effects.put("growth", new Effect<Number>() {
-      @Override
-      public void apply(Number value, Entity empire, boolean revert) {
-        InfluenceSource source = getInfluence(empire);
-        if (revert)
-          source.growth -= value.intValue();
-        else
-          source.growth += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta * 2);
-        scores.getAndIncrement(Faction.CULTURAL, 0, delta / 2);
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "growth: " + value;
-      }
-    });
-    effects.put("diplomacy", new Effect<String>() {
-      @Override
-      public void apply(String value, Entity empire, boolean revert) {
-        // cannot revert that one
-        Diplomacy diplomacy = diplomacies.get(empire);
-        diplomacy.knownStates.add(State.valueOf(value));
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, String value) {
-        scores.getAndIncrement(Faction.MILITARY, 0, 3f);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, 1f);
-        scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
-      }
-
-      @Override
-      public String toString(String value) {
-        return "diplomacy: " + value;
-      }
-    });
-    effects.put("militaryPower", new Effect<Number>() {
-      @Override
-      public void apply(Number value, Entity empire, boolean revert) {
-        Army army = armies.get(empire);
-        if (revert)
-          army.militaryPower -= value.intValue();
-        else
-          army.militaryPower += value.intValue();
-      }
-
-      @Override
-      public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-        float delta = value.intValue();
-        scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
-        scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
-        scores.getAndIncrement(Faction.CULTURAL, 0, max(0, -delta));
-      }
-
-      @Override
-      public String toString(Number value) {
-        return "militaryPower: " + value;
-      }
-    });
+    effects.put("stability", new StabilityEffect());
+    effects.put("discovery", new DiscoveryEffect());
+    effects.put("growth", new GrowthEffect());
+    effects.put("diplomacy", new DiplomacyEffect());
+    effects.put("militaryPower", new MilitaryEffect());
 
     for (Terrain t : Terrain.values())
-      effects.put(t.name(), new Effect<Number>() {
-        @Override
-        public void apply(Number value, Entity empire, boolean revert) {
-          InfluenceSource source = getInfluence(empire);
-          int delta = value.intValue();
-          Integer current = source.modifiers.terrainBonus.get(t);
-          if (revert)
-            source.modifiers.terrainBonus.put(t, current == null ? 0 : current - delta);
-          else
-            source.modifiers.terrainBonus.put(t, current == null ? delta : current + delta);
-        }
-
-        @Override
-        public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
-          float delta = value.intValue();
-          scores.getAndIncrement(Faction.MILITARY, 0, max(0f, delta));
-          scores.getAndIncrement(Faction.ECONOMIC, 0, max(0f, delta / 2));
-        }
-
-        @Override
-        public String toString(Number value) {
-          return t.getDesc() + ": " + value;
-        }
-      });
+      effects.put(t.name(), new TerrainEffect(t));
   }
 
   public EffectsSystem() {
