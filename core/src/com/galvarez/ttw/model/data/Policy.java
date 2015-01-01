@@ -16,7 +16,9 @@ public enum Policy {
 
   ART("Our most excellent art is "),
 
-  GOVERNMENT("We are governed by ");
+  GOVERNMENT("We are governed by "),
+
+  JOBS("Our people are mostly ");
 
   public final String msg;
 

@@ -31,6 +31,12 @@
   effects: {diplomacy: WAR, militaryPower: 3}
 },
 {
+  name: Soldier,
+  previous: [War, Familly],
+  groups: [JOBS],
+  effects: {growth: -1, militaryPower: 3}
+},
+{
   name: "Scorched earth",
   previous: [War, Fire, Crop],
   terrains: [GRASSLAND, PLAIN],
@@ -47,6 +53,12 @@
   previous: [City, Road],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
   effects: {growth: 2, discovery: 1}
+},
+{
+  name: Merchant,
+  previous: [Trade, LUXURY],
+  groups: [JOBS],
+  effects: {growth: 2, militaryPower: -2}
 },
 {
   name: Money,

@@ -127,6 +127,13 @@
   effects: {growth: 1}
 },
 {
+  name: Craftman,
+  previous: [Forge, MATERIAL],
+  terrains: [GRASSLAND, PLAIN],
+  groups: [JOBS],
+  effects: {growth: 1}
+},
+{
   name: Family,
   previous: [House],
   groups: [VALUE],
@@ -142,6 +149,13 @@
   previous: [Village, Agriculture],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
+},
+{
+  name: Peasant,
+  previous: [Crop, Familly],
+  terrains: [GRASSLAND, PLAIN],
+  groups: [JOBS],
+  effects: {growth: 1, GRASSLAND: 1, PLAIN: 1, militaryPower: 1}
 },
 {
   name: "Slash-and-burn cultivation",
@@ -161,8 +175,9 @@
   groups: [VALUE]
 },
 {
-  name: Slavery,
+  name: Slave,
   previous: [Crop, WEAPON],
+  groups: [JOBS],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 1, growth: 1, stability: -1}
 },

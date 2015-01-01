@@ -36,6 +36,18 @@
   previous: [City, Liberty]
 },
 {
+  name: Artist,
+  previous: [Art, Citizens],
+  groups: [JOBS],
+  effects: {stability: 2, militaryPower: -2}
+},
+{
+  name: Erudite,
+  previous: [Writing, Citizens],
+  groups: [JOBS],
+  effects: {discovery: 2, growth: 1, militaryPower: -2}
+},
+{
   name: Tyranny,
   previous: [King, War],
   groups: [GOVERNMENT],
