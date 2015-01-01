@@ -1,7 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.max;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,8 +56,8 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
       float delta = value.intValue();
-      scores.getAndIncrement(Faction.MILITARY, 0, max(0f, delta));
-      scores.getAndIncrement(Faction.ECONOMIC, 0, max(0f, delta / 2));
+      scores.getAndIncrement(Faction.MILITARY, 0, delta / 2f);
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
     }
 
     @Override
@@ -81,8 +79,7 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
       float delta = value.intValue();
-      scores.getAndIncrement(Faction.MILITARY, 0, delta / 2);
-      scores.getAndIncrement(Faction.ECONOMIC, 0, delta);
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2f);
       scores.getAndIncrement(Faction.CULTURAL, 0, delta);
     }
 
@@ -105,9 +102,8 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
       float delta = value.intValue();
-      scores.getAndIncrement(Faction.MILITARY, 0, delta * 2);
-      scores.getAndIncrement(Faction.ECONOMIC, 0, delta / 2);
-      scores.getAndIncrement(Faction.CULTURAL, 0, max(0, -delta));
+      scores.getAndIncrement(Faction.MILITARY, 0, delta * 2f);
+      scores.getAndIncrement(Faction.CULTURAL, 0, -delta);
     }
 
     @Override
