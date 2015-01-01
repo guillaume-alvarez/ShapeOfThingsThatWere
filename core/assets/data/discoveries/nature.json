@@ -99,7 +99,7 @@
 },
 {
   name: Dirt,
-  previous: [Hills, Desert],
+  previous: [Hill, Desert],
   groups: [MATERIAL],
   terrains: [HILLS, DESERT]
 },
@@ -112,7 +112,7 @@
 },
 {
   name: Clay,
-  previous: [Hills, River],
+  previous: [Hill, River],
   groups: [MATERIAL],
   terrains: [PLAIN, HILLS],
   effects: {growth: 1}

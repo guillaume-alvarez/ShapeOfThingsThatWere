@@ -152,7 +152,7 @@
 },
 {
   name: Peasant,
-  previous: [Crop, Familly],
+  previous: [Crop, Family],
   terrains: [GRASSLAND, PLAIN],
   groups: [JOBS],
   effects: {growth: 1, GRASSLAND: 1, PLAIN: 1, militaryPower: 1}
@@ -195,35 +195,35 @@
 },
 {
   name: Wheat,
-  previous: [Agriculture, Plain],
+  previous: [Agriculture, Grassland],
   groups: [CEREAL],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Oat,
-  previous: [Agriculture, Plain],
+  previous: [Agriculture, Grassland],
   groups: [CEREAL],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Rye,
-  previous: [Agriculture, Plain],
+  previous: [Agriculture, Grassland],
   groups: [CEREAL],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Rice,
-  previous: [Agriculture, Plain],
+  previous: [Agriculture, Grassland],
   groups: [CEREAL],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Trail,
-  previous: [Forest, Plain, Animal],
+  previous: [Forest, Grassland, Animal],
   terrains: [GRASSLAND, FOREST],
   effects: {FOREST: 1, MOUNTAIN: 1}
 },
@@ -299,7 +299,7 @@
 },
 {
   name: Shamanism,
-  previous: [Spirits, "Elders council"],
+  previous: [Spirits, "Elders Council"],
   effects: {stability: 1}
 },
 {
