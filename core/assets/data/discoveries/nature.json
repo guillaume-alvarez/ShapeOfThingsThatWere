@@ -137,7 +137,7 @@
 },
 {
   name: Crustaceans,
-  previous: [Beach, SHALLOW_WATER],
+  previous: [Beach, Animal],
   terrains: [SHALLOW_WATER],
   groups: [FOOD],
   effects: {growth: 1, SHALLOW_WATER: 1}
