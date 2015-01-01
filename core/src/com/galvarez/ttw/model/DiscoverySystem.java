@@ -98,8 +98,18 @@ public final class DiscoverySystem extends EntitySystem {
   protected void initialize() {
     super.initialize();
 
+    Set<String> groups = new HashSet<>();
     for (Discovery d : discoveries.values())
+      groups.addAll(d.groups);
+
+    for (Discovery d : discoveries.values()) {
       d.factions = getFactionsScores(d);
+
+      for (String previous : d.previous) {
+        if (!discoveries.containsKey(previous) && !groups.contains(previous))
+          log.warn("Cannot find previous {} for discovery {}", previous, d);
+      }
+    }
   }
 
   private ObjectFloatMap<Faction> getFactionsScores(Discovery discovery) {
