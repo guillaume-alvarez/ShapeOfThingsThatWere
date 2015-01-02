@@ -54,8 +54,8 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
         }
       }
       if (prefered != null) {
-        log.info("{} follows {} advice to investigate {}", e.getComponent(Name.class), prefered.getKey(),
-            prefered.getValue().target);
+        log.info("{} follows {} advice to investigate {} from {}", e.getComponent(Name.class), prefered.getKey(),
+            prefered.getValue().target, prefered.getValue().previous);
         d.next = prefered.getValue();
       }
     }
