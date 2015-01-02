@@ -98,10 +98,11 @@ public final class DiscoverySystem extends EntitySystem {
   protected void initialize() {
     super.initialize();
 
+    // check previous exist
+    // set factions scores
     Set<String> groups = new HashSet<>();
     for (Discovery d : discoveries.values())
       groups.addAll(d.groups);
-
     for (Discovery d : discoveries.values()) {
       d.factions = getFactionsScores(d);
 
@@ -109,6 +110,14 @@ public final class DiscoverySystem extends EntitySystem {
         if (!discoveries.containsKey(previous) && !groups.contains(previous))
           log.warn("Cannot find previous {} for discovery {}", previous, d);
       }
+    }
+
+    // check buildings discovery and previous type
+    for (Building b : buildings.values()) {
+      if (!discoveries.containsKey(b.getName()))
+        log.warn("Cannot find discovery {} for building {}", b.getName(), b);
+      if (b.previous != null && !buildings.containsKey(b.previous))
+        log.warn("Cannot find previous {} for building {}", b.previous, b);
     }
   }
 
