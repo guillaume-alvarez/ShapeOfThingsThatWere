@@ -130,8 +130,9 @@ public final class DiplomaticSystem extends EntitySystem {
           it.remove();
           targetDiplo.proposals.remove(entity);
           // prevent changing state for a few turns
-          diplo.lastChange.put(target, Integer.valueOf(screen.turnNumber));
-          targetDiplo.lastChange.put(entity, Integer.valueOf(screen.turnNumber));
+          Integer turn = Integer.valueOf(screen.getTurnNumber());
+          diplo.lastChange.put(target, turn);
+          targetDiplo.lastChange.put(entity, turn);
           log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
               target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
           if (!ai.has(entity))

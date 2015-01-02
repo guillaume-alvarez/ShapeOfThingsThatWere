@@ -56,8 +56,6 @@ public final class OverworldScreen extends AbstractScreen {
 
   private static final Logger log = LoggerFactory.getLogger(OverworldScreen.class);
 
-  public int turnNumber = 0;
-
   public final GameMap gameMap;
 
   private final SpriteRenderSystem spriteRenderSystem;
@@ -102,6 +100,8 @@ public final class OverworldScreen extends AbstractScreen {
   public final CameraMovementSystem cameraMovementSystem;
 
   private boolean firstShow = true;
+
+  private int turnNumber = 0;
 
   public MapPosition selectedTile;
 
@@ -333,6 +333,14 @@ public final class OverworldScreen extends AbstractScreen {
 
   public Map<MapPosition, String> getHighlightedTiles() {
     return highlightedTiles;
+  }
+
+  public int getTurnNumber() {
+    return turnNumber;
+  }
+
+  public int getCurrentYear() {
+    return turnNumber - 4000;
   }
 
   public boolean canFinishTurn() {
