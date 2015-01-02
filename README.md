@@ -28,8 +28,8 @@ PRE-ALPHA.
  * Map display is nice.
  * Menu API is working.
  * Influence system basics are working
- * Diplomacy is working once discoverd but quite erratic
- * Discovery is wrking but need graphical enhancements (and more discoveries past Antiquity)
+ * Diplomacy is working once discovered but quite erratic with AI empires
+ * Discovery is working but need graphical enhancements (and more discoveries past Antiquity)
  * Player control is still too small.
 
 ## How to?
