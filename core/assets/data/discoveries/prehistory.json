@@ -109,6 +109,10 @@
   effects: {militaryPower: 1, growth: 1, FOREST: 1}
 },
 {
+  name: Pottery,
+  previous: [Fire, Clay],
+},
+{
   name: Metallurgy,
   previous: [METAL, Fire],
   terrains: [FOREST, HILLS],

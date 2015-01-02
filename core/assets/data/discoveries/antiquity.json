@@ -108,6 +108,16 @@
   effects: {PLAIN: 1, GRASSLAND: 1, FOREST: -1, MOUNTAIN: -1}
 },
 {
+  name: Irrigation,
+  previous: [Crop, River],
+  effects: {growth: 1}
+},
+{
+  name: Granary,
+  previous: [Pottery, House, CEREAL],
+  effects: {growth: 1}
+},
+{
   name: "Grain Mill",
   previous: [Stone, CEREAL, Wheel],
   effects: {growth: 1}
