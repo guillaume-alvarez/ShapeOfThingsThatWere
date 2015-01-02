@@ -55,10 +55,22 @@
   effects: {growth: 2, discovery: 1}
 },
 {
+  name: Market,
+  previous: [Trade, FOOD],
+  terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
+  effects: {growth: 2, discovery: 1}
+},
+{
   name: Merchant,
   previous: [Trade, LUXURY],
   groups: [JOBS],
   effects: {growth: 2, militaryPower: -2}
+},
+{
+  name: Caravanserai,
+  previous: [Merchant, Camel],
+  terrains: [DESERT],
+  effects: {DESERT: 1, growth: 1}
 },
 {
   name: Money,
