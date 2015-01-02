@@ -6,6 +6,11 @@
   effects: {growth: 1}
 },
 {
+  name: Temple,
+  previous: [Sanctuary, "City Council"],
+  effects: {stability: 1}
+},
+{
   name: Election,
   previous: ["City Council"],
 },
