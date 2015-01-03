@@ -62,7 +62,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return terrain.getDesc() + ": " + value;
+      int i = value.intValue();
+      return terrain.getDesc() + (i > 0 ? ": +" : " ") + i;
     }
   }
 
@@ -85,7 +86,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "stability: " + value;
+      return "stability: +" + value.intValue();
     }
   }
 
@@ -108,7 +109,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "militaryPower: " + value;
+      return "military power: +" + value.intValue();
     }
   }
 
@@ -151,7 +152,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "discovery: " + value;
+      return "discovery: +" + value.intValue();
     }
   }
 
@@ -174,7 +175,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "growth: " + value;
+      return "growth: +" + value.intValue();
     }
   }
 
