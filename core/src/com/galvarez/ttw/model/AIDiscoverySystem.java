@@ -1,6 +1,8 @@
 package com.galvarez.ttw.model;
 
+import java.util.EnumSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +14,12 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.EntityProcessingSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Culture;
+import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.data.Empire;
+import com.galvarez.ttw.model.data.Policy;
 import com.galvarez.ttw.rendering.components.Name;
 
 @Wire
@@ -23,6 +28,8 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   private static final Logger log = LoggerFactory.getLogger(AIDiscoverySystem.class);
 
   private ComponentMapper<Discoveries> discoveries;
+
+  private ComponentMapper<Policies> policies;
 
   private ComponentMapper<Empire> empires;
 
@@ -58,6 +65,53 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
             prefered.getValue().target, prefered.getValue().previous);
         d.next = prefered.getValue();
       }
+      Set<Policy> newPolicies;
+      if (d.last != null && (newPolicies = getPolicies(d.last.target)) != null) {
+        Policies empirePolicies = policies.get(e);
+        for (Policy p : newPolicies) {
+          Discovery newD = d.last.target;
+          Discovery oldD = empirePolicies.policies.get(p);
+          float oldScore = policyScore(oldD, culture);
+          float newScore = policyScore(newD, culture);
+          if (newScore > oldScore) {
+            log.info("{} replaced policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
+                oldScore, newD, newScore);
+            empirePolicies.policies.put(p, newD);
+          } else
+            log.info("{} did not replace policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
+                oldScore, newD, newScore);
+        }
+      }
     }
+  }
+
+  private static float policyScore(Discovery d, Culture culture) {
+    if (d == null)
+      return 0f;
+    float score = 0f;
+    for (Faction f : Faction.values())
+      score += d.factions.get(f, 0f) * culture.ai.get(f).floatValue();
+    return score;
+  }
+
+  private Set<Policy> getPolicies(Discovery d) {
+    Set<Policy> set = null;
+    for (String group : d.groups) {
+      Policy p = Policy.get(group);
+      if (p != null) {
+        if (set == null)
+          set = EnumSet.of(p);
+        else
+          set.add(p);
+      }
+    }
+    return set;
+  }
+
+  private boolean hasPolicy(Discovery d) {
+    for (String group : d.groups)
+      if (Policy.get(group) != null)
+        return true;
+    return false;
   }
 }
