@@ -119,6 +119,12 @@
   effects: {militaryPower: 1, growth: 1}
 },
 {
+  name: Bronze,
+  previous: [Copper, Tin, Metallurgy],
+  groups: [METAL],
+  effects: {militaryPower: 2}
+},
+{
   name: House,
   previous: [MATERIAL, Fire],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
