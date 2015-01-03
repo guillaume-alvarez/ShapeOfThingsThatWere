@@ -1,47 +1,42 @@
 [
 {
   name: Greek,
-  cities: [Mycenae, Athens, Sparta, Corinth],
+  cities: [Mycenae, Athens, Sparta, Corinth, Argos, Thebes, Chalcis, Messene, Eretria, Larissa],
   ai: {MILITARY: 2, ECONOMIC: 1, CULTURAL: 3}
 },
 {
   name: Minoan,
-  cities: [Knossos, Phaistos, "Kato Zakros"],
-  ai: {MILITARY: 2, ECONOMIC: 3, CULTURAL: 2}
+  cities: [Knossos, Phaistos, "Kato Zakros", Gournia, Myrtos, "Nirou Khani"],
+  ai: {MILITARY: 1, ECONOMIC: 3, CULTURAL: 2}
 },
 {
   name: Roman,
-  cities: [Roma, Neapolis, Pompeii],
+  cities: [Roma, Neapolis, Pompeii, Capua, Herculaneum, Ostia, Cremona, Gaeta],
   ai: {MILITARY: 3, ECONOMIC: 1, CULTURAL: 2}
 },
 {
-  name: Macedonian,
-  cities: [Pella, Amphipolis],
-  ai: {MILITARY: 3, ECONOMIC: 2, CULTURAL: 1}
+  name: Etruscan,
+  cities: [Veia, Velzna, Chaire, Velch, Tarchuna, Pupluna, Aritim, Clevsin, Curtun, Perusna, Varluna, Velathri],
+  ai: {MILITARY: 1, ECONOMIC: 3, CULTURAL: 2}
 },
 {
   name: Egyptian,
-  cities: [Thebes, Memphis, Alexandria],
+  cities: [Thebes, Memphis, Busiris, Sais, Tanis, Giza, Heliopolis, Amarna, Hierakonpolis],
   ai: {MILITARY: 2, ECONOMIC: 2, CULTURAL: 2}
 },
 {
   name: Hebraic,
-  cities: [Jerusalem, Samaria],
+  cities: [Jerusalem, Samaria, Hebron, Safred, Tiberias, Jericho, Amam, Ashkelon, Shiloh, Jezreel, Etam, Gath],
   ai: {MILITARY: 2, ECONOMIC: 1, CULTURAL: 3}
 },
 {
   name: Sumerian,
-  cities: [Sumer, Ur],
+  cities: [Uruk, Kish, Ur, Nippur, Lagash, Girsu, Umma, Hamazi, Adab, Mari, Akshak, Akkad, Isin, Eridu, "Bad-tibira", Larsa, Sippar, Shuruppak, Babylon],
   ai: {MILITARY: 1, ECONOMIC: 3, CULTURAL: 2}
 },
 {
   name: Celtic,
-  cities: [Bibracte, Tolosa, Gergovia],
+  cities: [Bibracte, Tolosa, Gergovia, Lugdun, Virodunon, Windobona, Brigantium, Briva, Catu, Diwoduro, Eburovicensis, Noviiomagh, Mogunt],
   ai: {MILITARY: 3, ECONOMIC: 2, CULTURAL: 1}
-},
-{
-  name: Babylonian,
-  cities: [Babylon, Kazallu],
-  ai: {MILITARY: 3, ECONOMIC: 1, CULTURAL: 2}
 },
 ]
