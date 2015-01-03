@@ -109,7 +109,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "military power: +" + value.intValue();
+      int i = value.intValue();
+      return (i > 0 ? "military power: +" : "military power: ") + i;
     }
   }
 
