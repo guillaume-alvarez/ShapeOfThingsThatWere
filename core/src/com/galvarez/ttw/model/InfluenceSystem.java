@@ -73,7 +73,6 @@ public final class InfluenceSystem extends EntitySystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
-  // TODO apply diplomacy effects to influence propagation
   private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<Army> armies;
