@@ -38,8 +38,8 @@ public final class GameMap {
 
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        posByCoord[x][y] = new MapPosition(x, y);
-        influenceByCoord[x][y] = new Influence(map[x][y]);
+        MapPosition pos = posByCoord[x][y] = new MapPosition(x, y);
+        influenceByCoord[x][y] = new Influence(pos, map[x][y]);
         pixmap.setColor(map[x][y].getColor());
         pixmap.drawPixel(x, y);
       }
