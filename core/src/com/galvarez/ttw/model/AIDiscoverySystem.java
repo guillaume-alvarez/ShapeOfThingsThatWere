@@ -94,7 +94,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
     return score;
   }
 
-  private Set<Policy> getPolicies(Discovery d) {
+  private static Set<Policy> getPolicies(Discovery d) {
     Set<Policy> set = null;
     for (String group : d.groups) {
       Policy p = Policy.get(group);
@@ -106,12 +106,5 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
       }
     }
     return set;
-  }
-
-  private boolean hasPolicy(Discovery d) {
-    for (String group : d.groups)
-      if (Policy.get(group) != null)
-        return true;
-    return false;
   }
 }
