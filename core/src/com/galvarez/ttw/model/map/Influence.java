@@ -21,9 +21,9 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
 
   private int mainInfluenceSource = -1;
 
-  private final MapPosition position;
+  public final MapPosition position;
 
-  public Influence(MapPosition position,Terrain terrain) {
+  public Influence(MapPosition position, Terrain terrain) {
     this.position = position;
     this.terrain = terrain;
   }
