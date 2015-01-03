@@ -86,7 +86,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "stability: +" + value.intValue();
+      int i = value.intValue();
+      return (i > 0 ? "stability: +" : "stability: ") + i;
     }
   }
 
