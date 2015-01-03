@@ -28,7 +28,7 @@
   previous: [City, WEAPON],
   terrains: [GRASSLAND, PLAIN],
   groups: [RELATION],
-  effects: {diplomacy: WAR, militaryPower: 3}
+  effects: {diplomacy: WAR, militaryPower: 3, stability: -2}
 },
 {
   name: Soldier,
@@ -40,7 +40,7 @@
   name: "Scorched earth",
   previous: [War, Fire, Crop],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2, growth: -1}
+  effects: {militaryPower: 2, growth: -2}
 },
 {
   name: Treaty,
