@@ -9,23 +9,23 @@ import com.badlogic.gdx.graphics.Color;
  */
 public enum Terrain {
 
-  DEEP_WATER("deep water", Color.NAVY, 50),
+  DEEP_WATER("deep water", Color.NAVY, 50, false),
 
-  SHALLOW_WATER("shallow water", Color.BLUE, 30),
+  SHALLOW_WATER("shallow water", Color.BLUE, 30, false),
 
-  DESERT("desert", Color.YELLOW, 50),
+  DESERT("desert", Color.YELLOW, 50, false),
 
-  PLAIN("plain", Color.GREEN, 10),
+  PLAIN("plain", Color.GREEN, 10, true),
 
-  GRASSLAND("grassland", new Color(0, 0.5f, 0, 1), 15),
+  GRASSLAND("grassland", new Color(0, 0.5f, 0, 1), 15, true),
 
-  FOREST("forest", Color.OLIVE, 30),
+  FOREST("forest", Color.OLIVE, 30, false),
 
-  HILLS("hills", Color.ORANGE, 30),
+  HILLS("hills", Color.ORANGE, 30, true),
 
-  MOUNTAIN("mountain", Color.MAROON, 50),
+  MOUNTAIN("mountain", Color.MAROON, 50, false),
 
-  ARCTIC("arctic", Color.WHITE, 100);
+  ARCTIC("arctic", Color.WHITE, 100, false);
 
   private final Color color;
 
@@ -33,10 +33,13 @@ public enum Terrain {
 
   private final String desc;
 
-  private Terrain(String desc, Color color, int moveCost) {
+  private final boolean canStart;
+
+  private Terrain(String desc, Color color, int moveCost, boolean canStart) {
     this.desc = desc;
     this.moveCost = moveCost;
     this.color = color;
+    this.canStart = canStart;
   }
 
   public Color getColor() {
@@ -45,6 +48,10 @@ public enum Terrain {
 
   public boolean moveBlock() {
     return false;
+  }
+
+  public boolean canStart() {
+    return canStart;
   }
 
   public int moveCost() {

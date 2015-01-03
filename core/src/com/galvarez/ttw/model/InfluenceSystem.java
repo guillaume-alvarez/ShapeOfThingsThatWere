@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -24,12 +26,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
+import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.InfluenceSource.Modifiers;
+import com.galvarez.ttw.model.components.Policies;
+import com.galvarez.ttw.model.data.Culture;
 import com.galvarez.ttw.model.data.Empire;
+import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -71,6 +77,8 @@ public final class InfluenceSystem extends EntitySystem {
 
   private ComponentMapper<Empire> empires;
 
+  private ComponentMapper<Policies> policies;
+
   private ComponentMapper<InfluenceSource> sources;
 
   private ComponentMapper<Diplomacy> relations;
@@ -83,10 +91,15 @@ public final class InfluenceSystem extends EntitySystem {
 
   private final GameMap map;
 
+  private final SessionSettings settings;
+
+  private final Random rand = new Random();
+
   @SuppressWarnings("unchecked")
-  public InfluenceSystem(GameMap gameMap) {
+  public InfluenceSystem(GameMap gameMap, SessionSettings settings) {
     super(Aspect.getAspectForAll(InfluenceSource.class));
     this.map = gameMap;
+    this.settings = settings;
   }
 
   @Override
@@ -109,7 +122,7 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   @Override
-  protected void processEntities(ImmutableBag<Entity> entities) {
+  protected void processEntities(ImmutableBag<Entity> cities) {
     // must apply each step to all sources to have a consistent behavior
 
     // first apply delta from previous turn and display it
@@ -120,14 +133,14 @@ public final class InfluenceSystem extends EntitySystem {
     }
 
     // and update source power
-    for (Entity e : entities) {
-      updateInfluencedTiles(e);
-      accumulatePower(e);
+    for (Entity city : cities) {
+      updateInfluencedTiles(city);
+      accumulatePower(city);
     }
 
     // then compute the delta for every entity and tile
-    for (Entity e : entities) {
-      InfluenceSource source = sources.get(e);
+    for (Entity city : cities) {
+      InfluenceSource source = sources.get(city);
       Entity empire = source.empire;
 
       IntIntMap armyInfluenceOn = new IntIntMap();
@@ -136,10 +149,15 @@ public final class InfluenceSystem extends EntitySystem {
       for (Entity enemy : diplo.getEmpires(State.WAR))
         armyInfluenceOn.put(enemy.getId(), armyPower - armies.get(enemy).militaryPower);
 
-      if (!checkInfluencedByOther(source, e)) {
-        addDistanceDelta(source, e, armyInfluenceOn);
-        addFlagDelta(source, e);
+      if (!checkInfluencedByOther(source, city)) {
+        addDistanceDelta(source, city, armyInfluenceOn);
+        addFlagDelta(source, city);
       }
+    }
+
+    for (Entity city : cities) {
+      InfluenceSource source = sources.get(city);
+      checkRevolt(city, source, source.empire);
     }
   }
 
@@ -260,6 +278,58 @@ public final class InfluenceSystem extends EntitySystem {
       source.powerAdvancement = 0;
       source.power++;
     }
+  }
+
+  private void checkRevolt(Entity city, InfluenceSource source, Entity empire) {
+    Policies empirePolicies = policies.get(empire);
+    int stability = empirePolicies.stability;
+    if (stability < 100 && rand.nextInt(100) >= stability) {
+      // revolt happens, select the tile!
+      Optional<Influence> tile = source.influencedTiles
+          .stream()
+          .filter(p -> map.getTerrainAt(p).canStart())
+          .filter(p -> !map.isOnMapBorder(p))
+          .filter(p -> map.getEntityAt(p.x, p.y) == null)
+          .filter(p -> isAtCityBorder(city, p))
+          .map(p -> map.getInfluenceAt(p))
+          .min(
+              (i1, i2) -> Integer.compare(i1.getInfluence(city) + i1.getDelta(city) * 2,
+                  i2.getInfluence(city) + i2.getDelta(city) * 2));
+      if (tile.isPresent()) {
+        Influence inf = tile.get();
+        Entity mainInfluence = world.getEntity(inf.getMainInfluenceSource());
+        Culture culture = empires.get(sources.get(mainInfluence).empire).culture;
+        Empire data = new Empire(settings.guessColor(), culture, true);
+        settings.empires.add(data);
+        Entity revoltCity = EntityFactory
+            .createCity(world, inf.position.x, inf.position.y, culture.newCityName(), data)//
+            .edit().add(new AIControlled()).getEntity();
+        Entity revoltEmpire = EntityFactory.createEmpire(world, revoltCity, data)//
+            .edit().add(new AIControlled()).getEntity();
+        inf.setInfluence(revoltCity,
+            inf.getInfluence(mainInfluence) + inf.getDelta(mainInfluence) + inf.terrain.moveCost() + 1);
+        inf.addInfluenceDelta(revoltCity, 100 - stability);
+        log.info("Created revolting city {} for empire {}", revoltCity.getComponent(Name.class),
+            revoltEmpire.getComponent(Name.class));
+        // reset stability to avoid popping revolts in loop
+        empirePolicies.stability = 100;
+      } else
+        log.warn("Found no tile to revolt for {} with stability at {}%", city.getComponent(Name.class), stability);
+    }
+  }
+
+  private boolean isAtCityBorder(Entity city, MapPosition pos) {
+    for (Border b : Border.values()) {
+      MapPosition neighbor = MapTools.getNeighbor(b, pos.x, pos.y);
+      // don't accept tiles on map border
+      if (!map.isOnMap(neighbor))
+        return false;
+
+      // accept if different overlord
+      if (!map.getInfluenceAt(neighbor).isMainInfluencer(city))
+        return true;
+    }
+    return false;
   }
 
   public int getRequiredPowerAdvancement(InfluenceSource source) {

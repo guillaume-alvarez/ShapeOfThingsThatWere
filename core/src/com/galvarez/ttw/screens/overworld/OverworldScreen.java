@@ -37,7 +37,6 @@ import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
-import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
@@ -134,7 +133,7 @@ public final class OverworldScreen extends AbstractScreen {
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
-    influenceSystem = world.setSystem(new InfluenceSystem(gameMap), true);
+    influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
@@ -258,7 +257,7 @@ public final class OverworldScreen extends AbstractScreen {
     do {
       x = MathUtils.random(MapTools.width() - 4) + 2;
       y = MathUtils.random(MapTools.height() - 4) + 2;
-    } while ((gameMap.map[x][y] != Terrain.PLAIN && gameMap.map[x][y] != Terrain.GRASSLAND)
+    } while (!gameMap.getTerrainAt(x, y).canStart()
     // avoid having two cities on the same tile
         || gameMap.getEntityAt(x, y) != null
         // or on neighbor tiles
@@ -301,6 +300,10 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
+    
+    world.setDelta(0);
+    world.process();
+    
     influenceRenderSystem.preprocess();
     notificationsSystem.process();
     turnNumber++;

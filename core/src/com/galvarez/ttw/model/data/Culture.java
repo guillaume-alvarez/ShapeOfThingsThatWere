@@ -33,7 +33,7 @@ public final class Culture {
     return name;
   }
 
-  String newCityName() {
+  public String newCityName() {
     return cities.removeIndex(0);
   }
 

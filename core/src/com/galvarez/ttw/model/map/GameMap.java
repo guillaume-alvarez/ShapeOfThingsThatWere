@@ -50,7 +50,7 @@ public final class GameMap {
   }
 
   public Entity getEntityAt(int x, int y) {
-    if (x < 0 || x > entityByCoord.length - 1 || y < 0 || y > entityByCoord[0].length - 1)
+    if (x < 0 || x >= entityByCoord.length || y < 0 || y >= entityByCoord[0].length)
       return null;
     return entityByCoord[x][y];
   }
@@ -77,6 +77,10 @@ public final class GameMap {
 
   public boolean isOnMap(MapPosition p) {
     return isOnMap(p.x, p.y);
+  }
+
+  public boolean isOnMapBorder(MapPosition p) {
+    return p.x == 0 || p.x == posByCoord.length - 1 || p.y == 0 || p.y == posByCoord[0].length - 1;
   }
 
   private boolean isOnMap(int x, int y) {
