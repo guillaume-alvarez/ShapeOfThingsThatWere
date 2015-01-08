@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public final class NotificationsSystem extends VoidEntitySystem {
 
   public enum Type {
-    DISCOVERY, DIPLOMACY, BUILDINGS;
+    DISCOVERY, DIPLOMACY, BUILDINGS, REVOLT;
   }
 
   /** Notifications registered for next turn. */
@@ -41,6 +41,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
     icons.put(Type.DISCOVERY, skin.getDrawable("discovery-bulb"));
     icons.put(Type.DIPLOMACY, skin.getDrawable("diplomacy-handshake"));
     icons.put(Type.BUILDINGS, skin.getDrawable("buildings-hammer"));
+    icons.put(Type.REVOLT, skin.getDrawable("revolt-clenched-fist"));
   }
 
   @Override

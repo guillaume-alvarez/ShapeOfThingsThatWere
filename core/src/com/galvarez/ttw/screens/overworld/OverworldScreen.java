@@ -133,7 +133,7 @@ public final class OverworldScreen extends AbstractScreen {
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
-    influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings), true);
+    influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings, this), true);
     iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
@@ -300,10 +300,10 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
-    
+
     world.setDelta(0);
     world.process();
-    
+
     influenceRenderSystem.preprocess();
     notificationsSystem.process();
     turnNumber++;

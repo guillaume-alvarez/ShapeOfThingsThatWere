@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Integer.compare;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -41,7 +42,10 @@ import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.MapTools.Border;
+import com.galvarez.ttw.rendering.NotificationsSystem;
+import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Name;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * This classes computes the influence from the different sources (i.e. cities)
@@ -89,17 +93,24 @@ public final class InfluenceSystem extends EntitySystem {
 
   private ComponentMapper<Capital> capitals;
 
+  private ComponentMapper<AIControlled> ai;
+
+  private NotificationsSystem notifications;
+
   private final GameMap map;
 
   private final SessionSettings settings;
 
   private final Random rand = new Random();
 
+  private final OverworldScreen screen;
+
   @SuppressWarnings("unchecked")
-  public InfluenceSystem(GameMap gameMap, SessionSettings settings) {
+  public InfluenceSystem(GameMap gameMap, SessionSettings settings, OverworldScreen screen) {
     super(Aspect.getAspectForAll(InfluenceSource.class));
     this.map = gameMap;
     this.settings = settings;
+    this.screen = screen;
   }
 
   @Override
@@ -287,13 +298,11 @@ public final class InfluenceSystem extends EntitySystem {
       // revolt happens, select the tile!
       Optional<Influence> tile = source.influencedTiles
           .stream()
-          .filter(p -> map.getTerrainAt(p).canStart())
-          .filter(p -> !map.isOnMapBorder(p))
-          .filter(p -> map.getEntityAt(p.x, p.y) == null)
-          .filter(p -> isAtCityBorder(city, p))
+          .filter(p -> map.getTerrainAt(p).canStart() && !map.isOnMapBorder(p)//
+              && map.getEntityAt(p.x, p.y) == null && isAtCityBorder(city, p))
           .map(p -> map.getInfluenceAt(p))
           .min(
-              (i1, i2) -> Integer.compare(i1.getInfluence(city) + i1.getDelta(city) * 2,
+              (i1, i2) -> compare(i1.getInfluence(city) + i1.getDelta(city) * 2,
                   i2.getInfluence(city) + i2.getDelta(city) * 2));
       if (tile.isPresent()) {
         Influence inf = tile.get();
@@ -311,6 +320,9 @@ public final class InfluenceSystem extends EntitySystem {
         inf.addInfluenceDelta(revoltCity, 100 - stability);
         log.info("Created revolting city {} for empire {}", revoltCity.getComponent(Name.class),
             revoltEmpire.getComponent(Name.class));
+        if (!ai.has(city))
+          notifications.addNotification(() -> screen.select(revoltCity), null, Type.REVOLT,
+              "City of %s revolted from %s!", revoltCity.getComponent(Name.class), city.getComponent(Name.class));
         // reset stability to avoid popping revolts in loop
         empirePolicies.stability = 100;
       } else
