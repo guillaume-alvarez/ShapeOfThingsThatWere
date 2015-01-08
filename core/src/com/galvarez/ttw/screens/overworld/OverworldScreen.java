@@ -71,9 +71,9 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final PoliciesSystem policiesSystem;
 
-  final DiplomaticSystem diplomaticSystem;
+  private final DiplomaticSystem diplomaticSystem;
 
-  final InfluenceSystem influenceSystem;
+  private final InfluenceSystem influenceSystem;
 
   private final AIInfluenceSystem iaInfluence;
 
@@ -96,7 +96,7 @@ public final class OverworldScreen extends AbstractScreen {
   /** Stage to display the HUD. */
   private final Stage stage;
 
-  public final CameraMovementSystem cameraMovementSystem;
+  private final CameraMovementSystem cameraMovementSystem;
 
   private boolean firstShow = true;
 
@@ -112,7 +112,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final PoliciesMenuScreen policiesScreen;
 
-  public final NotificationsSystem notificationsSystem;
+  private final NotificationsSystem notificationsSystem;
 
   public Entity player;
 
@@ -121,7 +121,7 @@ public final class OverworldScreen extends AbstractScreen {
   public OverworldScreen(ThingsThatWereGame game, SpriteBatch batch, World world, SessionSettings settings) {
     super(game, world, batch);
 
-    cameraMovementSystem = new CameraMovementSystem(camera);
+    cameraMovementSystem = world.setSystem(new CameraMovementSystem(camera));
 
     stage = new Stage(new ScreenViewport(), new SpriteBatch());
 
@@ -139,7 +139,7 @@ public final class OverworldScreen extends AbstractScreen {
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
-    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
+    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch));
 
     world.initialize();
     empires = fillWorldWithEntities();
@@ -200,12 +200,8 @@ public final class OverworldScreen extends AbstractScreen {
       mapHighlighter.render(highlightedTiles);
     }
 
-    fadingMessageRenderSystem.process();
-
     stage.act(delta);
     stage.draw();
-
-    cameraMovementSystem.process(delta);
   }
 
   @Override

@@ -53,11 +53,12 @@ public final class CameraMovementSystem extends VoidEntitySystem {
     active = true;
   }
 
-  public void process(float delta) {
+  @Override
+  protected void processSystem() {
     if (!active)
       return;
 
-    t = min(t + delta, T);
+    t = min(t + world.getDelta(), T);
     // TODO increase speed from start, reduce when approaching end, a curb like:
     // http://1.bp.blogspot.com/-ps-1MpKTgbc/UXTSzyOGhKI/AAAAAAAAAGc/9Kef1mD-Plk/s1600/camera.png
     // maybe use this formula:
@@ -67,10 +68,5 @@ public final class CameraMovementSystem extends VoidEntitySystem {
     if (t >= T) {
       active = false;
     }
-  }
-
-  @Override
-  protected void processSystem() {
-    throw new IllegalStateException("Must call process(float)");
   }
 }

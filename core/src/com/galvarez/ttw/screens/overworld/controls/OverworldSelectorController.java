@@ -1,6 +1,7 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
 import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
+import com.galvarez.ttw.rendering.CameraMovementSystem;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 public final class OverworldSelectorController extends InputAdapter {
@@ -28,20 +30,23 @@ public final class OverworldSelectorController extends InputAdapter {
 
   private final MenuProcessor menuProcessor;
 
-  public OverworldSelectorController(OrthographicCamera camera, GameMap gameMap, OverworldScreen screen,
+  private final CameraMovementSystem cameraSystem;
+
+  public OverworldSelectorController(OrthographicCamera camera, World world, GameMap gameMap, OverworldScreen screen,
       InputManager inputManager, MenuProcessor menuProcessor) {
     this.camera = camera;
     this.gameMap = gameMap;
     this.screen = screen;
     this.inputManager = inputManager;
     this.menuProcessor = menuProcessor;
+    this.cameraSystem = world.getSystem(CameraMovementSystem.class);
   }
 
   @Override
   public boolean keyDown(int keycode) {
     if (keycode == Keys.SPACE) {
       if (screen.selectedTile != null)
-        screen.cameraMovementSystem.move(screen.selectedTile.x, screen.selectedTile.y);
+        cameraSystem.move(screen.selectedTile.x, screen.selectedTile.y);
     } else if (keycode == Keys.ENTER) {
       menuProcessor.endTurn();
     } else if (keycode == Keys.ESCAPE) {

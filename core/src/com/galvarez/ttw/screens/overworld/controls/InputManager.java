@@ -54,7 +54,7 @@ public class InputManager {
 
     menuProcessor = new MenuProcessor(screen, this, stage);
 
-    select = new OverworldSelectorController(camera, map, screen, this, menuProcessor);
+    select = new OverworldSelectorController(camera, world, map, screen, this, menuProcessor);
     drag = new OverworldDragController(camera);
     flag = new OverworldFlagController(camera, screen, this);
 

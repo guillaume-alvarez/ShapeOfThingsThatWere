@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Army;
@@ -76,7 +77,7 @@ public class MenuBuilder {
     this.map = map;
     this.screen = screen;
     this.inputManager = inputManager;
-    this.notifications = screen.notificationsSystem;
+    this.notifications = world.getSystem(NotificationsSystem.class);
 
     skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
@@ -132,10 +133,11 @@ public class MenuBuilder {
       addDescription(e);
       InfluenceSource infSource = e.getComponent(InfluenceSource.class);
       if (infSource != null)
-        selectionMenu
-            .addLabel("Power: " + infSource.power + " (+"
-                + (100 * infSource.powerAdvancement / screen.influenceSystem.getRequiredPowerAdvancement(infSource))
-                + "%)");
+        selectionMenu.addLabel("Power: "
+            + infSource.power
+            + " (+"
+            + (100 * infSource.powerAdvancement / world.getSystem(InfluenceSystem.class).getRequiredPowerAdvancement(
+                infSource)) + "%)");
     }
 
     Entity source = influence.getMainInfluenceSource(world);
@@ -217,7 +219,7 @@ public class MenuBuilder {
       actionMenu.clear();
     actionMenu = new FramedMenu(skin, 256, 128, parent);
     boolean hasActions = false;
-    for (Action action : screen.diplomaticSystem.getPossibleActions(diplo, target)) {
+    for (Action action : world.getSystem(DiplomaticSystem.class).getPossibleActions(diplo, target)) {
       hasActions = true;
       actionMenu.addButton(action.str, () -> {
         if (action != Action.NO_CHANGE)
