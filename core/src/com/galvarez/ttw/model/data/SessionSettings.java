@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model.data;
 
+import static java.lang.Math.abs;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -60,7 +61,7 @@ public final class SessionSettings implements Cloneable {
     empires.add(new Empire(Color.RED, cultures.get("Roman"), true));
     empires.add(new Empire(Color.TEAL, cultures.get("Greek"), true));
     empires.add(new Empire(Color.YELLOW, cultures.get("Egyptian"), true));
-    empires.add(new Empire(Color.PURPLE, cultures.get("Hebraic"), true));
+    empires.add(new Empire(Color.PURPLE, cultures.get("Sumerian"), true));
   }
 
   public SessionSettings(SessionSettings settings) {
@@ -140,16 +141,19 @@ public final class SessionSettings implements Cloneable {
     }
   }
 
-  public Culture guessCulture() {
-    Map<Culture, Integer> usedCultures = empires.stream().map(Empire::getCulture).distinct().collect(toMap(//
-        c -> c,//
-        c -> (int) empires.stream().filter(e -> e.culture == c).count()));
-    Optional<Culture> culture = cultures.values().stream()
-        .filter(c -> !usedCultures.containsKey(c) || usedCultures.get(c) < c.cities.size).findFirst();
-    if (culture.isPresent())
-      return culture.get();
-    else
-      throw new IllegalStateException("No remaining culture!");
-  }
+  private final Random rand = new Random();
 
+  public Culture guessCulture() {
+    Map<Culture, Integer> usedCultures = cultures.values().stream().distinct()
+        .collect(toMap(c -> c, c -> (int) empires.stream().filter(e -> e.culture == c).count()));
+    List<Culture> list = cultures
+        .values()
+        .stream()
+        .sorted(
+            (c1, c2) -> -Integer.compare(c1.cities.size - usedCultures.get(c1), c2.cities.size - usedCultures.get(c2)))
+        .limit(3).collect(toList());
+    if (list.isEmpty())
+      throw new IllegalStateException("No remaining culture!");
+    return list.get(abs(rand.nextInt() % list.size()));
+  }
 }

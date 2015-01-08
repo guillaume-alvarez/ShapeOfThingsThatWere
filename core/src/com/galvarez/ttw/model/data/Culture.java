@@ -16,6 +16,8 @@ public final class Culture {
 
   public final Array<String> cities;
 
+  private int citiesIndex = -1;
+
   public final Map<Faction, Integer> ai;
 
   public Culture(String name, Array<String> cities, Map<Faction, Integer> ai) {
@@ -34,7 +36,8 @@ public final class Culture {
   }
 
   public String newCityName() {
-    return cities.removeIndex(0);
+    citiesIndex = (citiesIndex + 1) % cities.size;
+    return cities.get(citiesIndex);
   }
 
   @Override
