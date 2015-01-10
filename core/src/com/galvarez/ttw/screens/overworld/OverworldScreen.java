@@ -339,7 +339,7 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   public int getCurrentYear() {
-    return turnNumber - 4000;
+    return (turnNumber * 10) - 4000;
   }
 
   public boolean canFinishTurn() {
