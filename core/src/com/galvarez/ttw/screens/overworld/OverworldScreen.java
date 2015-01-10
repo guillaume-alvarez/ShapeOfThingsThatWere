@@ -139,7 +139,7 @@ public final class OverworldScreen extends AbstractScreen {
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
-    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch));
+    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
 
     world.initialize();
     empires = fillWorldWithEntities();
@@ -199,6 +199,9 @@ public final class OverworldScreen extends AbstractScreen {
     if (renderHighlighter) {
       mapHighlighter.render(highlightedTiles);
     }
+
+    // render AFTER map was drawn
+    fadingMessageRenderSystem.process();
 
     stage.act(delta);
     stage.draw();
