@@ -154,7 +154,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "discovery: +" + value.intValue();
+      int i = value.intValue();
+      return (i > 0 ? "discovery: +" : "discovery: ") + i;
     }
   }
 
@@ -177,7 +178,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      return "growth: +" + value.intValue();
+      int i = value.intValue();
+      return (i > 0 ? "growth power: +" : "growth power: ") + i;
     }
   }
 
