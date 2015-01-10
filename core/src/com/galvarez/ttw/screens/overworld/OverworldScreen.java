@@ -87,8 +87,6 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final Map<MapPosition, String> highlightedTiles = new HashMap<>();
 
-  private final boolean renderMap;
-
   private boolean renderHighlighter;
 
   private final InputManager inputManager;
@@ -162,7 +160,6 @@ public final class OverworldScreen extends AbstractScreen {
     mapRenderer = new MapRenderer(camera, batch, gameMap);
     mapHighlighter = new MapHighlighter(camera, batch);
 
-    renderMap = true;
     renderHighlighter = false;
 
     pauseScreen = new PauseMenuScreen(game, world, batch, this, settings);
@@ -190,11 +187,9 @@ public final class OverworldScreen extends AbstractScreen {
       firstShow = false;
     }
 
-    if (renderMap) {
-      mapRenderer.render();
-      spriteRenderSystem.process();
-      influenceRenderSystem.process();
-    }
+    mapRenderer.render();
+    spriteRenderSystem.process();
+    influenceRenderSystem.process();
 
     if (renderHighlighter) {
       mapHighlighter.render(highlightedTiles);
