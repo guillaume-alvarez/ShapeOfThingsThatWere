@@ -36,6 +36,11 @@ PRE-ALPHA.
 
 The game needs [Java 8 SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html), all other dependencies can be downloaded by gradle or are embedded into the executable jar.
 
+To start from executable jar file:
+ * Download jar file from [latest release, as of now v0.1.0](https://github.com/guillaume-alvarez/ShapeOfThingsThatWere/releases/tag/v0.1.0)
+ * double click the file (windows)
+ * execute `java jar [jar file path]` (linux/cygwin)
+
 To start the game from sources:
  * checkout github repository
  * execute `gradlew.bat :desktop:run` (windows)
