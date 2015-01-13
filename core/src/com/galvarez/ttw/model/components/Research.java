@@ -7,13 +7,13 @@ import com.galvarez.ttw.model.data.Discovery;
 
 public class Research extends Component {
 
-  public final Collection<String> previous;
+  public final Collection<Discovery> previous;
 
   public final Discovery target;
 
   public int progress = 0;
 
-  public Research(Discovery target,Collection<String> previous) {
+  public Research(Discovery target, Collection<Discovery> previous) {
     this.target = target;
     this.previous = previous;
   }

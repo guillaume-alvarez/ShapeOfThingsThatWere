@@ -1,5 +1,7 @@
 package com.galvarez.ttw.model.data;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -24,7 +26,7 @@ public final class Discovery {
 
   public final Set<String> groups;
 
-  public final Set<String> previous;
+  public final Set<Set<String>> previous;
 
   public ObjectFloatMap<Faction> factions;
 
@@ -34,11 +36,11 @@ public final class Discovery {
    */
   public final Map<String, Object> effects;
 
-  private Discovery(String name, List<String> previous, List<String> groups, List<Terrain> terrains,
+  private Discovery(String name, List<List<String>> previous, List<String> groups, List<Terrain> terrains,
       Map<String, Object> effects) {
     this.name = name;
     this.effects = effects != null ? effects : Collections.emptyMap();
-    this.previous = set(previous);
+    this.previous = previous.stream().map(l -> set(l)).collect(toSet());
     this.groups = set(groups);
     if (terrains != null)
       this.terrains.addAll(terrains);
@@ -56,8 +58,8 @@ public final class Discovery {
       return new HashSet<>(list);
   }
 
-  public Discovery(String name, List<String> previous) {
-    this(name, previous, Collections.emptyList(), Collections.emptyList(), null);
+  public Discovery(String name) {
+    this(name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
   }
 
   public String getName() {
@@ -89,7 +91,7 @@ public final class Discovery {
     @Override
     public Discovery read(Json json, JsonValue data, Class type) {
       return new Discovery(data.getString("name"), //
-          json.readValue(ArrayList.class, data.get("previous")), //
+          json.readValue(ArrayList.class, ArrayList.class, data.get("previous")), //
           json.readValue(ArrayList.class, data.get("groups")), //
           json.readValue(ArrayList.class, Terrain.class, data.get("terrains")), //
           json.readValue(HashMap.class, data.get("effects")));

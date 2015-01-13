@@ -1,71 +1,71 @@
 [
 {
   name: "City Council",
-  previous: ["Elders Council", City],
+  previous: [["Elders Council", City]],
   groups: [GOVERNMENT],
   effects: {growth: 1}
 },
 {
   name: Temple,
-  previous: [Sanctuary, "City Council"],
+  previous: [[Sanctuary, "City Council"]],
   effects: {stability: 1}
 },
 {
   name: Election,
-  previous: ["City Council"],
+  previous: [["City Council"]],
 },
 {
   name: Republic,
-  previous: [Election, City],
+  previous: [[Election, City]],
   groups: [GOVERNMENT]
 },
 {
   name: Democracy,
-  previous: [Citizens],
+  previous: [[Citizens]],
   groups: [GOVERNMENT]
 },
 {
   name: Aristocracy,
-  previous: [War, Crop],
+  previous: [[War, Crop]],
   groups: [GOVERNMENT, LEADER],
   effects: {growth: 1, militaryPower: 1}
 },
 {
   name: Oligarchy,
-  previous: [Aristocracy, Trade],
+  previous: [[Aristocracy, Trade]],
   groups: [GOVERNMENT, LEADER],
   effects: {growth: 1}
 },
 {
   name: Citizens,
-  previous: [City, Liberty]
+  previous: [[City, Liberty]]
 },
 {
   name: Artist,
-  previous: [Art, Citizens],
+  previous: [[Art, Citizens]],
   groups: [JOBS],
   effects: {stability: 2, militaryPower: -2}
 },
 {
   name: Erudite,
-  previous: [Writing, Citizens],
+  previous: [[Writing, Citizens]],
   groups: [JOBS],
   effects: {discovery: 2, growth: 1, militaryPower: -2}
 },
 {
   name: Tyranny,
-  previous: [King, War],
+  previous: [[King, War]],
   groups: [GOVERNMENT],
   effects: {militaryPower: 2}
 },
 {
   name: Theatre,
-  previous: [Storytelling, Writing],
+  previous: [[Storytelling, Writing]],
   groups: [ART],
   effects: {stability: 1}
 },
 {
   name: Amphitheatre,
-  previous: [Theatre]
+  previous: [[Theatre]]
 }
 ]

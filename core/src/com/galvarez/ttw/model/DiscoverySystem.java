@@ -2,8 +2,10 @@ package com.galvarez.ttw.model;
 
 import static java.lang.Math.min;
 import static java.lang.String.join;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -11,9 +13,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,10 +108,10 @@ public final class DiscoverySystem extends EntitySystem {
     for (Discovery d : discoveries.values()) {
       d.factions = getFactionsScores(d);
 
-      for (String previous : d.previous) {
-        if (!discoveries.containsKey(previous) && !groups.contains(previous))
-          log.warn("Cannot find previous {} for discovery {}", previous, d);
-      }
+      for (Set<String> list : d.previous)
+        for (String previous : list)
+          if (!discoveries.containsKey(previous) && !groups.contains(previous))
+            log.warn("Cannot find previous {} for discovery {}", previous, d);
     }
 
     // check buildings discovery and previous type
@@ -223,16 +225,15 @@ public final class DiscoverySystem extends EntitySystem {
     }
 
     // select new possible discoveries
-    Predicate<Discovery> cannotBeDiscovered = d -> done.contains(d.name) || !done.containsAll(d.previous)
-        || !hasTerrain(entity, d.terrains);
-    List<Discovery> possible = new ArrayList<>(discoveries.values());
-    possible.removeIf(cannotBeDiscovered);
+    List<Research> possible = discoveries.values().stream()
+        .filter(d -> !done.contains(d.name) && hasTerrain(entity, d.terrains)).map(d -> toResearch(d, done, groups))
+        .filter(Objects::nonNull).collect(toList());
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
     for (Faction f : Faction.values()) {
-      Collections.sort(possible, new Comparator<Discovery>() {
+      Collections.sort(possible, new Comparator<Research>() {
         @Override
-        public int compare(Discovery d1, Discovery d2) {
+        public int compare(Research d1, Research d2) {
           float score1 = getDiscoveryScore(d1);
           float score2 = getDiscoveryScore(d2);
 
@@ -240,27 +241,31 @@ public final class DiscoverySystem extends EntitySystem {
           return -Float.compare(score1, score2);
         }
 
-        private float getDiscoveryScore(Discovery d) {
-          float score = d.factions.get(f, Float.NEGATIVE_INFINITY);
-          for (String p : d.previous) {
-            Discovery previous = discoveries.get(p);
-            if (previous != null)
-              score += previous.factions.get(f, 0);
-          }
+        private float getDiscoveryScore(Research r) {
+          float score = r.target.factions.get(f, Float.NEGATIVE_INFINITY);
+          for (Discovery p : r.previous)
+            score += p.factions.get(f, 0);
           return score;
         }
       });
-      if (!possible.isEmpty()) {
-        Discovery chosen = possible.remove(rand.nextInt(min(3, possible.size())));
-        List<String> previous = new ArrayList<>(chosen.previous.size());
-        chosen.previous.forEach(p -> {
-          List<String> group = groups.get(p);
-          previous.add(group == null ? p : group.get(rand.nextInt(group.size())));
-        });
-        res.put(f, new Research(chosen, previous));
-      }
+
+      if (!possible.isEmpty())
+        res.put(f, possible.remove(rand.nextInt(min(3, possible.size()))));
     }
     return res;
+  }
+
+  private Research toResearch(Discovery d, Set<String> done, Map<String, List<String>> groups) {
+    List<Discovery> previous = new ArrayList<>(d.previous.size());
+    for (Collection<String> l : d.previous)
+      if (done.containsAll(l)) {
+        for (String p : l) {
+          List<String> group = groups.get(p);
+          previous.add(discoveries.get(group == null ? p : group.get(rand.nextInt(group.size()))));
+        }
+        return new Research(d, previous);
+      }
+    return null;
   }
 
   private boolean hasTerrain(Entity entity, Set<Terrain> terrains) {
@@ -294,8 +299,8 @@ public final class DiscoverySystem extends EntitySystem {
       return "NOTHING";
 
     StringBuilder sb = new StringBuilder();
-    for (String previous : next.previous)
-      sb.append(previous).append(", ");
+    for (Discovery previous : next.previous)
+      sb.append(previous.name).append(", ");
     sb.setLength(sb.length() - 2);
     return sb.toString();
   }

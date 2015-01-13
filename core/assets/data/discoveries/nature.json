@@ -1,143 +1,143 @@
 [
 {
   name: Grassland,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN],
   effects: {GRASSLAND: 1, PLAIN: 1}
 },
 {
   name: Forest,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN],
   terrains: [FOREST],
   effects: {FOREST: 1}
 },
 {
   name: Desert,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN],
   terrains: [DESERT],
   effects: {DESERT: 1}
 },
 {
   name: Hill,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [HILLS],
   effects: {HILLS: 1}
 },
 {
   name: Mountain,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [MOUNTAIN],
   effects: {MOUNTAIN: 1}
 },
 {
   name: Sea,
-  previous: [],
+  previous: [[]],
   groups: [TERRAIN],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   effects: {DEEP_WATER: 1, SHALLOW_WATER: 1}
 },
 {
   name: River,
-  previous: [HIGH_TERRAIN, Grassland],
+  previous: [[HIGH_TERRAIN, Grassland]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
   effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Copper,
-  previous: [HIGH_TERRAIN, Fire],
+  previous: [[HIGH_TERRAIN, Fire]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Tin,
-  previous: [HIGH_TERRAIN, Fire],
+  previous: [[HIGH_TERRAIN, Fire]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Iron,
-  previous: [HIGH_TERRAIN, Fire],
+  previous: [[HIGH_TERRAIN, Fire]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {militaryPower: 3, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Gold,
-  previous: [HIGH_TERRAIN, River],
+  previous: [[HIGH_TERRAIN, River]],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS],
   effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Silver,
-  previous: [HIGH_TERRAIN, River],
+  previous: [[HIGH_TERRAIN, River]],
   groups: [LUXURY],
   terrains: [MOUNTAIN, HILLS],
   effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Wood,
-  previous: [Forest],
+  previous: [[Forest]],
   groups: [MATERIAL],
   terrains: [FOREST],
   effects: {growth: 1, FOREST: 1}
 },
 {
   name: Dirt,
-  previous: [Hill, Desert],
+  previous: [[Hill, Desert]],
   groups: [MATERIAL],
   terrains: [HILLS, DESERT]
 },
 {
   name: Stone,
-  previous: [HIGH_TERRAIN],
+  previous: [[HIGH_TERRAIN]],
   groups: [MATERIAL],
   terrains: [HILLS, MOUNTAIN],
   effects: {militaryPower: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Clay,
-  previous: [Hill, River],
+  previous: [[Hill, River]],
   groups: [MATERIAL],
   terrains: [PLAIN, HILLS],
   effects: {growth: 1}
 },
 {
   name: Animal,
-  previous: [TERRAIN],
+  previous: [[TERRAIN]],
   effects: {GRASSLAND: -1, PLAIN: -1, HILLS: -1, MOUNTAIN: -1, FOREST: -1}
 },
 {
   name: Fish,
-  previous: [River, Sea],
+  previous: [[River, Sea]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   groups: [FOOD],
   effects: {SHALLOW_WATER: 1, growth: 1}
 },
 {
   name: Beach,
-  previous: [Sea],
+  previous: [[Sea]],
   terrains: [SHALLOW_WATER],
   effects: {SHALLOW_WATER: 1}
 },
 {
   name: Crustaceans,
-  previous: [Beach, Animal],
+  previous: [[Beach, Animal]],
   terrains: [SHALLOW_WATER],
   groups: [FOOD],
   effects: {growth: 1, SHALLOW_WATER: 1}
 },
 {
   name: Cave,
-  previous: [HIGH_TERRAIN],
+  previous: [[HIGH_TERRAIN]],
   terrains: [HILLS, MOUNTAIN],
   effects: {militaryPower: 1, growth: 1, HILLS: 1, MOUNTAIN: 1}
 },

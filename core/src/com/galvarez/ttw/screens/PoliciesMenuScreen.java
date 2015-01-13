@@ -2,7 +2,6 @@ package com.galvarez.ttw.screens;
 
 import static java.lang.String.join;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +64,7 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
 
   }
 
-  public final Item NONE = new Item(new Discovery("NONE", new ArrayList<String>()));
+  public final Item NONE = new Item(new Discovery("NONE"));
 
   @Override
   protected void initMenu() {

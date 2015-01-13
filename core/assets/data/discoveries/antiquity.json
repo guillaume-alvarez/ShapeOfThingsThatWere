@@ -1,196 +1,196 @@
 [
 {
   name: Harbor,
-  previous: [Boat, Beach],
+  previous: [[Boat, Beach]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1, growth: 1}
 },
 {
   name: Sword,
-  previous: [Metallurgy, Knife],
+  previous: [[Metallurgy, Knife]],
   groups: [WEAPON],
   effects: {militaryPower: 2}
 },
 {
   name: Lance,
-  previous: [Metallurgy, Stick],
+  previous: [[Metallurgy, Stick]],
   groups: [WEAPON],
   effects: {militaryPower: 2}
 },
 {
   name: City,
-  previous: [Village, Agriculture],
+  previous: [[Village, Agriculture]],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 2, growth: 1, discovery: 1}
 },
 {
   name: War,
-  previous: [City, WEAPON],
+  previous: [[City, WEAPON]],
   terrains: [GRASSLAND, PLAIN],
   groups: [RELATION],
   effects: {diplomacy: WAR, militaryPower: 3, stability: -2}
 },
 {
   name: Soldier,
-  previous: [War, Family],
+  previous: [[War, Family]],
   groups: [JOBS],
   effects: {growth: -1, militaryPower: 3}
 },
 {
   name: "Scorched earth",
-  previous: [War, Fire, Crop],
+  previous: [[War, Fire, Crop]],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 2, growth: -2}
 },
 {
   name: Treaty,
-  previous: [War, GOVERNMENT],
+  previous: [[War, GOVERNMENT]],
   groups: [RELATION],
   effects: {diplomacy: TREATY}
 },
 {
   name: Trade,
-  previous: [City, Road],
+  previous: [[City, Road]],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
   effects: {growth: 2, discovery: 1}
 },
 {
   name: Market,
-  previous: [Trade, FOOD],
+  previous: [[Trade, FOOD]],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
   effects: {growth: 2, discovery: 1}
 },
 {
   name: Merchant,
-  previous: [Trade, LUXURY],
+  previous: [[Trade, LUXURY]],
   groups: [JOBS],
   effects: {growth: 2, militaryPower: -2}
 },
 {
   name: Caravanserai,
-  previous: [Merchant, Camel],
+  previous: [[Merchant, Camel]],
   terrains: [DESERT],
   effects: {DESERT: 1, growth: 1}
 },
 {
   name: Money,
-  previous: [Trade, LUXURY],
+  previous: [[Trade, LUXURY]],
   effects: {growth: 1, militaryPower: -2}
 },
 {
   name: Tribute,
-  previous: [LUXURY, War],
+  previous: [[LUXURY, War]],
   groups: [RELATION],
   effects: {diplomacy: TRIBUTE, militaryPower: 1}
 },
 {
   name: King,
-  previous: [City, WEAPON, Chief],
+  previous: [[City, WEAPON, Chief]],
   groups: [GOVERNMENT, LEADER],
   effects: {militaryPower: 2}
 },
 {
   name: Wheel,
-  previous: [MATERIAL],
+  previous: [[MATERIAL]],
   terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Cart,
-  previous: [Wheel, Wood, MOVE],
+  previous: [[Wheel, Wood, MOVE]],
   terrains: [GRASSLAND, PLAIN],
   groups: [MOVE],
   effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, FOREST: -1, MOUNTAIN: -1, growth: 1}
 },
 {
   name: Road,
-  previous: [Stone, Path, Wheel],
+  previous: [[Stone, Path, Wheel]],
   terrains: [GRASSLAND, PLAIN],
   effects: {PLAIN: 1, GRASSLAND: 1, FOREST: -1, MOUNTAIN: -1}
 },
 {
   name: Irrigation,
-  previous: [Crop, River],
+  previous: [[Crop, River]],
   effects: {growth: 1}
 },
 {
   name: Granary,
-  previous: [Pottery, House, CEREAL],
+  previous: [[Pottery, House, CEREAL]],
   effects: {growth: 1}
 },
 {
   name: "Grain Mill",
-  previous: [Stone, CEREAL, Wheel],
+  previous: [[Stone, CEREAL, Wheel]],
   effects: {growth: 1}
 },
 {
   name: Floor,
-  previous: ["Grain Mill", CEREAL],
+  previous: [["Grain Mill", CEREAL]],
   effects: {growth: 1}
 },
 {
   name: Bread,
-  previous: [Floor, Oven],
+  previous: [[Floor, Oven]],
   groups: [FOOD],
   effects: {growth: 2}
 },
 {
   name: "Water Mill",
-  previous: ["Grain Mill", River],
+  previous: [["Grain Mill", River]],
   terrains: [HILLS],
   effects: {growth: 1}
 },
 {
   name: Gods,
-  previous: [Spirits, LEADER],
+  previous: [[Spirits, LEADER]],
 },
 {
   name: Sanctuary,
-  previous: [Gods, House],
+  previous: [[Gods, House]],
 },
 {
   name: Magic,
-  previous: [Symbols, Beliefs],
+  previous: [[Symbols, Beliefs]],
 },
 {
   name: Mysticism,
-  previous: [Magic, "Elders Council"],
+  previous: [[Magic, "Elders Council"]],
   effect: {discovery: 1}
 },
 {
   name: Religion,
-  previous: [Ritual, Gods],
+  previous: [[Ritual, Gods]],
   effects: {militaryPower: 1}
 },
 {
   name: Piety,
-  previous: [Religion, Village],
+  previous: [[Religion, Village]],
   groups: [VALUE],
   effects: {}
 },
 {
   name: Priest,
-  previous: [Religion, LEADER],
+  previous: [[Religion, LEADER]],
   groups: [GOVERNMENT, LEADER],
 },
 {
   name: Honor,
-  previous: [RELATION, Gods],
+  previous: [[RELATION, Gods]],
   groups: [VALUE],
   effects: {militaryPower: 1}
 },
 {
   name: Writing,
-  previous: [RELATION, City, Art],
+  previous: [[RELATION, City, Art]],
   effect: {discovery: 1}
 },
 {
   name: Law,
-  previous: [City, Writing],
+  previous: [[City, Writing]],
   effects: {growth: 3}
 },
 {
   name: Music,
-  previous: [River, Art],
+  previous: [[River, Art]],
   groups: [ART],
   effects: {stability: 1}
 }
