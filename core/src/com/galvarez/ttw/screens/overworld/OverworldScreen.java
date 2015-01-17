@@ -266,7 +266,7 @@ public final class OverworldScreen extends AbstractScreen {
     } else {
       player = entity;
     }
-    gameMap.addEntity(city, x, y);
+    gameMap.setEntity(city, x, y);
     log.info("Created city {} for empire {}", name, empire);
     return entity;
   }

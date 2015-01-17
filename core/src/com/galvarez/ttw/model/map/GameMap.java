@@ -93,7 +93,7 @@ public final class GameMap {
     return posByCoord[x][y];
   }
 
-  public void addEntity(Entity e, int x, int y) {
+  public void setEntity(Entity e, int x, int y) {
     entityByCoord[x][y] = e;
   }
 
