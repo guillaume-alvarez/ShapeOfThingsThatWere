@@ -1,7 +1,9 @@
 package com.galvarez.ttw.rendering;
 
+import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
+import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
@@ -10,17 +12,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
-import com.galvarez.ttw.model.map.GameMap;
-import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.utils.FloatPair;
 
 @Wire
-public final class DestinationRenderSystem extends AbstractRendererSystem {
+public final class DestinationRenderSystem extends EntitySystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
@@ -28,13 +30,21 @@ public final class DestinationRenderSystem extends AbstractRendererSystem {
 
   private ComponentMapper<Destination> destinations;
 
-  private final GameMap map;
+  private ComponentMapper<MapPosition> positions;
 
   private final AtlasRegion flagTexture;
 
-  public DestinationRenderSystem(OrthographicCamera camera, SpriteBatch batch, GameMap map) {
-    super(with(Destination.class), camera, batch);
-    this.map = map;
+  private final ShapeRenderer renderer;
+
+  private final OrthographicCamera camera;
+
+  private final SpriteBatch batch;
+
+  public DestinationRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
+    super(Aspect.getAspectForAll(Destination.class));
+    this.camera = camera;
+    this.batch = batch;
+    this.renderer = new ShapeRenderer();
 
     flagTexture = new TextureAtlas(Gdx.files.internal("textures/characters.atlas"), Gdx.files.internal("textures"))
         .findRegion("flag");
@@ -45,36 +55,51 @@ public final class DestinationRenderSystem extends AbstractRendererSystem {
     return true;
   }
 
-  private Empire empire(Entity source) {
-    return empires.get(sources.get(source).empire);
-  }
-
-  private Empire getMainEmpire(Influence tile) {
-    Entity main = tile.getMainInfluenceSource(world);
-    return main == null ? null : empire(main);
-  }
-
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
+    batch.setProjectionMatrix(camera.combined);
+    batch.begin();
     for (Entity e : entities)
-      process(e);
+      processTargetsFlags(e);
+    batch.end();
+    batch.setColor(1f, 1f, 1f, 1f);
+
+    renderer.setProjectionMatrix(camera.combined);
+    renderer.begin(ShapeType.Line);
+    for (Entity e : entities)
+      processPathLines(e);
+    renderer.end();
   }
 
-  private void process(Entity e) {
+  private void processTargetsFlags(Entity e) {
     Destination dest = destinations.get(e);
 
     // use source color
     Color c = batch.getColor();
     batch.setColor(empireColor(e));
-
     // draw the flag for influencing
     if (dest.target != null) {
       MapPosition pos = dest.target;
       draw(flagTexture, pos.x, pos.y);
     }
-
     // revert to previous (may be it is the last movement?)
     batch.setColor(c);
+  }
+
+  private void processPathLines(Entity e) {
+    Destination dest = destinations.get(e);
+
+    // draw the path line
+    if (dest.path != null) {
+      renderer.setColor(empireColor(e));
+      MapPosition start = positions.get(e);
+      for (MapPosition next : dest.path) {
+        FloatPair startScreen = MapTools.world2window(start.x, start.y);
+        FloatPair nextScreen = MapTools.world2window(next.x, next.y);
+        renderer.line(startScreen.x, startScreen.y, nextScreen.x, nextScreen.y);
+        start = next;
+      }
+    }
   }
 
   private Color empireColor(Entity e) {

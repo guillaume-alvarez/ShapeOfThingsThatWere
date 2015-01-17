@@ -143,7 +143,7 @@ public final class OverworldScreen extends AbstractScreen {
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
-    destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch, gameMap), true);
+    destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
 
