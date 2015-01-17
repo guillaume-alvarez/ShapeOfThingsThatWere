@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.components.Description;
@@ -126,7 +126,7 @@ public class InputManager {
     menuBuilder.buildSelectionMenu(coords, entity);
     menuBuilder.buildBuildingsMenu(entity);
 
-    if (flagIfCity && entity != null && entity.getComponent(InfluenceSource.class) != null
+    if (flagIfCity && entity != null && entity.getComponent(Destination.class) != null
     // player cannot control AI empires
         && entity.getComponent(AIControlled.class) == null) {
       screen.highlightFlagRange(entity);

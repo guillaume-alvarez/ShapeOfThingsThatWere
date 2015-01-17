@@ -1,5 +1,8 @@
 API: http://libgdx.badlogicgames.com/
 Initial code and some assets: http://javagamexyz.blogspot.fr/
+A-Star algorithm from http://www.redblobgames.com/pathfinding/a-star/implementation.html
+
+
 lightbulb icon from http://www.iconsdb.com/orange-icons/solutions-icon.html
 handshake icon from http://www.iconsdb.com/black-icons/handshake-icon.html
 hammer icon from http://www.iconsdb.com/black-icons/hammer-icon.html

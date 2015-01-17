@@ -8,6 +8,7 @@ import com.galvarez.ttw.ExpiringSystem.Expires;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Capital;
+import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -66,8 +67,8 @@ public class EntityFactory {
     sprite.color = empire.color;
     edit.add(sprite);
 
-    edit.add(new MapPosition(x, y)).add(new Description("City of " + name)).add(new InfluenceSource())
-        .add(new Buildings()).add(new Name(name));
+    edit.add(new MapPosition(x, y)).add(new Description("Tribe of " + name)).add(new InfluenceSource())
+        .add(new Buildings()).add(new Name(name)).add(new Destination());
 
     return e;
   }

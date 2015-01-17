@@ -5,13 +5,11 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -23,7 +21,6 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
@@ -114,6 +111,11 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   @Override
+  protected boolean checkProcessing() {
+    return true;
+  }
+
+  @Override
   protected void inserted(Entity e) {
     InfluenceSource source = sources.get(e);
     source.power = INITIAL_POWER;
@@ -122,14 +124,9 @@ public final class InfluenceSystem extends EntitySystem {
 
       // first influence own tile
       Influence tile = map.getInfluenceAt(pos);
-      tile.setInfluence(e, tile.terrain.moveCost());
+      tile.setInfluence(e, tile.getMaxInfluence());
       source.influencedTiles.add(pos);
     }
-  }
-
-  @Override
-  protected boolean checkProcessing() {
-    return true;
   }
 
   @Override
@@ -160,10 +157,8 @@ public final class InfluenceSystem extends EntitySystem {
       for (Entity enemy : diplo.getEmpires(State.WAR))
         armyInfluenceOn.put(enemy.getId(), armyPower - armies.get(enemy).militaryPower);
 
-      if (!checkInfluencedByOther(source, city)) {
+      if (!checkInfluencedByOther(source, city))
         addDistanceDelta(source, city, armyInfluenceOn);
-        addFlagDelta(source, city);
-      }
     }
 
     for (Entity city : cities) {
@@ -178,7 +173,7 @@ public final class InfluenceSystem extends EntitySystem {
    */
   private boolean checkInfluencedByOther(InfluenceSource source, Entity e) {
     Influence tile = map.getInfluenceAt(positions.get(e));
-    if (tile.isMainInfluencer(e))
+    if (tile.isMainInfluencer(e) || !tile.hasMainInfluence())
       return false;
 
     InfluenceSource influencer = sources.get(tile.getMainInfluenceSource(world));
@@ -235,14 +230,6 @@ public final class InfluenceSystem extends EntitySystem {
         tile.addInfluenceDelta(e, -max(1, (current - target) / 10));
       // do nothing if same obviously
     }
-  }
-
-  private void addFlagDelta(InfluenceSource source, Entity e) {
-    if (source.target != null && canInfluence(e, source.target))
-      map.getInfluenceAt(source.target).addInfluenceDelta(e, 10);
-    else
-      // must remove flag: target is not correct
-      source.target = null;
   }
 
   /**
@@ -376,26 +363,6 @@ public final class InfluenceSystem extends EntitySystem {
     return false;
   }
 
-  /** Return the flaggable tiles for the source. */
-  public Array<MapPosition> getFlaggableTiles(Entity e) {
-    Set<MapPosition> set = new HashSet<>();
-    InfluenceSource source = sources.get(e);
-    Diplomacy treaties = relations.get(source.empire);
-    for (MapPosition pos : source.influencedTiles) {
-      for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
-        Influence inf = map.getInfluenceAt(neighbor);
-        if (!inf.hasMainInfluence())
-          set.add(neighbor);
-        else {
-          InfluenceSource neighborSource = sources.get(inf.getMainInfluenceSource(world));
-          if (treaties.getRelationWith(neighborSource.empire) != State.TREATY)
-            set.add(neighbor);
-        }
-      }
-    }
-    return new Array<>(set.toArray(new MapPosition[0]));
-  }
-
   public Map<MapPosition, Integer> getDistances(Entity source, MapPosition pos) {
     Map<MapPosition, Integer> distances = new HashMap<>();
     distances.put(pos, 0);
@@ -419,4 +386,5 @@ public final class InfluenceSystem extends EntitySystem {
       }
     }
   }
+
 }

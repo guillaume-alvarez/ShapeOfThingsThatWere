@@ -40,8 +40,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private final EnumMap<Border, AtlasRegion> borderTexture = new EnumMap<>(Border.class);
 
-  private final AtlasRegion flagTexture;
-
   public InfluenceRenderSystem(OrthographicCamera camera, SpriteBatch batch, GameMap map) {
     super(with(InfluenceSource.class), camera, batch);
     this.map = map;
@@ -68,9 +66,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     neighbourBorder.put(Border.TOP, Border.BOTTOM_LEFT);
     neighbourBorder.put(Border.TOP_RIGHT, Border.TOP_LEFT);
     neighbourBorder.put(Border.BOTTOM_RIGHT, Border.TOP);
-
-    flagTexture = new TextureAtlas(Gdx.files.internal("textures/characters.atlas"), Gdx.files.internal("textures"))
-        .findRegion("flag");
   }
 
   @Override
@@ -146,26 +141,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
       for (InfluenceBorder ib : borders.get(empire))
         for (Border b : ib.borders)
           draw(borderTexture.get(b), ib.x, ib.y);
-    }
-
-    // revert to previous (may be it is the last source?)
-    batch.setColor(c);
-
-    for (Entity e : entities)
-      process(e);
-  }
-
-  private void process(Entity e) {
-    InfluenceSource source = sources.get(e);
-
-    // use source color
-    Color c = batch.getColor();
-    batch.setColor(empires.get(source.empire).color);
-
-    // draw the flag for influencing
-    if (source.target != null) {
-      MapPosition pos = source.target;
-      draw(flagTexture, pos.x, pos.y);
     }
 
     // revert to previous (may be it is the last source?)

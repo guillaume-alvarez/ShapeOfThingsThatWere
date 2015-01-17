@@ -55,6 +55,10 @@ public final class GameMap {
     return entityByCoord[x][y];
   }
 
+  public Entity getEntityAt(MapPosition pos) {
+    return getEntityAt(pos.x, pos.y);
+  }
+
   public Terrain getTerrainAt(MapPosition pos) {
     return getTerrainAt(pos.x, pos.y);
   }
@@ -95,6 +99,10 @@ public final class GameMap {
 
   public void setEntity(Entity e, int x, int y) {
     entityByCoord[x][y] = e;
+  }
+
+  public void setEntity(Entity e, MapPosition p) {
+    setEntity(e, p.x, p.y);
   }
 
 }

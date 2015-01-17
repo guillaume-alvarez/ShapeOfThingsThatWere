@@ -20,10 +20,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
+import com.galvarez.ttw.model.AIDestinationSystem;
 import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
-import com.galvarez.ttw.model.AIInfluenceSystem;
 import com.galvarez.ttw.model.BuildingsSystem;
+import com.galvarez.ttw.model.DestinationSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
@@ -31,13 +32,14 @@ import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
-import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
+import com.galvarez.ttw.rendering.DestinationRenderSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
@@ -61,6 +63,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final InfluenceRenderSystem influenceRenderSystem;
 
+  private final DestinationRenderSystem destinationRenderSystem;
+
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
 
   private final EffectsSystem effectsSystem;
@@ -75,7 +79,9 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final InfluenceSystem influenceSystem;
 
-  private final AIInfluenceSystem iaInfluence;
+  private final DestinationSystem destinationSystem;
+
+  private final AIDestinationSystem iaDestination;
 
   private final AIDiscoverySystem iaDiscovery;
 
@@ -132,10 +138,12 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings, this), true);
-    iaInfluence = world.setSystem(new AIInfluenceSystem(gameMap, this), true);
+    destinationSystem = world.setSystem(new DestinationSystem(gameMap, this), true);
+    iaDestination = world.setSystem(new AIDestinationSystem(gameMap), true);
     iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
+    destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch, gameMap), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
 
@@ -146,6 +154,7 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
+    destinationSystem.process();
     influenceRenderSystem.preprocess();
     notificationsSystem.process();
     log.info("The world is initialized");
@@ -190,6 +199,7 @@ public final class OverworldScreen extends AbstractScreen {
     mapRenderer.render();
     spriteRenderSystem.process();
     influenceRenderSystem.process();
+    destinationRenderSystem.process();
 
     if (renderHighlighter) {
       mapHighlighter.render(highlightedTiles);
@@ -286,13 +296,14 @@ public final class OverworldScreen extends AbstractScreen {
     stage.setKeyboardFocus(null);
     stage.setScrollFocus(null);
 
-    iaInfluence.process();
+    iaDestination.process();
     iaDiscovery.process();
     iaDiplomacy.process();
     discoverySystem.process();
     buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
+    destinationSystem.process();
     influenceSystem.process();
 
     world.setDelta(0);
@@ -305,8 +316,9 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   public void flag(Entity source, int x, int y) {
-    InfluenceSource inf = source.getComponent(InfluenceSource.class);
-    inf.target = new MapPosition(x, y);
+    Destination dest = source.getComponent(Destination.class);
+    dest.target = new MapPosition(x, y);
+    dest.path = destinationSystem.computePath(source, dest);
   }
 
   public void setHighlightColor(float r, float g, float b, float a) {
@@ -315,7 +327,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void highlightFlagRange(Entity source) {
     highlightedTiles.clear();
-    for (MapPosition tile : influenceSystem.getFlaggableTiles(source))
+    for (MapPosition tile : destinationSystem.getTargetTiles(source))
       highlightedTiles.put(tile, String.valueOf(gameMap.getInfluenceAt(tile).requiredInfluence(source)));
     renderHighlighter = true;
     setHighlightColor(0f, 0f, 0.2f, 0.3f);

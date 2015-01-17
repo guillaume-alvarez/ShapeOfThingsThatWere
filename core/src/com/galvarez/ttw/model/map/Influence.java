@@ -104,6 +104,14 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     return influence.get(source.getId(), 0) > 0;
   }
 
+  public int getMaxInfluence() {
+    int max = 0;
+    for (Entry e : influence)
+      if (e.value > max)
+        max = e.value;
+    return max(max, terrain.moveCost());
+  }
+
   public int getTotalInfluence() {
     int total = 0;
     for (Entry e : influence)

@@ -17,9 +17,6 @@ public final class InfluenceSource extends Component {
 
   public int power = -1;
 
-  /** Tile to apply the influence to. */
-  public MapPosition target;
-
   public final Set<MapPosition> influencedTiles = new HashSet<>();
 
   public int growth;
