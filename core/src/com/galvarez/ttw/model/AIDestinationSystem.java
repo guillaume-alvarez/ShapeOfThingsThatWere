@@ -16,6 +16,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.components.Description;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 @Wire
 public final class AIDestinationSystem extends EntityProcessingSystem {
@@ -28,12 +29,17 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
 
   private ComponentMapper<MapPosition> positions;
 
+  private ComponentMapper<AIControlled> intelligences;
+
   private DestinationSystem destinationSystem;
 
+  private final OverworldScreen screen;
+
   @SuppressWarnings("unchecked")
-  public AIDestinationSystem(GameMap gameMap) {
+  public AIDestinationSystem(GameMap gameMap, OverworldScreen screen) {
     super(Aspect.getAspectForAll(AIControlled.class, Destination.class));
     this.map = gameMap;
+    this.screen = screen;
   }
 
   @Override
@@ -44,8 +50,9 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
   @Override
   protected void process(Entity e) {
     Destination dest = destinations.get(e);
+    AIControlled ai = intelligences.get(e);
 
-    if (dest.target != null)
+    if (dest.target != null && screen.getTurnNumber() > ai.lastMove + 20)
       return;
 
     // ...must find another tile to influence
@@ -62,6 +69,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
     if (best != null && !best.equals(positions.get(e))) {
       dest.target = best;
       dest.path = destinationSystem.computePath(e, dest);
+      ai.lastMove = screen.getTurnNumber();
     } else
       log.error("Cannot find a destination for {}", e.getComponent(Description.class));
   }

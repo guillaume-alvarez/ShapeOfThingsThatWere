@@ -81,11 +81,11 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final DestinationSystem destinationSystem;
 
-  private final AIDestinationSystem iaDestination;
+  private final AIDestinationSystem aiDestination;
 
-  private final AIDiscoverySystem iaDiscovery;
+  private final AIDiscoverySystem aiDiscovery;
 
-  private final AIDiplomaticSystem iaDiplomacy;
+  private final AIDiplomaticSystem aiDiplomacy;
 
   final MapRenderer mapRenderer;
 
@@ -139,9 +139,9 @@ public final class OverworldScreen extends AbstractScreen {
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(gameMap, this), true);
-    iaDestination = world.setSystem(new AIDestinationSystem(gameMap), true);
-    iaDiscovery = world.setSystem(new AIDiscoverySystem(), true);
-    iaDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
+    aiDestination = world.setSystem(new AIDestinationSystem(gameMap, this), true);
+    aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
+    aiDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
@@ -296,9 +296,9 @@ public final class OverworldScreen extends AbstractScreen {
     stage.setKeyboardFocus(null);
     stage.setScrollFocus(null);
 
-    iaDestination.process();
-    iaDiscovery.process();
-    iaDiplomacy.process();
+    aiDestination.process();
+    aiDiscovery.process();
+    aiDiplomacy.process();
     discoverySystem.process();
     buildingsSystem.process();
     policiesSystem.process();

@@ -71,7 +71,11 @@ public class PathFinding {
   private int cost(MapPosition p, MapPosition next) {
     // TODO should depend on influence cost for empire
     // TODO start is important: on water first step costs the most
-    return map.getTerrainAt(next).moveCost();
+    int cost = map.getTerrainAt(next).moveCost();
+    if (map.getEntityAt(p) != null)
+      return cost * 2;
+    else
+      return cost;
   }
 
   private Iterable<MapPosition> neighbors(MapPosition p, Predicate<MapPosition> canMoveTo) {

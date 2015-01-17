@@ -17,6 +17,8 @@ public final class AIControlled extends Component {
 
   public int estimationTurn;
 
+  public int lastMove;
+
   public AIControlled() {
   }
 

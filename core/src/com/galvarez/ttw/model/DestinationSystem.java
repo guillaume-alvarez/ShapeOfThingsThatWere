@@ -117,13 +117,12 @@ public final class DestinationSystem extends EntitySystem {
   private static final Set<Terrain> CANNOT_ENTER = EnumSet
       .of(Terrain.SHALLOW_WATER, Terrain.DEEP_WATER, Terrain.ARCTIC);
 
-  public boolean canMoveTo(Entity e, MapPosition next) {
+  private boolean canMoveTo(Entity e, MapPosition next) {
     Terrain terrain = map.getTerrainAt(next);
     if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || map.getEntityAt(next) != null)
       return false;
 
-    Influence inf = map.getInfluenceAt(next);
-    return inf.isMainInfluencer(e) || !inf.hasMainInfluence();
+    return map.getInfluenceAt(next).isMainInfluencer(e);
   }
 
   /** Return the possible move target tiles for the source. */
@@ -133,7 +132,7 @@ public final class DestinationSystem extends EntitySystem {
     Diplomacy treaties = relations.get(source.empire);
     for (MapPosition pos : source.influencedTiles) {
       for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
-        if (canMoveTo(e, neighbor)) {
+        if (!CANNOT_ENTER.contains(map.getTerrainAt(neighbor))) {
           Influence inf = map.getInfluenceAt(neighbor);
           if (!inf.hasMainInfluence())
             set.add(neighbor);
@@ -149,7 +148,7 @@ public final class DestinationSystem extends EntitySystem {
   }
 
   public List<MapPosition> computePath(Entity e, Destination dest) {
-    return astar.aStarSearch(positions.get(e), dest.target, p -> canMoveTo(e, p));
+    return astar.aStarSearch(positions.get(e), dest.target, p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)));
   }
 
 }
