@@ -381,8 +381,8 @@ public final class OverworldScreen extends AbstractScreen {
     game.setScreen(policiesScreen);
   }
 
-  public void select(Entity e) {
-    inputManager.select(e.getComponent(MapPosition.class), e, false);
+  public void select(Entity e, boolean flagIfMoveable) {
+    inputManager.select(e.getComponent(MapPosition.class), e, flagIfMoveable);
     cameraMovementSystem.move(selectedTile.x, selectedTile.y);
   }
 

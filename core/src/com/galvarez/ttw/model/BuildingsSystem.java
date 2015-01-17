@@ -90,8 +90,8 @@ public final class BuildingsSystem extends EntitySystem {
         EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(source.empire).color, pos.x,
             pos.y);
         if (!ai.has(e))
-          notifications.addNotification(() -> screen.select(e), null, Type.BUILDINGS, "Built %s in %s.", newBuilding,
-              names.get(e));
+          notifications.addNotification(() -> screen.select(e, false), null, Type.BUILDINGS, "Built %s in %s.",
+              newBuilding, names.get(e));
       }
     }
   }

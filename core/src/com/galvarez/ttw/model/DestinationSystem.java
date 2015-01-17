@@ -73,7 +73,7 @@ public final class DestinationSystem extends EntitySystem {
   protected void inserted(Entity e) {
     super.inserted(e);
     if (!ai.has(e))
-      notifications.addNotification(() -> screen.select(e), () -> needDestination(e), Type.FLAG,
+      notifications.addNotification(() -> screen.select(e, true), () -> needDestination(e), Type.FLAG,
           "Select destination for %s...", names.get(e));
   }
 
@@ -107,7 +107,7 @@ public final class DestinationSystem extends EntitySystem {
         dest.target = null;
         dest.path = null;
         if (!ai.has(e))
-          notifications.addNotification(() -> screen.select(e), () -> needDestination(e), Type.FLAG,
+          notifications.addNotification(() -> screen.select(e, true), () -> needDestination(e), Type.FLAG,
               "Finished moving %s!", names.get(e));
         log.info("Moved {} to {}", names.get(e), next);
       }

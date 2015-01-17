@@ -308,7 +308,7 @@ public final class InfluenceSystem extends EntitySystem {
         log.info("Created revolting city {} for empire {}", revoltCity.getComponent(Name.class),
             revoltEmpire.getComponent(Name.class));
         if (!ai.has(city))
-          notifications.addNotification(() -> screen.select(revoltCity), null, Type.REVOLT,
+          notifications.addNotification(() -> screen.select(revoltCity, false), null, Type.REVOLT,
               "City of %s revolted from %s!", revoltCity.getComponent(Name.class), city.getComponent(Name.class));
         // reset stability to avoid popping revolts in loop
         empirePolicies.stability = 100;
