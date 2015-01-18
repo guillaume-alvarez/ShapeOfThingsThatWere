@@ -1,32 +1,37 @@
 [
 {
   name: Hunt,
-  previous: [[Animal]],
+  previous: [[Animal], [WEAPON]],
   terrains: [GRASSLAND, PLAIN, FOREST],
   effects: {militaryPower: 1, growth: 1}
 },
 {
   name: Gathering,
-  previous: [[Forest, Grassland]],
-  terrains: [GRASSLAND, PLAIN],
+  previous: [[Forest], [Grassland], [Crustaceans]],
+  terrains: [GRASSLAND, PLAIN, FOREST, SHALLOW_WATER],
   effects: {growth: 1}
 },
 {
+  name: Flax,
+  previous: [[Gathering, Grassland]],
+  terrains: [GRASSLAND, PLAIN]
+},
+{
   name: Fishing,
-  previous: [[Fish, Wood]],
+  previous: [[Fish, Wood], [Fish, Stone]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   effects: {militaryPower: 1, growth: 1}
 },
 {
   name: Boat,
-  previous: [[Fish, Wood]],
+  previous: [[Fishing, Wood], [Sea, Wood]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   groups: [MOVE],
   effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1}
 },
 {
   name: Knife,
-  previous: [[Hunt, METAL]],
+  previous: [[Hunt, METAL], [Hunt, Stone], [War, METAL], [War, Stone]],
   groups: [WEAPON],
   effects: {militaryPower: 1}
 },
@@ -35,24 +40,35 @@
   previous: [[Knife, Animal]]
 },
 {
+  name: Fur,
+  previous: [[Skin, Mountain], [Clothing, Mountain]],
+  terrains: [MOUNTAIN],
+  effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 5}
+},
+{
   name: Clothing,
-  previous: [[Skin]],
-  effects: {growth: 1, MOUNTAIN: 1}  
+  previous: [[Skin], [Textile]],
+  effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 5}  
+},
+{
+  name: Textile,
+  previous: [[Flax], [Flax, Clothing], [Flax, Tent]],
+  terrains: [GRASSLAND, PLAIN]
 },
 {
   name: Tent,
-  previous: [[Skin]],
+  previous: [[Skin], [Textile]],
   effects: {growth: 1}
 },
 {
   name: Stick,
-  previous: [[Hunt, Wood]],
+  previous: [[Hunt, Wood], [Knife, Wood], [Walk, Wood]],
   groups: [WEAPON],
   effects: {militaryPower: 1}
 },
 {
   name: Walk,
-  previous: [[Hunt, Fishing, Gathering]],
+  previous: [[Hunt], [Gathering], [Fishing, Beach], [Fishing, River]],
   groups: [MOVE]
 },
 {
@@ -69,42 +85,47 @@
 },
 {
   name: Horse,
-  previous: [[Breeding, Grassland]],
+  previous: [[Breeding, Grassland], [Walk, Animal, Grassland]],
   groups: [FOOD, MOVE],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
 },
 {
   name: Goat,
-  previous: [[Breeding, Grassland]],
+  previous: [[Breeding, Grassland], [Breeding, Mountain], [Breeding, Hill]],
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT],
   effects: {growth: 1, MOUNTAIN: 1, HILLS: 1, DESERT: 1}
 },
 {
   name: Ox,
-  previous: [[Breeding, Grassland]],
+  previous: [[Breeding, Grassland], [Breeding, Skin]],
   groups: [FOOD, MOVE],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 3, FOREST: -1, MOUNTAIN: -1, HILLS: -1, DESERT: -1}
 },
 {
   name: Sheep,
-  previous: [[Breeding, Grassland]],
+  previous: [[Breeding, Grassland], [Breeding, Hill], [Breeding, Textile]],
   groups: [FOOD],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 2, FOREST: -1, MOUNTAIN: -1, DESERT: -1}
+  effects: {growth: 2, FOREST: -1, HILLS: 1, MOUNTAIN: 1, DESERT: -1}
+},
+{
+  name: Wool,
+  previous: [[Sheep, Textile]],
+  effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 2}
 },
 {
   name: Camel,
-  previous: [[Breeding, Desert]],
+  previous: [[Breeding, Desert], [Walk, Animal, Desert]],
   groups: [MOVE],
   terrains: [DESERT],
   effects: {DESERT: 5, militaryPower: 1}
 },
 {
   name: Fire,
-  previous: [[Wood]],
+  previous: [[Wood], [Grassland, Sky]],
   terrains: [GRASSLAND, FOREST],
   effects: {militaryPower: 1, growth: 1, FOREST: 1}
 },
@@ -114,7 +135,7 @@
 },
 {
   name: Metallurgy,
-  previous: [[METAL, Fire]],
+  previous: [[METAL, Fire], [Ore, Fire]],
   terrains: [FOREST, HILLS],
   effects: {militaryPower: 1, growth: 1}
 },
@@ -126,7 +147,7 @@
 },
 {
   name: House,
-  previous: [[MATERIAL, Fire]],
+  previous: [[MATERIAL, Fire], [MATERIAL, Pottery], [MATERIAL, Cave]],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
   effects: {growth: 1}
 },
@@ -138,25 +159,25 @@
 },
 {
   name: Craftman,
-  previous: [[Forge, MATERIAL]],
+  previous: [[Forge, MATERIAL], [Textile, House]],
   terrains: [GRASSLAND, PLAIN],
   groups: [JOBS],
   effects: {growth: 1}
 },
 {
   name: Family,
-  previous: [[House]],
+  previous: [[House], [Cave, Fire], [Rice, Crop]],
   groups: [VALUE],
   effects: {growth: 1}
 },
 {
   name: Village,
-  previous: [[House, Agriculture]],
+  previous: [[House, Agriculture], [Tent, Agriculture]],
   effects: {militaryPower: 1, growth: 1, discovery: 1}
 },
 {
   name: Crop,
-  previous: [[Village, Agriculture]],
+  previous: [[Village, Agriculture], [Agriculture, Stick]],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
@@ -175,7 +196,7 @@
 },
 {
   name: Liberty,
-  previous: [[Crop, Hunt]],
+  previous: [[Crop, Hunt], [Tent, Hunt], [Boat, Fishing, Sea]],
   groups: [VALUE],
   effects: {militaryPower: -1, discovery: 1}
 },
@@ -186,20 +207,20 @@
 },
 {
   name: Slave,
-  previous: [[Crop, WEAPON]],
+  previous: [[Crop, WEAPON], [War, WEAPON]],
   groups: [JOBS],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 1, growth: 1, stability: -1}
 },
 {
   name: Chief,
-  previous: [[Village, WEAPON]],
+  previous: [[Village, WEAPON], [Familly, WEAPON]],
   groups: [GOVERNMENT, LEADER],
   effects: {militaryPower: 1}
 },
 {
   name: "Elders Council",
-  previous: [[Village, Fire]],
+  previous: [[Village, Fire], [Village, Family, Equality]],
   groups: [GOVERNMENT],
   effects: {growth: 1}
 },
@@ -226,20 +247,20 @@
 },
 {
   name: Rice,
-  previous: [[Agriculture, Grassland]],
+  previous: [[Agriculture, River]],
   groups: [CEREAL],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Trail,
-  previous: [[Forest, Grassland, Animal]],
+  previous: [[Forest, Animal], [Grassland, Animal]],
   terrains: [GRASSLAND, FOREST],
   effects: {FOREST: 1, MOUNTAIN: 1}
 },
 {
   name: Path,
-  previous: [[Trail, FOOD]],
+  previous: [[Trail, FOOD], [Trail, Hunt], [Trail, Village]],
   terrains: [GRASSLAND, FOREST, HILLS],
   effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, MOUNTAIN: -1}
 },
@@ -250,7 +271,7 @@
 },
 {
   name: Oven,
-  previous: [[Stone, Cooking]],
+  previous: [[Stone, Cooking], [Cave, Cooking]],
   effects: {growth: 1}
 },
 {
@@ -270,7 +291,7 @@
 },
 {
   name: "Stone circle",
-  previous: [[Sky, Stone]],
+  previous: [[Sky, Stone], [Death, Stone]],
 },
 {
   name: Beliefs,
@@ -309,17 +330,17 @@
 },
 {
   name: Shamanism,
-  previous: [[Spirits, "Elders Council"]],
+  previous: [[Spirits, "Elders Council"], [Spirits, Liberty]],
   effects: {stability: 1}
 },
 {
   name: Burying,
-  previous: [[Death, Beliefs]],
+  previous: [[Death, Beliefs], [Death, Family]],
   effects: {militaryPower: 1}
 },
 {
   name: Ritual,
-  previous: [[Shamanism, Crop]],
+  previous: [[Shamanism, Crop], [Beliefs, Family]],
   effects: {growth: 1}
 },
 ]

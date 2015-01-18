@@ -1,22 +1,22 @@
 [
 {
   name: "City Council",
-  previous: [["Elders Council", City]],
+  previous: [["Elders Council", City], [Law, City]],
   groups: [GOVERNMENT],
   effects: {growth: 1}
 },
 {
   name: Temple,
-  previous: [[Sanctuary, "City Council"]],
+  previous: [[Sanctuary, "City Council"], [Gods, City]],
   effects: {stability: 1}
 },
 {
   name: Election,
-  previous: [["City Council"]],
+  previous: [["City Council"], [Equality, City]],
 },
 {
   name: Republic,
-  previous: [[Election, City]],
+  previous: [[Election, City], [Equality, JOBS]],
   groups: [GOVERNMENT]
 },
 {
