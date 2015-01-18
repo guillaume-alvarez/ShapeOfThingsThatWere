@@ -43,28 +43,40 @@
 },
 {
   name: River,
-  previous: [[HIGH_TERRAIN, Grassland]],
+  previous: [[HIGH_TERRAIN, Grassland], [Grassland, Sea]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
   effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
+  name: Dirt,
+  previous: [[Hill], [Desert]],
+  groups: [MATERIAL],
+  terrains: [HILLS, DESERT, PLAIN]
+},
+{
+  name: Ore,
+  previous: [[Dirt]],
+  terrains: [MOUNTAIN, HILLS],
+  effects: {HILLS: 1, MOUNTAIN: 1}
+},
+{
   name: Copper,
-  previous: [[HIGH_TERRAIN, Fire]],
+  previous: [[HIGH_TERRAIN, River], [Metallurgy, Ore]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {growth: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Tin,
-  previous: [[HIGH_TERRAIN, Fire]],
+  previous: [[HIGH_TERRAIN, River], [Metallurgy, Ore]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Iron,
-  previous: [[HIGH_TERRAIN, Fire]],
+  previous: [[Metallurgy, Ore]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
   effects: {militaryPower: 3, HILLS: 1, MOUNTAIN: 1}
@@ -85,27 +97,21 @@
 },
 {
   name: Wood,
-  previous: [[Forest]],
+  previous: [[Forest], [Grassland]],
   groups: [MATERIAL],
   terrains: [FOREST],
   effects: {growth: 1, FOREST: 1}
 },
 {
-  name: Dirt,
-  previous: [[Hill, Desert]],
-  groups: [MATERIAL],
-  terrains: [HILLS, DESERT]
-},
-{
   name: Stone,
-  previous: [[HIGH_TERRAIN]],
+  previous: [[HIGH_TERRAIN], [Breeding, Crop]],
   groups: [MATERIAL],
   terrains: [HILLS, MOUNTAIN],
   effects: {militaryPower: 1, HILLS: 1, MOUNTAIN: 1}
 },
 {
   name: Clay,
-  previous: [[Hill, River]],
+  previous: [[Hill, River], [Dirt, River], [Dirt, Sea]],
   groups: [MATERIAL],
   terrains: [PLAIN, HILLS],
   effects: {growth: 1}
@@ -117,8 +123,8 @@
 },
 {
   name: Fish,
-  previous: [[River, Sea]],
-  terrains: [DEEP_WATER, SHALLOW_WATER],
+  previous: [[River, Animal], [Sea, Animal]],
+  terrains: [DEEP_WATER, SHALLOW_WATER, MOUNTAIN],
   groups: [FOOD],
   effects: {SHALLOW_WATER: 1, growth: 1}
 },
