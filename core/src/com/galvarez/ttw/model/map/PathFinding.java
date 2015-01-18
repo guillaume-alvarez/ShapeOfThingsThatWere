@@ -8,7 +8,12 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PathFinding {
+
+  private static final Logger log = LoggerFactory.getLogger(PathFinding.class);
 
   private final GameMap map;
 
@@ -92,6 +97,10 @@ public class PathFinding {
     while (!current.equals(start)) {
       path.add(current);
       current = cameFrom.get(current);
+      if (current == null) {
+        log.warn("Cannot compute path from {} to {}.", start, goal);
+        return null;
+      }
     }
     Collections.reverse(path);
     return path;
