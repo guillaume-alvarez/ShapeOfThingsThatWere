@@ -54,7 +54,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
       return;
 
     AIControlled ai = intelligences.get(e);
-    if (dest.target != null && screen.getTurnNumber() > ai.lastMove + 20)
+    if (dest.target != null && screen.getTurnNumber() < ai.lastMove + 10)
       return;
 
     // ...must find another tile to influence
