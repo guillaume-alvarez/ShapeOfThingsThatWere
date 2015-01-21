@@ -19,6 +19,8 @@ public final class AIControlled extends Component {
 
   public int lastMove;
 
+  public MapPosition lastPosition;
+
   public AIControlled() {
   }
 

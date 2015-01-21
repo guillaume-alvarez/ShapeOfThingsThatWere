@@ -54,13 +54,30 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
       return;
 
     AIControlled ai = intelligences.get(e);
-    if (dest.target != null && screen.getTurnNumber() < ai.lastMove + 10)
-      return;
+    if (dest.target == null) {
+      setNewTarget(e, dest, ai);
+    } else {
+      // check we are not stuck
+      MapPosition current = positions.get(e);
+      if (current.equals(ai.lastPosition)) {
+        // are we stuck for 3 turns?
+        if (screen.getTurnNumber() - ai.lastMove > 3)
+          setNewTarget(e, dest, ai);
+      } else {
+        ai.lastMove = screen.getTurnNumber();
+        ai.lastPosition = current;
+      }
+    }
+  }
 
+  private void setNewTarget(Entity e, Destination dest, AIControlled ai) {
     // ...must find another tile to influence
     int bestScore = 0;
     MapPosition best = null;
     for (MapPosition p : destinationSystem.getTargetTiles(e)) {
+      if (p.equals(dest.target))
+        // if it fails, do not select it again
+        continue;
       int score = estimate(e, p);
       if (score > bestScore) {
         bestScore = score;
@@ -72,6 +89,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
       dest.target = best;
       dest.path = destinationSystem.computePath(e, dest);
       ai.lastMove = screen.getTurnNumber();
+      ai.lastPosition = positions.get(e);
     } else
       log.error("Cannot find a destination for {}", e.getComponent(Description.class));
   }
