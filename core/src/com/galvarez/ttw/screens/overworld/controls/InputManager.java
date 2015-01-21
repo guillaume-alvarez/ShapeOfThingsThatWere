@@ -77,8 +77,8 @@ public class InputManager {
     Actor scrollFocus = stage.getScrollFocus();
 
     menuBuilder.buildTurnMenu();
+    menuBuilder.buildIndicationMenu();
     menuBuilder.buildEmpireMenu();
-    menuBuilder.buildTurnMenu();
     menuBuilder.buildNotificationMenu();
     if (screen.selectedTile != null)
       menuBuilder.buildSelectionMenu(screen.selectedTile, selectedEntity);

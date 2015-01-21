@@ -44,6 +44,7 @@ import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.SpriteRenderSystem;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.map.MapHighlighter;
 import com.galvarez.ttw.rendering.map.MapRenderer;
 import com.galvarez.ttw.screens.AbstractScreen;
@@ -94,6 +95,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final Map<MapPosition, String> highlightedTiles = new HashMap<>();
 
   private boolean renderHighlighter;
+
+  private final List<String> indications = new ArrayList<>();
 
   private final InputManager inputManager;
 
@@ -331,12 +334,16 @@ public final class OverworldScreen extends AbstractScreen {
       highlightedTiles.put(tile, String.valueOf(gameMap.getInfluenceAt(tile).requiredInfluence(source)));
     renderHighlighter = true;
     setHighlightColor(0f, 0f, 0.2f, 0.3f);
+    indications.add("Select destination for " + source.getComponent(Description.class));
+
     inputManager.reloadMenus();
   }
 
   public void stopHighlighing() {
     renderHighlighter = false;
     highlightedTiles.clear();
+    indications.clear();
+
     inputManager.reloadMenus();
   }
 
@@ -384,6 +391,10 @@ public final class OverworldScreen extends AbstractScreen {
   public void select(Entity e, boolean flagIfMoveable) {
     inputManager.select(e.getComponent(MapPosition.class), e, flagIfMoveable);
     cameraMovementSystem.move(selectedTile.x, selectedTile.y);
+  }
+
+  public List<String> getIndications() {
+    return indications;
   }
 
 }
