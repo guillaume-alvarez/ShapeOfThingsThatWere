@@ -49,9 +49,11 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
 
   @Override
   protected void process(Entity e) {
-    Destination dest = destinations.get(e);
-    AIControlled ai = intelligences.get(e);
+    Destination dest = destinations.getSafe(e);
+    if (dest == null)
+      return;
 
+    AIControlled ai = intelligences.get(e);
     if (dest.target != null && screen.getTurnNumber() > ai.lastMove + 20)
       return;
 

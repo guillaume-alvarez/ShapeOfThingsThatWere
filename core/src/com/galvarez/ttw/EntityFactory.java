@@ -76,8 +76,9 @@ public class EntityFactory {
   public static Entity createEmpire(World world, Entity capital, Empire empire) {
     Entity e = world.createEntity();
 
+    String name = capital.getComponent(Name.class).name;
     e.edit().add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new Army())
-        .add(new Capital(capital)).add(new Name(capital.getComponent(Name.class).name));
+        .add(new Capital(capital)).add(new Name(name)).add(new Description("Tribe of " + name));
 
     // link the capital to its empire
     capital.getComponent(InfluenceSource.class).empire = e;

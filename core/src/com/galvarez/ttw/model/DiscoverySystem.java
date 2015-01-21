@@ -79,6 +79,8 @@ public final class DiscoverySystem extends EntitySystem {
 
   private EffectsSystem effects;
 
+  private SpecialDiscoveriesSystem special;
+
   private ComponentMapper<Discoveries> empires;
 
   private ComponentMapper<Capital> capitals;
@@ -99,6 +101,8 @@ public final class DiscoverySystem extends EntitySystem {
   @Override
   protected void initialize() {
     super.initialize();
+
+    special.checkDiscoveries(discoveries);
 
     // check previous exist
     // set factions scores
@@ -203,6 +207,9 @@ public final class DiscoverySystem extends EntitySystem {
     effects.apply(target.effects, entity, false);
     // ... and bonus time until next discovery!
     effects.apply(target.effects, entity, false);
+
+    // may be some 'special discovery'
+    special.apply(entity, target, discovery);
   }
 
   /**

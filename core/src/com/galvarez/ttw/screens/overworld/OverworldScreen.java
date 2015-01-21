@@ -30,6 +30,7 @@ import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
+import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Destination;
@@ -136,6 +137,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
+    world.setSystem(new SpecialDiscoveriesSystem(), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, gameMap, this), true);
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public final class Description extends Component {
 
-  public final String desc;
+  public String desc;
 
   public final AtlasRegion texture;
 

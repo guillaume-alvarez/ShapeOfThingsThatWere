@@ -73,19 +73,24 @@ public final class DestinationSystem extends EntitySystem {
   protected void inserted(Entity e) {
     super.inserted(e);
     if (!ai.has(e))
-      notifications.addNotification(() -> screen.select(e, true), () -> needDestination(e), Type.FLAG,
+      notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
           "Select destination for %s...", names.get(e));
   }
 
   private boolean needDestination(Entity e) {
-    return !destinations.has(e) || destinations.get(e).target != null;
+    Destination d = destinations.getSafe(e);
+    if (d == null)
+      return false;
+    else
+      return d.target == null || d.path == null || d.path.isEmpty();
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity e : entities) {
       Destination destination = destinations.get(e);
-      if (destination.path != null)
+      // Destination component might have been removed during this turn
+      if (destination != null && destination.path != null)
         moveToNext(e, destination);
       // else no current destination
     }
@@ -107,7 +112,7 @@ public final class DestinationSystem extends EntitySystem {
         dest.target = null;
         dest.path = null;
         if (!ai.has(e))
-          notifications.addNotification(() -> screen.select(e, true), () -> needDestination(e), Type.FLAG,
+          notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
               "Finished moving %s!", names.get(e));
         log.info("Moved {} to {}", names.get(e), next);
       }
