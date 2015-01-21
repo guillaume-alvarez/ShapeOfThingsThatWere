@@ -214,7 +214,7 @@
 },
 {
   name: Chief,
-  previous: [[Village, WEAPON], [Familly, WEAPON]],
+  previous: [[Village, WEAPON], [Family, WEAPON]],
   groups: [GOVERNMENT, LEADER],
   effects: {militaryPower: 1}
 },

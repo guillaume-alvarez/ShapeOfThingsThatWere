@@ -56,7 +56,7 @@
 },
 {
   name: Trade,
-  previous: [[City, Road], [Village, Fur], [Village, Luxury]],
+  previous: [[City, Road], [Village, Fur], [Village, LUXURY]],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
   effects: {growth: 2, discovery: 1}
 },
