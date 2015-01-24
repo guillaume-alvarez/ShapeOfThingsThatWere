@@ -33,7 +33,6 @@ import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Capital;
-import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
@@ -321,9 +320,7 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   public void flag(Entity source, int x, int y) {
-    Destination dest = source.getComponent(Destination.class);
-    dest.target = new MapPosition(x, y);
-    dest.path = destinationSystem.computePath(source, dest);
+    destinationSystem.computePath(source, new MapPosition(x, y));
   }
 
   public void setHighlightColor(float r, float g, float b, float a) {

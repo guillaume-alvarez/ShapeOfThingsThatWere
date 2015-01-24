@@ -16,6 +16,9 @@ public final class Destination extends Component {
 
   public List<MapPosition> path;
 
+  /** Turns spent moving to next tile. */
+  public int progress;
+
   public Destination() {
   }
 

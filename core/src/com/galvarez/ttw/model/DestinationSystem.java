@@ -3,7 +3,6 @@ package com.galvarez.ttw.model;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -40,6 +39,9 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 public final class DestinationSystem extends EntitySystem {
 
   private static final Logger log = LoggerFactory.getLogger(DestinationSystem.class);
+
+  /** Number of turns required to move to next tile. */
+  private static final int TURNS_TO_MOVE = 2;
 
   private ComponentMapper<Destination> destinations;
 
@@ -100,21 +102,24 @@ public final class DestinationSystem extends EntitySystem {
     MapPosition current = positions.get(e);
     MapPosition next = dest.path.get(0);
     if (canMoveTo(e, next)) {
-      dest.path.remove(0);
-      e.edit().remove(current).add(next);
-      map.setEntity(null, current);
-      map.setEntity(e, next);
-      if (sources.has(e)) {
-        Influence inf = map.getInfluenceAt(next);
-        inf.addInfluenceDelta(e, inf.getMaxInfluence());
-      }
-      if (dest.path.isEmpty()) {
-        dest.target = null;
-        dest.path = null;
-        if (!ai.has(e))
-          notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
-              "Finished moving %s!", names.get(e));
-        log.info("Moved {} to {}", names.get(e), next);
+      if (++dest.progress >= TURNS_TO_MOVE) {
+        dest.progress = 0;
+        dest.path.remove(0);
+        e.edit().remove(current).add(next);
+        map.setEntity(null, current);
+        map.setEntity(e, next);
+        if (sources.has(e)) {
+          Influence inf = map.getInfluenceAt(next);
+          inf.addInfluenceDelta(e, inf.getMaxInfluence());
+        }
+        if (dest.path.isEmpty()) {
+          dest.target = null;
+          dest.path = null;
+          if (!ai.has(e))
+            notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
+                "Finished moving %s!", names.get(e));
+          log.info("Moved {} to {}", names.get(e), next);
+        }
       }
     }
   }
@@ -152,8 +157,11 @@ public final class DestinationSystem extends EntitySystem {
     return set;
   }
 
-  public List<MapPosition> computePath(Entity e, Destination dest) {
-    return astar.aStarSearch(positions.get(e), dest.target, p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)));
+  public void computePath(Entity e, MapPosition target) {
+    Destination dest = destinations.get(e);
+    dest.target = target;
+    dest.path = astar.aStarSearch(positions.get(e), target, p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)));
+    dest.progress = 0;
   }
 
 }

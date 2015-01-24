@@ -4,7 +4,7 @@
   previous: [[]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN],
-  effects: {GRASSLAND: 1, PLAIN: 1}
+  effects: {GRASSLAND: 1}
 },
 {
   name: Forest,

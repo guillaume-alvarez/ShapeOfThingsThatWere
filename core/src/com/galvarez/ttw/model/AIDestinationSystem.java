@@ -86,8 +86,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
     }
 
     if (best != null && !best.equals(positions.get(e))) {
-      dest.target = best;
-      dest.path = destinationSystem.computePath(e, dest);
+      destinationSystem.computePath(e, best);
       ai.lastMove = screen.getTurnNumber();
       ai.lastPosition = positions.get(e);
     } else
