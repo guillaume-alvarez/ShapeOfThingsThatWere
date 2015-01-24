@@ -43,7 +43,9 @@ public class FramedMenu {
   private final Skin skin;
 
   /** max's represent the largest we want the menu getting */
-  private final float maxHeight, width;
+  private final float maxHeight;
+
+  private float width;
 
   /** The parent menu is the one we will focus on if the user closes this one */
   private final FramedMenu parent;
@@ -213,6 +215,7 @@ public class FramedMenu {
     LabelStyle style = skin.get(LabelStyle.class);
     style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
+    l.setWrap(true);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
     table.row();
@@ -307,7 +310,7 @@ public class FramedMenu {
       scrollPane.setHeight(maxHeight);
     }
 
-    // For now, no matter what, the width is set from constuctor
+    // For now, no matter what, the width is set from constructor
     scrollPane.setWidth(width);
 
     table.setBackground(skin.getTiledDrawable("menuTexture"));
@@ -343,6 +346,10 @@ public class FramedMenu {
     // In case they became invisible earlier, make them visible now
     scrollPane.setVisible(true);
     frame.setVisible(true);
+  }
+
+  public void setWidth(float width) {
+    this.width = width;
   }
 
   /** Wipe all the buttons off, and remove widgets from stage. */

@@ -82,7 +82,7 @@ public class MenuBuilder {
     skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
     turnMenu = new FramedMenu(skin, 256, 128);
-    indicationMenu = new FramedMenu(skin, 512, 128);
+    indicationMenu = new FramedMenu(skin, 512, 512);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
     buildingsMenu = new FramedMenu(skin, 256, 1024);
@@ -107,6 +107,7 @@ public class MenuBuilder {
       for (String i : indications)
         indicationMenu.addLabel(i);
 
+      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + buildingsMenu.getWidth() + MENU_PADDING * 3));
       indicationMenu.addToStage(stage, MENU_PADDING + turnMenu.getX() + turnMenu.getWidth(), stage.getHeight()
           - MENU_PADDING, false);
     }
