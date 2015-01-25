@@ -76,7 +76,7 @@ public final class DestinationRenderSystem extends EntitySystem {
 
     // use source color
     Color c = batch.getColor();
-    batch.setColor(empireColor(e));
+    batch.setColor(empires.get(e).color);
     // draw the flag for influencing
     if (dest.target != null) {
       MapPosition pos = dest.target;
@@ -91,7 +91,7 @@ public final class DestinationRenderSystem extends EntitySystem {
 
     // draw the path line
     if (dest.path != null) {
-      renderer.setColor(empireColor(e));
+      renderer.setColor(empires.get(e).color);
       MapPosition start = positions.get(e);
       for (MapPosition next : dest.path) {
         FloatPair startScreen = MapTools.world2window(start.x, start.y);
@@ -100,10 +100,6 @@ public final class DestinationRenderSystem extends EntitySystem {
         start = next;
       }
     }
-  }
-
-  private Color empireColor(Entity e) {
-    return empires.get(sources.get(e).empire).color;
   }
 
   private void draw(AtlasRegion reg, int x, int y) {

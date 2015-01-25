@@ -23,6 +23,7 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.AIDestinationSystem;
 import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
+import com.galvarez.ttw.model.ArmiesSystem;
 import com.galvarez.ttw.model.BuildingsSystem;
 import com.galvarez.ttw.model.DestinationSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
@@ -39,6 +40,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
+import com.galvarez.ttw.rendering.CounterRenderSystem;
 import com.galvarez.ttw.rendering.DestinationRenderSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
@@ -48,6 +50,7 @@ import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.map.MapHighlighter;
 import com.galvarez.ttw.rendering.map.MapRenderer;
 import com.galvarez.ttw.screens.AbstractScreen;
+import com.galvarez.ttw.screens.ArmiesMenuScreen;
 import com.galvarez.ttw.screens.DiplomacyMenuScreen;
 import com.galvarez.ttw.screens.DiscoveryMenuScreen;
 import com.galvarez.ttw.screens.PauseMenuScreen;
@@ -58,9 +61,11 @@ public final class OverworldScreen extends AbstractScreen {
 
   private static final Logger log = LoggerFactory.getLogger(OverworldScreen.class);
 
-  public final GameMap gameMap;
+  public final GameMap map;
 
   private final SpriteRenderSystem spriteRenderSystem;
+
+  private final CounterRenderSystem counterRenderSystem;
 
   private final InfluenceRenderSystem influenceRenderSystem;
 
@@ -79,6 +84,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final DiplomaticSystem diplomaticSystem;
 
   private final InfluenceSystem influenceSystem;
+
+  private final ArmiesSystem armiesSystem;
 
   private final DestinationSystem destinationSystem;
 
@@ -119,6 +126,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final PoliciesMenuScreen policiesScreen;
 
+  private final ArmiesMenuScreen armiesScreen;
+
   private final NotificationsSystem notificationsSystem;
 
   public Entity player;
@@ -132,23 +141,25 @@ public final class OverworldScreen extends AbstractScreen {
 
     stage = new Stage(new ScreenViewport(), new SpriteBatch());
 
-    gameMap = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
+    map = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
-    world.setSystem(new SpecialDiscoveriesSystem(), true);
-    discoverySystem = world.setSystem(new DiscoverySystem(settings, gameMap, this), true);
-    buildingsSystem = world.setSystem(new BuildingsSystem(this, settings), true);
+    world.setSystem(new SpecialDiscoveriesSystem(map), true);
+    discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
+    buildingsSystem = world.setSystem(new BuildingsSystem(this, settings, map), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
-    influenceSystem = world.setSystem(new InfluenceSystem(gameMap, settings, this), true);
-    destinationSystem = world.setSystem(new DestinationSystem(gameMap, this), true);
-    aiDestination = world.setSystem(new AIDestinationSystem(gameMap, this), true);
+    influenceSystem = world.setSystem(new InfluenceSystem(map, settings, this), true);
+    armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
+    destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
+    aiDestination = world.setSystem(new AIDestinationSystem(map, this), true);
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
-    aiDiplomacy = world.setSystem(new AIDiplomaticSystem(gameMap), true);
-    influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, gameMap), true);
+    aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
+    influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, map), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
+    counterRenderSystem = world.setSystem(new CounterRenderSystem(camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
 
     world.initialize();
@@ -158,19 +169,20 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
+    armiesSystem.process();
     destinationSystem.process();
     influenceRenderSystem.preprocess();
     notificationsSystem.process();
     log.info("The world is initialized");
 
-    inputManager = new InputManager(camera, world, this, stage, gameMap);
+    inputManager = new InputManager(camera, world, this, stage, map);
     inputManager.menuBuilder.buildTurnMenu();
     inputManager.menuBuilder.buildNotificationMenu();
     inputManager.menuBuilder.buildEmpireMenu();
 
     world.setManager(new PlayerManager());
 
-    mapRenderer = new MapRenderer(camera, batch, gameMap);
+    mapRenderer = new MapRenderer(camera, batch, map);
     mapHighlighter = new MapHighlighter(camera, batch);
 
     renderHighlighter = false;
@@ -179,6 +191,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
     policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem);
+    armiesScreen = new ArmiesMenuScreen(game, world, batch, this, player, armiesSystem);
   }
 
   @Override
@@ -196,14 +209,15 @@ public final class OverworldScreen extends AbstractScreen {
       if (selectedTile != null)
         cameraMovementSystem.move(selectedTile.x, selectedTile.y);
       else
-        cameraMovementSystem.move(gameMap.width / 2, gameMap.height / 2);
+        cameraMovementSystem.move(map.width / 2, map.height / 2);
       firstShow = false;
     }
 
     mapRenderer.render();
-    spriteRenderSystem.process();
     influenceRenderSystem.process();
     destinationRenderSystem.process();
+    counterRenderSystem.process();
+    spriteRenderSystem.process();
 
     if (renderHighlighter) {
       mapHighlighter.render(highlightedTiles);
@@ -247,7 +261,7 @@ public final class OverworldScreen extends AbstractScreen {
   private List<Entity> fillWorldWithEntities() {
     // add the entity for players cities
     List<Entity> list = new ArrayList<>();
-    for (Empire empire : gameMap.empires)
+    for (Empire empire : map.empires)
       list.add(createEmpire(empire.newCityName(), empire));
 
     selectedTile = player.getComponent(Capital.class).capital.getComponent(MapPosition.class);
@@ -265,9 +279,9 @@ public final class OverworldScreen extends AbstractScreen {
     do {
       x = MathUtils.random(MapTools.width() - 4) + 2;
       y = MathUtils.random(MapTools.height() - 4) + 2;
-    } while (!gameMap.getTerrainAt(x, y).canStart()
+    } while (!map.getTerrainAt(x, y).canStart()
     // avoid having two cities on the same tile
-        || gameMap.getEntityAt(x, y) != null
+        || !map.getEntitiesAt(x, y).isEmpty()
         // or on neighbor tiles
         || hasNeighbourCity(x, y));
     Entity city = EntityFactory.createCity(world, x, y, name, empire);
@@ -280,19 +294,19 @@ public final class OverworldScreen extends AbstractScreen {
     } else {
       player = entity;
     }
-    gameMap.setEntity(city, x, y);
+    map.addEntity(city, x, y);
     log.info("Created city {} for empire {}", name, empire);
     return entity;
   }
 
   private boolean hasNeighbourCity(int x, int y) {
     for (MapPosition pos : MapTools.getNeighbors(x, y, 2))
-      if (gameMap.getEntityAt(pos.x, pos.y) != null)
+      if (!map.getEntitiesAt(pos.x, pos.y).isEmpty())
         return true;
     return false;
   }
 
-  public void processTurn() {
+  private void processTurn() {
     log.info("Process new turn");
 
     // If they don't have AI, give control to the human player
@@ -307,6 +321,7 @@ public final class OverworldScreen extends AbstractScreen {
     buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
+    armiesSystem.process();
     destinationSystem.process();
     influenceSystem.process();
 
@@ -330,7 +345,7 @@ public final class OverworldScreen extends AbstractScreen {
   public void highlightFlagRange(Entity source) {
     highlightedTiles.clear();
     for (MapPosition tile : destinationSystem.getTargetTiles(source))
-      highlightedTiles.put(tile, String.valueOf(gameMap.getInfluenceAt(tile).requiredInfluence(source)));
+      highlightedTiles.put(tile, String.valueOf(map.getInfluenceAt(tile).requiredInfluence(source)));
     renderHighlighter = true;
     setHighlightColor(0f, 0f, 0.2f, 0.3f);
     indications.add("Select destination for " + source.getComponent(Description.class));
@@ -371,6 +386,14 @@ public final class OverworldScreen extends AbstractScreen {
     return entity;
   }
 
+  public void endTurn() {
+    if (canFinishTurn())
+      processTurn();
+
+    // update the menu data
+    inputManager.reloadMenus();
+  }
+
   public void pauseMenu() {
     game.setScreen(pauseScreen);
   }
@@ -381,6 +404,10 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void discoveryMenu() {
     game.setScreen(discoveryScreen);
+  }
+
+  public void armiesMenu() {
+    game.setScreen(armiesScreen);
   }
 
   public void policiesMenu() {

@@ -77,7 +77,7 @@ public class PathFinding {
     // TODO should depend on influence cost for empire
     // TODO start is important: on water first step costs the most
     int cost = map.getTerrainAt(next).moveCost();
-    if (map.getEntityAt(p) != null)
+    if (!map.getEntitiesAt(p).isEmpty())
       return cost * 2;
     else
       return cost;

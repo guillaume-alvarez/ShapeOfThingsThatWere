@@ -5,7 +5,9 @@ import com.artemis.EntityEdit;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.ExpiringSystem.Expires;
+import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Destination;
@@ -16,12 +18,14 @@ import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.components.ColorAnimation;
+import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.FadingMessage;
 import com.galvarez.ttw.rendering.components.MutableMapPosition;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.ScaleAnimation;
 import com.galvarez.ttw.rendering.components.Sprite;
+import com.galvarez.ttw.utils.Colors;
 
 public class EntityFactory {
 
@@ -68,7 +72,23 @@ public class EntityFactory {
     edit.add(sprite);
 
     edit.add(new MapPosition(x, y)).add(new Description("Tribe of " + name)).add(new InfluenceSource())
-        .add(new Buildings()).add(new Name(name)).add(new Destination());
+        .add(new Buildings()).add(new Name(name)).add(new Destination()).add(empire);
+
+    return e;
+  }
+
+  public static Entity createArmy(World world, MapPosition pos, String name, Empire empire, Entity source,
+      int militaryPower) {
+    Entity e = world.createEntity();
+    EntityEdit edit = e.edit();
+
+    edit.add(new Counter(Colors.contrast(empire.color), empire.color, militaryPower));
+
+    edit.add(pos).add(new Name("Army of " + name)).add(new Description("Army of " + name)).add(new Destination())
+        .add(new Army(source, militaryPower)).add(empire);
+
+    if (empire.isComputerControlled())
+      edit.add(new AIControlled());
 
     return e;
   }
@@ -77,7 +97,7 @@ public class EntityFactory {
     Entity e = world.createEntity();
 
     String name = capital.getComponent(Name.class).name;
-    e.edit().add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new Army())
+    e.edit().add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand())
         .add(new Capital(capital)).add(new Name(name)).add(new Description("Tribe of " + name));
 
     // link the capital to its empire

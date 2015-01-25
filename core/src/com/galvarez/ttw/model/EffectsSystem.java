@@ -12,7 +12,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
-import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -25,7 +25,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
   private ComponentMapper<Policies> policies;
 
-  private ComponentMapper<Army> armies;
+  private ComponentMapper<ArmyCommand> armies;
 
   private ComponentMapper<Discoveries> discoveries;
 
@@ -94,7 +94,7 @@ public final class EffectsSystem extends VoidEntitySystem {
   private final class MilitaryEffect implements Effect<Number> {
     @Override
     public void apply(Number value, Entity empire, boolean revert) {
-      Army army = armies.get(empire);
+      ArmyCommand army = armies.get(empire);
       if (revert)
         army.militaryPower -= value.intValue();
       else

@@ -28,8 +28,6 @@ import com.galvarez.ttw.utils.FloatPair;
 @Wire
 public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
-  private ComponentMapper<InfluenceSource> sources;
-
   private ComponentMapper<Empire> empires;
 
   private final GameMap map;
@@ -101,7 +99,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
         Influence inf = map.getInfluenceAt(x, y);
         Entity source = inf.getMainInfluenceSource(world);
         if (source != null) {
-          Empire empire = empire(source);
+          Empire empire = empires.get(source);
           for (Border b : Border.values()) {
             MapPosition neighbor = MapTools.getNeighbor(b, x, y);
             Influence neighborTile = map.getInfluenceAt(neighbor);
@@ -120,13 +118,9 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     }
   }
 
-  private Empire empire(Entity source) {
-    return empires.get(sources.get(source).empire);
-  }
-
   private Empire getMainEmpire(Influence tile) {
     Entity main = tile.getMainInfluenceSource(world);
-    return main == null ? null : empire(main);
+    return main == null ? null : empires.get(main);
   }
 
   @Override

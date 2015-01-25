@@ -1,7 +1,9 @@
 package com.galvarez.ttw.model.components;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +24,8 @@ public final class InfluenceSource extends Component {
   public int growth;
 
   public int powerAdvancement = 0;
+
+  public final List<Entity> secondarySources = new ArrayList<>();
 
   public final Modifiers modifiers = new Modifiers();
 

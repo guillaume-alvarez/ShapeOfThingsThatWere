@@ -1,6 +1,6 @@
 
 uiskin.png
-size: 330,135
+size: 358,135
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -13,14 +13,14 @@ buildings-hammer
   index: -1
 check-off
   rotate: false
-  xy: 264, 52
+  xy: 330, 118
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 264, 35
+  xy: 330, 101
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -48,7 +48,7 @@ finish-flag
   index: -1
 frame
   rotate: false
-  xy: 281, 58
+  xy: 347, 124
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
@@ -61,9 +61,16 @@ menuTexture
   orig: 128, 128
   offset: 0, 0
   index: -1
-revolt-clenched-fist
+military-swords
   rotate: false
   xy: 198, 3
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+revolt-clenched-fist
+  rotate: false
+  xy: 264, 3
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -77,7 +84,7 @@ scrollBar
   index: -1
 scrollKnob
   rotate: false
-  xy: 264, 32
+  xy: 330, 98
   size: 11, 1
   orig: 11, 1
   offset: 0, 0

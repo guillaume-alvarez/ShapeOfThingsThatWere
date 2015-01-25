@@ -35,8 +35,6 @@ public class InputManager {
 
   public final MenuBuilder menuBuilder;
 
-  private final MenuProcessor menuProcessor;
-
   private final InputMultiplexer manager;
 
   private final OverworldScreen screen;
@@ -52,15 +50,13 @@ public class InputManager {
 
     selectedEntity = null;
 
-    menuProcessor = new MenuProcessor(screen, this, stage);
-
-    select = new OverworldSelectorController(camera, world, map, screen, this, menuProcessor);
+    select = new OverworldSelectorController(camera, world, map, screen, this);
     drag = new OverworldDragController(camera);
     flag = new OverworldFlagController(camera, screen, this);
 
     manager = new InputMultiplexer(stage, drag, select);
 
-    menuBuilder = new MenuBuilder(menuProcessor, stage, world, map, screen, this);
+    menuBuilder = new MenuBuilder(stage, world, map, screen, this);
 
     Gdx.input.setInputProcessor(manager);
   }

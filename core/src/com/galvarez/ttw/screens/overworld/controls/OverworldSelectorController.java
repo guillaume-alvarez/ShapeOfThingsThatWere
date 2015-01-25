@@ -1,5 +1,7 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
+import java.util.List;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -28,17 +30,14 @@ public final class OverworldSelectorController extends InputAdapter {
    */
   private final OverworldScreen screen;
 
-  private final MenuProcessor menuProcessor;
-
   private final CameraMovementSystem cameraSystem;
 
   public OverworldSelectorController(OrthographicCamera camera, World world, GameMap gameMap, OverworldScreen screen,
-      InputManager inputManager, MenuProcessor menuProcessor) {
+      InputManager inputManager) {
     this.camera = camera;
     this.gameMap = gameMap;
     this.screen = screen;
     this.inputManager = inputManager;
-    this.menuProcessor = menuProcessor;
     this.cameraSystem = world.getSystem(CameraMovementSystem.class);
   }
 
@@ -48,9 +47,9 @@ public final class OverworldSelectorController extends InputAdapter {
       if (screen.selectedTile != null)
         cameraSystem.move(screen.selectedTile.x, screen.selectedTile.y);
     } else if (keycode == Keys.ENTER) {
-      menuProcessor.endTurn();
+      screen.endTurn();
     } else if (keycode == Keys.ESCAPE) {
-      menuProcessor.pauseMenu();
+      screen.pauseMenu();
     }
 
     return true;
@@ -65,13 +64,24 @@ public final class OverworldSelectorController extends InputAdapter {
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
       // Check the entityID of the tile they click on
-      Entity entity = gameMap.getEntityAt(coords.x, coords.y);
-      inputManager.select(coords, entity, true);
+      List<Entity> entities = gameMap.getEntitiesAt(coords.x, coords.y);
+      if (entities.isEmpty())
+        inputManager.select(coords, null, true);
+      else if (entities.size() == 1)
+        inputManager.select(coords, entities.get(0), true);
+      // select next when clicking multiple times one the same tile
+      else if (coords.equals(screen.selectedTile)) {
+        int i = entities.indexOf(inputManager.selectedEntity);
+        if (i >= 0)
+          inputManager.select(coords, entities.get((i + 1) % entities.size()), true);
+        else
+          inputManager.select(coords, entities.get(0), true);
+      } else
+        inputManager.select(coords, entities.get(0), true);
       return true;
     }
 
     // If they didn't click on someone, we didn't process it
     return false;
   }
-
 }

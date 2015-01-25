@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
-import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -39,13 +39,10 @@ import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
-import com.galvarez.ttw.screens.overworld.controls.MenuProcessor;
 
 public class MenuBuilder {
 
   private static final int MENU_PADDING = 15;
-
-  private final MenuProcessor menuProcessor;
 
   private final Stage stage;
 
@@ -69,9 +66,7 @@ public class MenuBuilder {
 
   private final NotificationsSystem notifications;
 
-  public MenuBuilder(MenuProcessor menuProcessor, Stage stage, World world, GameMap map, OverworldScreen screen,
-      InputManager inputManager) {
-    this.menuProcessor = menuProcessor;
+  public MenuBuilder(Stage stage, World world, GameMap map, OverworldScreen screen, InputManager inputManager) {
     this.stage = stage;
     this.world = world;
     this.map = map;
@@ -94,7 +89,7 @@ public class MenuBuilder {
 
     // EndTurn button
     turnMenu.addButton("End turn (year " + screen.getCurrentYear() + ")",//
-        null, () -> menuProcessor.endTurn(), screen.canFinishTurn());
+        null, () -> screen.endTurn(), screen.canFinishTurn());
 
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
   }
@@ -117,23 +112,22 @@ public class MenuBuilder {
     empireMenu.clear();
 
     // here present a new screen with diplomatic relations
-    empireMenu.addButton("Diplomacy", () -> menuProcessor.diplomacyMenu());
+    empireMenu.addButton("Diplomacy", () -> screen.diplomacyMenu());
 
     // here present a new screen with army preferences
-    Army army = screen.player.getComponent(Army.class);
-    // TODO add a army menu when we know what to do with it
-    // menuProcessor.armyMenu();
-    empireMenu.addButton("Army (power=" + army.militaryPower + ")", null);
+    ArmyCommand command = screen.player.getComponent(ArmyCommand.class);
+    empireMenu.addButton("Army (power=" + (command.militaryPower - command.usedPower) + "/" + command.militaryPower
+        + ")", () -> screen.armiesMenu());
 
     // here present a sub-menu to see current discovery and be able to change it
     Discoveries discoveries = screen.player.getComponent(Discoveries.class);
     empireMenu.addButton("Discovery "
         + (discoveries != null && discoveries.next != null ? "(" + discoveries.next.progress + "%)" : "(NONE)"),
-        () -> menuProcessor.discoveryMenu());
+        () -> screen.discoveryMenu());
 
     // here present a new screen to choose policies
     Policies policies = screen.player.getComponent(Policies.class);
-    empireMenu.addButton("Policies (stability " + policies.stability + "%)", () -> menuProcessor.policiesMenu());
+    empireMenu.addButton("Policies (stability " + policies.stability + "%)", () -> screen.policiesMenu());
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }
@@ -169,10 +163,8 @@ public class MenuBuilder {
     int mainSource = influence.getMainInfluenceSource();
     StringBuilder sb = new StringBuilder("Influence: ");
     for (IntIntMap.Entry e : influence) {
-      // TODO use empire color when https://github.com/libgdx/libgdx/issues/1934
-      // is fixed
       Entity source = world.getEntity(e.key);
-      Empire empire = empire(source);
+      Empire empire = source.getComponent(Empire.class);
       // FIXME color [] flags seems not to be taken into account, whereas it
       // follows guidelines from
       // https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
@@ -191,10 +183,6 @@ public class MenuBuilder {
     }
     selectionMenu.addLabel(sb.toString());
     return influence;
-  }
-
-  private static Empire empire(Entity source) {
-    return source.getComponent(InfluenceSource.class).empire.getComponent(Empire.class);
   }
 
   private void addTileDescription(MapPosition tile) {

@@ -16,6 +16,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -50,6 +51,8 @@ public final class DestinationSystem extends EntitySystem {
   private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<InfluenceSource> sources;
+
+  private ComponentMapper<Army> armies;
 
   private ComponentMapper<Name> names;
 
@@ -106,8 +109,7 @@ public final class DestinationSystem extends EntitySystem {
         dest.progress = 0;
         dest.path.remove(0);
         e.edit().remove(current).add(next);
-        map.setEntity(null, current);
-        map.setEntity(e, next);
+        map.moveEntity(e, current, next);
         if (sources.has(e)) {
           Influence inf = map.getInfluenceAt(next);
           inf.addInfluenceDelta(e, inf.getMaxInfluence());
@@ -124,21 +126,40 @@ public final class DestinationSystem extends EntitySystem {
     }
   }
 
+  public void moveTo(Entity e, MapPosition target) {
+    MapPosition current = positions.get(e);
+    e.edit().remove(current).add(target);
+    map.moveEntity(e, current, target);
+    if (destinations.has(e)) {
+      Destination dest = destinations.get(e);
+      dest.path = null;
+      dest.target = null;
+      dest.progress = 0;
+    }
+    if (sources.has(e)) {
+      Influence inf = map.getInfluenceAt(target);
+      inf.addInfluenceDelta(e, inf.getMaxInfluence());
+    }
+  }
+
   private static final Set<Terrain> CANNOT_ENTER = EnumSet
       .of(Terrain.SHALLOW_WATER, Terrain.DEEP_WATER, Terrain.ARCTIC);
 
   private boolean canMoveTo(Entity e, MapPosition next) {
     Terrain terrain = map.getTerrainAt(next);
-    if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || map.getEntityAt(next) != null)
+    if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || !map.getEntitiesAt(next).isEmpty())
       return false;
 
-    return map.getInfluenceAt(next).isMainInfluencer(e);
+    if (armies.has(e))
+      return map.getInfluenceAt(next).isMainInfluencer(armies.get(e).source);
+    else
+      return map.getInfluenceAt(next).isMainInfluencer(e);
   }
 
   /** Return the possible move target tiles for the source. */
   public Collection<MapPosition> getTargetTiles(Entity e) {
     Set<MapPosition> set = new HashSet<>();
-    InfluenceSource source = sources.get(e);
+    InfluenceSource source = source(e);
     Diplomacy treaties = relations.get(source.empire);
     for (MapPosition pos : source.influencedTiles) {
       for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
@@ -155,6 +176,13 @@ public final class DestinationSystem extends EntitySystem {
       }
     }
     return set;
+  }
+
+  private InfluenceSource source(Entity e) {
+    if (sources.has(e))
+      return sources.get(e);
+    else
+      return sources.get(armies.get(e).source);
   }
 
   public void computePath(Entity e, MapPosition target) {

@@ -22,10 +22,12 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -84,13 +86,15 @@ public final class InfluenceSystem extends EntitySystem {
 
   private ComponentMapper<Diplomacy> relations;
 
-  private ComponentMapper<Army> armies;
+  private ComponentMapper<ArmyCommand> commands;
 
   private ComponentMapper<MapPosition> positions;
 
   private ComponentMapper<Capital> capitals;
 
   private ComponentMapper<AIControlled> ai;
+
+  private ComponentMapper<Army> armies;
 
   private NotificationsSystem notifications;
 
@@ -153,12 +157,13 @@ public final class InfluenceSystem extends EntitySystem {
 
       IntIntMap armyInfluenceOn = new IntIntMap();
       Diplomacy diplo = relations.get(empire);
-      int armyPower = armies.get(empire).militaryPower;
+      int armyPower = commands.get(empire).militaryPower;
       for (Entity enemy : diplo.getEmpires(State.WAR))
-        armyInfluenceOn.put(enemy.getId(), armyPower - armies.get(enemy).militaryPower);
+        armyInfluenceOn.put(enemy.getId(), armyPower - commands.get(enemy).militaryPower);
 
-      if (!checkInfluencedByOther(source, city))
+      if (!checkInfluencedByOther(source, city)) {
         addDistanceDelta(source, city, armyInfluenceOn);
+      }
     }
 
     for (Entity city : cities) {
@@ -176,13 +181,14 @@ public final class InfluenceSystem extends EntitySystem {
     if (tile.isMainInfluencer(e) || !tile.hasMainInfluence())
       return false;
 
-    InfluenceSource influencer = sources.get(tile.getMainInfluenceSource(world));
+    Entity other = tile.getMainInfluenceSource(world);
+    InfluenceSource influencer = sources.get(other);
     if (source.empire == influencer.empire)
       return false;
 
     log.info("{} conquered by {}, will no longer influence tiles for {}", e.getComponent(Name.class).name,
         influencer.empire.getComponent(Name.class), source.empire.getComponent(Name.class));
-    if (source.empire.getComponent(Empire.class).culture == influencer.empire.getComponent(Empire.class).culture)
+    if (empires.get(e).culture == empires.get(other).culture)
       source.power = max(1, source.power / 2);
     else
       source.power = 1;
@@ -212,9 +218,8 @@ public final class InfluenceSystem extends EntitySystem {
    * distance we compute the target influence level. Then apply the delta.
    */
   private void addDistanceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
-    Map<MapPosition, Integer> distances = getDistances(e, positions.get(e));
-
-    for (Entry<MapPosition, Integer> entry : distances.entrySet()) {
+    ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
+    for (Entry<MapPosition, Integer> entry : getDistances(e, positions.get(e)).entrySet()) {
       Influence tile = map.getInfluenceAt(entry.getKey());
       int target = canInfluence(e, entry.getKey()) ? target = max(0, source.power - max(0, entry.getValue().intValue()))
           // start losing influence when no neighboring tile
@@ -222,8 +227,24 @@ public final class InfluenceSystem extends EntitySystem {
       // do not forget the military from war
       if (tile.hasMainInfluence())
         target += armyInfluenceOn.get(sources.get(tile.getMainInfluenceSource(world)).empire.getId(), 0);
+      targets.put(entry.getKey(), target);
+    }
 
+    for (Entity s : source.secondarySources) {
+      for (Entry<MapPosition, Integer> entry : getDistances(e, positions.get(s)).entrySet()) {
+        MapPosition pos = entry.getKey();
+        if (canInfluence(e, pos)) {
+          int target = armies.get(s).currentPower - max(0, entry.getValue().intValue());
+          if (target > 0)
+            targets.getAndIncrement(pos, 0, target);
+        }
+      }
+    }
+
+    for (ObjectIntMap.Entry<MapPosition> entry : targets) {
+      Influence tile = map.getInfluenceAt(entry.key);
       int current = tile.getInfluence(e);
+      int target = entry.value;
       if (target > current)
         tile.addInfluenceDelta(e, max(1, (target - current) / 10));
       else if (target < current)
@@ -286,7 +307,7 @@ public final class InfluenceSystem extends EntitySystem {
       Optional<Influence> tile = source.influencedTiles
           .stream()
           .filter(p -> map.getTerrainAt(p).canStart() && !map.isOnMapBorder(p)//
-              && map.getEntityAt(p.x, p.y) == null && isAtCityBorder(city, p))
+              && map.getEntitiesAt(p).isEmpty() && isAtCityBorder(city, p))
           .map(p -> map.getInfluenceAt(p))
           .min(
               (i1, i2) -> compare(i1.getInfluence(city) + i1.getDelta(city) * 2,
@@ -363,7 +384,7 @@ public final class InfluenceSystem extends EntitySystem {
     return false;
   }
 
-  public Map<MapPosition, Integer> getDistances(Entity source, MapPosition pos) {
+  private Map<MapPosition, Integer> getDistances(Entity source, MapPosition pos) {
     Map<MapPosition, Integer> distances = new HashMap<>();
     distances.put(pos, 0);
     collectDistances(source, 0, pos, distances, sources.get(source).modifiers);

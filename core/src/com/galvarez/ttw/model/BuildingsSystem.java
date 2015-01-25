@@ -59,11 +59,11 @@ public final class BuildingsSystem extends EntitySystem {
   private final GameMap map;
 
   @SuppressWarnings("unchecked")
-  public BuildingsSystem(OverworldScreen screen, SessionSettings s) {
+  public BuildingsSystem(OverworldScreen screen, SessionSettings s, GameMap map) {
     super(Aspect.getAspectForAll(InfluenceSource.class, Buildings.class));
     this.screen = screen;
     buildings = s.getBuildings();
-    map = screen.gameMap;
+    this.map = map;
   }
 
   @Override
@@ -87,8 +87,7 @@ public final class BuildingsSystem extends EntitySystem {
         city.constructionTurns = 0;
         log.info("{} built {}", names.get(e), newBuilding);
         MapPosition pos = positions.get(e);
-        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(source.empire).color, pos.x,
-            pos.y);
+        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(e).color, pos.x, pos.y);
         if (!ai.has(e))
           notifications.addNotification(() -> screen.select(e, false), null, Type.BUILDINGS, "Built %s in %s.",
               newBuilding, names.get(e));
