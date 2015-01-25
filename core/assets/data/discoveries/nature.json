@@ -46,7 +46,7 @@
   previous: [[HIGH_TERRAIN, Grassland], [Grassland, Sea]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
-  effects: {GRASSLAND: 1, PLAIN: 1, HILLS: 1, MOUNTAIN: 1}
+  effects: {growth: 2}
 },
 {
   name: Dirt,
