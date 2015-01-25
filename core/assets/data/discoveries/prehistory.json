@@ -147,7 +147,7 @@
 },
 {
   name: House,
-  previous: [[MATERIAL, Fire], [MATERIAL, Pottery], [MATERIAL, Cave]],
+  previous: [[MATERIAL, Fire], [MATERIAL, Family], [MATERIAL, Pottery], [MATERIAL, Cave]],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
   effects: {growth: 1}
 },
