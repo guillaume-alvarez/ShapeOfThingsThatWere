@@ -78,6 +78,7 @@ public final class DestinationSystem extends EntitySystem {
   protected void inserted(Entity e) {
     super.inserted(e);
     if (!ai.has(e))
+      // make sure player moves the entity at least one time
       notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
           "Select destination for %s...", names.get(e));
   }
@@ -117,9 +118,11 @@ public final class DestinationSystem extends EntitySystem {
         if (dest.path.isEmpty()) {
           dest.target = null;
           dest.path = null;
-          if (!ai.has(e))
-            notifications.addNotification(() -> screen.select(e, true), () -> !needDestination(e), Type.FLAG,
-                "Finished moving %s!", names.get(e));
+          if (!ai.has(e)) {
+            // do not force player to move its units if he does not want to
+            notifications.addNotification(() -> screen.select(e, true), null, Type.FLAG, "Finished moving %s!",
+                names.get(e));
+          }
           log.info("Moved {} to {}", names.get(e), next);
         }
       }
