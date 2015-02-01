@@ -55,7 +55,7 @@ public class MapHighlighter extends AbstractRenderer {
       MapPosition tile = e.getKey();
       if (tile.x < x0 || tile.x > x1 || tile.y < y0 || tile.y > y1)
         continue;
-      FloatPair coords = MapTools.world2window(tile.x, tile.y);
+      FloatPair coords = MapTools.world2window(tile);
       batch.draw(highlight, coords.x - highlight.getRegionWidth() / 2, coords.y - highlight.getRegionHeight() / 2);
 
       // then draw the remaining cost for each cell

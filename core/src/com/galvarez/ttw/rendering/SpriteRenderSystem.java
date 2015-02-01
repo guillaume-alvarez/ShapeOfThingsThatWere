@@ -78,7 +78,7 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
       sprite.region.setRegion(sprite.x, sprite.y, width, height);
 
-      FloatPair drawPosition = MapTools.world2window(position.x, position.y);
+      FloatPair drawPosition = MapTools.world2window(position);
       float posX = drawPosition.x - (spriteRegion.getRegionWidth() / 2 * sprite.scaleX);
       float posY = drawPosition.y - (spriteRegion.getRegionHeight() / 2 * sprite.scaleY);
 

@@ -109,10 +109,14 @@ public class MapTools {
     return new FloatPair(posX, posY);
   }
 
-  public static FloatPair getDirectionVector(int x1, int y1, int x2, int y2) {
-    FloatPair tile1 = world2window(x1, y1);
-    FloatPair tile2 = world2window(x2, y2);
-    return new FloatPair(tile2.x - tile1.x, tile2.y - tile1.y);
+  public static FloatPair world2window(MapPosition pos) {
+    int x = pos.x;
+    int y = pos.y;
+
+    float posX = 5.5f + (x + 0.5f) * col_multiple;
+    float posY = row_multiple * (y + 0.5f + (x % 2) * 0.5f);
+
+    return new FloatPair(posX, posY);
   }
 
 }

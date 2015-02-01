@@ -78,10 +78,8 @@ public final class DestinationRenderSystem extends EntitySystem {
     Color c = batch.getColor();
     batch.setColor(empires.get(e).color);
     // draw the flag for influencing
-    if (dest.target != null) {
-      MapPosition pos = dest.target;
-      draw(flagTexture, pos.x, pos.y);
-    }
+    if (dest.target != null)
+      draw(flagTexture, dest.target);
     // revert to previous (may be it is the last movement?)
     batch.setColor(c);
   }
@@ -94,16 +92,16 @@ public final class DestinationRenderSystem extends EntitySystem {
       renderer.setColor(empires.get(e).color);
       MapPosition start = positions.get(e);
       for (MapPosition next : dest.path) {
-        FloatPair startScreen = MapTools.world2window(start.x, start.y);
-        FloatPair nextScreen = MapTools.world2window(next.x, next.y);
+        FloatPair startScreen = MapTools.world2window(start);
+        FloatPair nextScreen = MapTools.world2window(next);
         renderer.line(startScreen.x, startScreen.y, nextScreen.x, nextScreen.y);
         start = next;
       }
     }
   }
 
-  private void draw(AtlasRegion reg, int x, int y) {
-    FloatPair position = MapTools.world2window(x, y);
+  private void draw(AtlasRegion reg, MapPosition p) {
+    FloatPair position = MapTools.world2window(p);
     batch.draw(reg, position.x - reg.getRegionWidth() / 2, position.y - reg.getRegionHeight() / 2);
   }
 }

@@ -34,7 +34,7 @@ public final class CameraMovementSystem extends VoidEntitySystem {
     Vector3 position = camera.position;
     x0 = position.x;
     y0 = position.y;
-    FloatPair p = MapTools.world2window(target.x, target.y);
+    FloatPair p = MapTools.world2window(target);
     this.x1 = p.x;
     this.y1 = p.y;
     t = 0;

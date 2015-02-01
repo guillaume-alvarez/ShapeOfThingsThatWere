@@ -74,17 +74,16 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
   private final Map<Empire, List<InfluenceBorder>> borders = new HashMap<>();
 
   private static final class InfluenceBorder {
-    private final int x;
-
-    private final int y;
 
     private final Border[] borders;
 
-    public InfluenceBorder(int x, int y, Border ... borders) {
-      this.x = x;
-      this.y = y;
+    private final MapPosition position;
+
+    public InfluenceBorder(MapPosition position, Border ... borders) {
+      this.position = position;
       this.borders = borders;
     }
+
   }
 
   /**
@@ -110,7 +109,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
             List<InfluenceBorder> list = borders.get(empire);
             if (list == null)
               borders.put(empire, list = new ArrayList<>());
-            list.add(new InfluenceBorder(x, y, tmp.toArray(new Border[tmp.size()])));
+            list.add(new InfluenceBorder(map.getPositionAt(x, y), tmp.toArray(new Border[tmp.size()])));
             tmp.clear();
           }
         }
@@ -134,15 +133,15 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
       for (InfluenceBorder ib : borders.get(empire))
         for (Border b : ib.borders)
-          draw(borderTexture.get(b), ib.x, ib.y);
+          draw(borderTexture.get(b), ib.position);
     }
 
     // revert to previous (may be it is the last source?)
     batch.setColor(c);
   }
 
-  private void draw(AtlasRegion reg, int x, int y) {
-    FloatPair position = MapTools.world2window(x, y);
+  private void draw(AtlasRegion reg, MapPosition p) {
+    FloatPair position = MapTools.world2window(p);
     batch.draw(reg, position.x - reg.getRegionWidth() / 2, position.y - reg.getRegionHeight() / 2);
   }
 }

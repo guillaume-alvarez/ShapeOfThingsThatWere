@@ -38,8 +38,6 @@ public class MapRenderer extends AbstractRenderer {
   public void render() {
     begin();
 
-    TextureRegion reg;
-
     // Get bottom left and top right coordinates of camera viewport and convert
     // into grid coordinates for the map
     int x0 = MathUtils.floor(camera.frustum.planePoints[0].x / MapTools.col_multiple) - 1;
@@ -59,6 +57,8 @@ public class MapRenderer extends AbstractRenderer {
     if (y1 > map.map[0].length)
       y1 = map.map[0].length;
 
+    TextureRegion reg;
+
     // Loop over everything in the window to draw
     for (int row = y0; row < y1; row++) {
       for (int col = x0; col < x1; col++) {
@@ -67,11 +67,6 @@ public class MapRenderer extends AbstractRenderer {
         batch.draw(reg, position.x - reg.getRegionWidth() / 2, position.y - reg.getRegionHeight() / 2);
       }
     }
-
-    // Now draw the borders
-
-    // This line can draw a small image of the whole map
-    // batch.draw(gameMap.texture,0,0);
 
     end();
   }
