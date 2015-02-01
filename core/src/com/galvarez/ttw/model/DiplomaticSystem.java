@@ -124,26 +124,30 @@ public final class DiplomaticSystem extends EntitySystem {
         Action action = proposal.getValue();
         Diplomacy targetDiplo = relations.get(target);
         if (action.compatibleWith(targetDiplo.proposals.get(entity))) {
-          diplo.relations.put(target, action.afterMe);
-          targetDiplo.relations.put(entity, action.afterYou);
           // remove the accepted proposal
           it.remove();
-          targetDiplo.proposals.remove(entity);
-          // prevent changing state for a few turns
-          Integer turn = Integer.valueOf(screen.getTurnNumber());
-          diplo.lastChange.put(target, turn);
-          targetDiplo.lastChange.put(entity, turn);
-          log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
-              target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
-          if (!ai.has(entity))
-            notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
-                "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
-          else if (!ai.has(target))
-            notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
-                "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
+          changeRelation(entity, diplo, target, targetDiplo, action);
         }
       }
     }
+  }
+
+  void changeRelation(Entity entity, Diplomacy diplo, Entity target, Diplomacy targetDiplo, Action action) {
+    diplo.relations.put(target, action.afterMe);
+    targetDiplo.relations.put(entity, action.afterYou);
+    targetDiplo.proposals.remove(entity);
+    // prevent changing state for a few turns
+    diplo.lastChange.put(target, screen.getTurnNumber());
+    targetDiplo.lastChange.put(entity, screen.getTurnNumber());
+    // notify the player
+    log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
+        target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
+    if (!ai.has(entity))
+      notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
+          "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
+    else if (!ai.has(target))
+      notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
+          "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
   }
 
   public Collection<Action> getPossibleActions(Diplomacy diplo, Entity target) {

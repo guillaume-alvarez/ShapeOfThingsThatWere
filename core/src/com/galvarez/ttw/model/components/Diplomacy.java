@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import com.artemis.Component;
 import com.artemis.Entity;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 
@@ -16,7 +17,7 @@ public final class Diplomacy extends Component {
 
   public final Map<Entity, State> relations = new HashMap<>();
 
-  public final Map<Entity, Integer> lastChange = new HashMap<>();
+  public final ObjectIntMap<Entity> lastChange = new ObjectIntMap<>();
 
   public final Map<Entity, Action> proposals = new HashMap<>();
 

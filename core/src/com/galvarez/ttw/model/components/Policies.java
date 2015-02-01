@@ -11,10 +11,15 @@ public final class Policies extends Component {
 
   public final Map<Policy, Discovery> policies = new EnumMap<>(Policy.class);
 
-  /** Stability percentage, decrease when changing policies, increase with time. */
+  /**
+   * Stability percentage, decrease when changing policies, increase with time
+   * to stability max value.
+   */
   public int stability = 100;
 
-  public int stabilityGrowth = 0;
+  public int stabilityMax = 100;
+
+  public int stabilityGrowth = 1;
 
   public Policies() {
   }

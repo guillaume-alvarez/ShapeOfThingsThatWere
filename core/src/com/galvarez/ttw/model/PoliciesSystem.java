@@ -56,8 +56,11 @@ public final class PoliciesSystem extends EntitySystem {
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
       Policies empire = policies.get(entity);
-      if (empire.stability < 100)
-        empire.stability = min(100, empire.stability + empire.stabilityGrowth);
+      if (empire.stability < empire.stabilityMax)
+        empire.stability = min(empire.stabilityMax, empire.stability + empire.stabilityGrowth);
+      else if (empire.stability > empire.stabilityMax)
+        // decrease only one at a time
+        empire.stability--;
     }
   }
 

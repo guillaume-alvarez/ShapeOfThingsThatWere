@@ -21,6 +21,7 @@ import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Buildings;
+import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -129,7 +130,12 @@ public class MenuBuilder {
 
     // here present a new screen to choose policies
     Policies policies = screen.player.getComponent(Policies.class);
-    empireMenu.addButton("Policies (stability " + policies.stability + "%)", () -> screen.policiesMenu());
+    int stability = policies.stability
+        - screen.player.getComponent(Capital.class).capital.getComponent(InfluenceSource.class).power;
+    if (stability >= 0)
+      empireMenu.addButton("Policies (stability +" + stability + ")", () -> screen.policiesMenu());
+    else
+      empireMenu.addButton("Policies (stability [RED]" + stability + "[])", () -> screen.policiesMenu());
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }
