@@ -55,13 +55,11 @@ public final class SessionSettings implements Cloneable {
     this.buildings = buildings(json).stream().collect(toMap(Building::getName, c -> c));
 
     // generate some default empires
-    empires.add(new Empire(Color.BLACK, cultures.get("Celtic"), false));
-    empires.add(new Empire(Color.BLUE, cultures.get("Greek"), true));
-    empires.add(new Empire(Color.GREEN, cultures.get("Minoan"), true));
-    empires.add(new Empire(Color.RED, cultures.get("Roman"), true));
-    empires.add(new Empire(Color.TEAL, cultures.get("Greek"), true));
-    empires.add(new Empire(Color.YELLOW, cultures.get("Egyptian"), true));
-    empires.add(new Empire(Color.PURPLE, cultures.get("Sumerian"), true));
+    boolean ai = false;
+    for (Culture culture : cultures.values()) {
+      empires.add(new Empire(guessColor(), culture, ai));
+      ai = true;
+    }
   }
 
   public SessionSettings(SessionSettings settings) {
