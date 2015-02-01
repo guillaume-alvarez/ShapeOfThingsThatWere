@@ -203,7 +203,8 @@
 {
   name: Equality,
   previous: [[Village]],
-  groups: [VALUE]
+  groups: [VALUE],
+  effects: {stability: 1}
 },
 {
   name: Slave,
