@@ -95,7 +95,7 @@ public final class DestinationSystem extends EntitySystem {
     for (Entity e : entities) {
       Destination destination = destinations.get(e);
       // Destination component might have been removed during this turn
-      if (destination != null && destination.path != null)
+      if (destination != null && destination.path != null && !destination.path.isEmpty())
         moveToNext(e, destination);
       // else no current destination
     }
