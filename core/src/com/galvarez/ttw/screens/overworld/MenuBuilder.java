@@ -111,6 +111,8 @@ public class MenuBuilder {
   public void buildEmpireMenu() {
     empireMenu.clear();
 
+    empireMenu.addLabel("- " + screen.player.getComponent(Name.class).name + " -");
+
     // here present a new screen with diplomatic relations
     empireMenu.addButton("Diplomacy", () -> screen.diplomacyMenu());
 
