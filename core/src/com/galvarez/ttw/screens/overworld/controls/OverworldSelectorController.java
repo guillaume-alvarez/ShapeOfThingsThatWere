@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -58,7 +57,7 @@ public final class OverworldSelectorController extends InputAdapter {
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
     // Get the coordinates they clicked on
-    Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+    Vector3 mousePosition = new Vector3(screenX, screenY, 0);
     MapPosition coords = MapTools.window2world(mousePosition.x, mousePosition.y, camera);
 
     // in any case there is a tile

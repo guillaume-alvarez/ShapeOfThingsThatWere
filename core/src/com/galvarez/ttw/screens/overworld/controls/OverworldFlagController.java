@@ -3,7 +3,6 @@ package com.galvarez.ttw.screens.overworld.controls;
 import java.util.Map;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -26,7 +25,7 @@ public class OverworldFlagController extends InputAdapter {
 
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    final MapPosition coords = MapTools.window2world(Gdx.input.getX(), Gdx.input.getY(), camera);
+    final MapPosition coords = MapTools.window2world(screenX, screenY, camera);
 
     // Did they click within the movable range?
     Map<MapPosition, String> flaggable = screen.getHighlightedTiles();
