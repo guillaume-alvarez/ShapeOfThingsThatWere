@@ -38,7 +38,6 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
 import com.galvarez.ttw.rendering.CounterRenderSystem;
 import com.galvarez.ttw.rendering.DestinationRenderSystem;
@@ -207,9 +206,9 @@ public final class OverworldScreen extends AbstractScreen {
 
     if (firstShow) {
       if (selectedTile != null)
-        cameraMovementSystem.move(selectedTile.x, selectedTile.y);
+        cameraMovementSystem.move(selectedTile);
       else
-        cameraMovementSystem.move(map.width / 2, map.height / 2);
+        cameraMovementSystem.move(new MapPosition(map.width / 2, map.height / 2));
       firstShow = false;
     }
 
@@ -277,8 +276,8 @@ public final class OverworldScreen extends AbstractScreen {
   private Entity createEmpire(String name, Empire empire) {
     int x, y;
     do {
-      x = MathUtils.random(MapTools.width() - 4) + 2;
-      y = MathUtils.random(MapTools.height() - 4) + 2;
+      x = MathUtils.random(map.width - 4) + 2;
+      y = MathUtils.random(map.height - 4) + 2;
     } while (!map.getTerrainAt(x, y).canStart()
     // avoid having two cities on the same tile
         || !map.getEntitiesAt(x, y).isEmpty()
@@ -300,7 +299,7 @@ public final class OverworldScreen extends AbstractScreen {
   }
 
   private boolean hasNeighbourCity(int x, int y) {
-    for (MapPosition pos : MapTools.getNeighbors(x, y, 2))
+    for (MapPosition pos : map.getNeighbors(x, y, 2))
       if (!map.getEntitiesAt(pos.x, pos.y).isEmpty())
         return true;
     return false;
@@ -416,7 +415,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void select(Entity e, boolean flagIfMoveable) {
     inputManager.select(e.getComponent(MapPosition.class), e, flagIfMoveable);
-    cameraMovementSystem.move(selectedTile.x, selectedTile.y);
+    cameraMovementSystem.move(selectedTile);
   }
 
   public List<String> getIndications() {

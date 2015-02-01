@@ -21,12 +21,14 @@ public class MapRenderer extends AbstractRenderer {
 
   private final GameMap map;
 
+  public static final String TEXTURE_NAME = "hex";
+
   public MapRenderer(OrthographicCamera camera, SpriteBatch batch, GameMap map) {
     super(camera, batch);
     this.map = map;
 
     atlas = new TextureAtlas(Gdx.files.internal("textures/maptiles.atlas"), Gdx.files.internal("textures"));
-    tilesTextures = atlas.findRegions(MapTools.name);
+    tilesTextures = atlas.findRegions(TEXTURE_NAME);
   }
 
   public AtlasRegion getTexture(Terrain t) {

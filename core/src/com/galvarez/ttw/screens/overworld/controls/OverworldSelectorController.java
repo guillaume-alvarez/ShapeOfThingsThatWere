@@ -45,7 +45,7 @@ public final class OverworldSelectorController extends InputAdapter {
   public boolean keyDown(int keycode) {
     if (keycode == Keys.SPACE) {
       if (screen.selectedTile != null)
-        cameraSystem.move(screen.selectedTile.x, screen.selectedTile.y);
+        cameraSystem.move(screen.selectedTile);
     } else if (keycode == Keys.ENTER) {
       screen.endTurn();
     } else if (keycode == Keys.ESCAPE) {

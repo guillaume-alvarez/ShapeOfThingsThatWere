@@ -2,8 +2,6 @@ package com.galvarez.ttw.model.map;
 
 import java.util.Properties;
 
-import com.galvarez.ttw.utils.MyMath;
-
 final class HexMapGenerator implements MapGenerator {
 
   public static float deepWaterThreshold = 0.5f;
@@ -39,10 +37,6 @@ final class HexMapGenerator implements MapGenerator {
     int noise = Integer.parseInt(props.getProperty("noise"));
     int width = Integer.parseInt(props.getProperty("width"));
     int height = Integer.parseInt(props.getProperty("height"));
-
-    int power = MyMath.pow(2, noise);
-    MapTools.width = width * power + 1;
-    MapTools.height = height * power + 1;
 
     MidpointDisplacement md = new MidpointDisplacement();
 

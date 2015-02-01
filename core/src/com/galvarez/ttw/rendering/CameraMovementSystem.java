@@ -30,11 +30,11 @@ public final class CameraMovementSystem extends VoidEntitySystem {
     active = false;
   }
 
-  public void move(int xWorld, int yWorld) {
+  public void move(MapPosition target) {
     Vector3 position = camera.position;
     x0 = position.x;
     y0 = position.y;
-    FloatPair p = MapTools.world2window(xWorld, yWorld);
+    FloatPair p = MapTools.world2window(target.x, target.y);
     this.x1 = p.x;
     this.y1 = p.y;
     t = 0;
@@ -44,7 +44,7 @@ public final class CameraMovementSystem extends VoidEntitySystem {
     // If it is close, d is small - if it is far, d is large
     // Very close by, d is similar to how many tiles away it is
     // For longer distances, it grows as sqrt(distance)
-    float d = (float) Math.sqrt(MapTools.distance(startWorld.x, startWorld.y, xWorld, yWorld) + 0.25) - 0.5f;
+    float d = (float) Math.sqrt(MapTools.distance(startWorld, target) + 0.25) - 0.5f;
 
     // start with a base of 0.4 seconds, then add d seconds every 4 tiles
     T = 0.4f + d / 4f;

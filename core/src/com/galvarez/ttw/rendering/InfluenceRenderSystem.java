@@ -101,7 +101,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
         if (source != null) {
           Empire empire = empires.get(source);
           for (Border b : Border.values()) {
-            MapPosition neighbor = MapTools.getNeighbor(b, x, y);
+            MapPosition neighbor = b.getNeighbor(x, y);
             Influence neighborTile = map.getInfluenceAt(neighbor);
             if (neighborTile == null || empire != getMainEmpire(neighborTile))
               tmp.add(b);

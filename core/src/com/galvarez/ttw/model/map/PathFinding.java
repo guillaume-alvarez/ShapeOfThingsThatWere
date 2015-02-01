@@ -22,7 +22,7 @@ public class PathFinding {
   }
 
   private static int heuristic(MapPosition a, MapPosition b) {
-    return MapTools.distance(a.x, a.y, b.x, b.y) * Terrain.FOREST.moveCost();
+    return MapTools.distance(a, b) * Terrain.FOREST.moveCost();
   }
 
   private static final class Pos implements Comparable<Pos> {
@@ -85,7 +85,7 @@ public class PathFinding {
 
   private Iterable<MapPosition> neighbors(MapPosition p, Predicate<MapPosition> canMoveTo) {
     List<MapPosition> list = new ArrayList<>();
-    for (MapPosition n : MapTools.getNeighbors(p))
+    for (MapPosition n : map.getNeighbors(p))
       if (canMoveTo.test(n))
         list.add(n);
     return list;

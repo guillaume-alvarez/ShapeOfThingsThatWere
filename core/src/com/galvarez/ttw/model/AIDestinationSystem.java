@@ -15,7 +15,6 @@ import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -97,7 +96,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
 
   private int estimate(Entity e, MapPosition p) {
     int score = 0;
-    for (MapPosition n : MapTools.getNeighbors(p.x, p.y, 2)) {
+    for (MapPosition n : map.getNeighbors(p.x, p.y, 2)) {
       List<Entity> ne = map.getEntitiesAt(n);
       // worst case when near other city
       if (!ne.isEmpty() && !ne.contains(e))

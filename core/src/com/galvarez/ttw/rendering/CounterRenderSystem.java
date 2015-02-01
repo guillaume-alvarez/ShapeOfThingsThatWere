@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.components.Counter;
@@ -77,14 +76,8 @@ public final class CounterRenderSystem extends AbstractRendererSystem {
   private void process(Entity e) {
     MapPosition position = positions.get(e);
 
-    // Get bottom left and top right coordinates of camera viewport and
-    // convert into grid coordinates for the map
-    int x0 = MathUtils.floor(camera.frustum.planePoints[0].x / MapTools.col_multiple) - 1;
-    int y0 = MathUtils.floor(camera.frustum.planePoints[0].y / MapTools.row_multiple) - 1;
-    int x1 = MathUtils.floor(camera.frustum.planePoints[2].x / MapTools.col_multiple) + 2;
-    int y1 = MathUtils.floor(camera.frustum.planePoints[2].y / MapTools.row_multiple) + 1;
     // If sprite is off-screen, don't bother drawing it!
-    if (position.x < x0 || position.x > x1 || position.y < y0 || position.y > y1)
+    if (!isOnScreen(position))
       return;
 
     Counter counter = counters.get(e);

@@ -2,7 +2,6 @@ package com.galvarez.ttw.model.map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.MyMath;
 
@@ -12,55 +11,57 @@ public class MapTools {
 
   public static final int row_multiple = 38;
 
-  public static final String name = "hex";
-
-  public static Array<MapPosition> getNeighbors(int x, int y, int n) {
-    Array<MapPosition> coordinates = new Array<MapPosition>();
-    int min;
-    int myrow;
-    for (int row = y - n; row < y + n + 1; row++) {
-      min = MyMath.min(2 * (row - y + n), n, -2 * (row - y - n) + 1);
-      for (int col = x - min; col < x + min + 1; col++) {
-        if ((col < 0) || (col >= width()))
-          continue;
-        if (x == col && y == row)
-          continue;
-        else if (x % 2 == 0)
-          myrow = 2 * y - row;
-        else
-          myrow = row;
-        if ((myrow < 0) || (myrow >= height()))
-          continue;
-        coordinates.add(new MapPosition(col, myrow));
-      }
-    }
-    return coordinates;
-  }
-
-  public static Array<MapPosition> getNeighbors(MapPosition pos) {
-    return getNeighbors(pos.x, pos.y, 1);
-  }
-
-  public static MapPosition getNeighbor(Border border, int x, int y) {
-    switch (border) {
-      case BOTTOM:
-        return new MapPosition(x, y - 1);
-      case BOTTOM_LEFT:
-        return new MapPosition(x - 1, y - ((x + 1) % 2));
-      case BOTTOM_RIGHT:
+  public enum Border {
+    BOTTOM_RIGHT {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
         return new MapPosition(x + 1, y - ((x + 1) % 2));
-      case TOP:
-        return new MapPosition(x, y + 1);
-      case TOP_LEFT:
+      }
+    },
+    BOTTOM {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
+        return new MapPosition(x, y - 1);
+      }
+    },
+    BOTTOM_LEFT {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
+        return new MapPosition(x - 1, y - ((x + 1) % 2));
+      }
+    },
+    TOP_LEFT {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
         return new MapPosition(x - 1, y + (x % 2));
-      case TOP_RIGHT:
+      }
+    },
+    TOP {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
+        return new MapPosition(x, y + 1);
+      }
+    },
+    TOP_RIGHT {
+      @Override
+      public MapPosition getNeighbor(int x, int y) {
         return new MapPosition(x + 1, y + (x % 2));
-      default:
-        throw new IllegalStateException("Unknown border=" + border + " for x=" + x + " y=" + y);
+      }
+    };
+
+    abstract public MapPosition getNeighbor(int x, int y);
+
+    public final MapPosition getNeighbor(MapPosition pos) {
+      return getNeighbor(pos.x, pos.y);
     }
   }
 
-  public static int distance(int x0, int y0, int x1, int y1) {
+  public static int distance(MapPosition p0, MapPosition p1) {
+    int x0 = p0.x;
+    int y0 = p0.y;
+    int x1 = p1.x;
+    int y1 = p1.y;
+
     int dx = Math.abs(x1 - x0);
     int dy = Math.abs(y1 - y0);
 
@@ -108,30 +109,10 @@ public class MapTools {
     return new FloatPair(posX, posY);
   }
 
-  public static int width;
-
-  public static int width() {
-    return width;
-  }
-
-  public static int height;
-
-  public static int height() {
-    return height;
-  }
-
   public static FloatPair getDirectionVector(int x1, int y1, int x2, int y2) {
     FloatPair tile1 = world2window(x1, y1);
     FloatPair tile2 = world2window(x2, y2);
     return new FloatPair(tile2.x - tile1.x, tile2.y - tile1.y);
   }
 
-  public enum Border {
-    BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, TOP_LEFT, TOP, TOP_RIGHT;
-  }
-
-  public static void main(String[] args) {
-    Array<MapPosition> neighbors = getNeighbors(10, 10, 0);
-    System.err.println(neighbors.size);
-  }
 }

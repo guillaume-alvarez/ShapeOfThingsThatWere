@@ -39,7 +39,6 @@ import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.MapTools.Border;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
@@ -340,7 +339,7 @@ public final class InfluenceSystem extends EntitySystem {
 
   private boolean isAtCityBorder(Entity city, MapPosition pos) {
     for (Border b : Border.values()) {
-      MapPosition neighbor = MapTools.getNeighbor(b, pos.x, pos.y);
+      MapPosition neighbor = b.getNeighbor(pos);
       // don't accept tiles on map border
       if (!map.isOnMap(neighbor))
         return false;
@@ -376,8 +375,7 @@ public final class InfluenceSystem extends EntitySystem {
 
     // need s neighbor we already have influence on
     for (Border b : Border.values()) {
-      MapPosition neighbor = MapTools.getNeighbor(b, pos.x, pos.y);
-      Influence tile = map.getInfluenceAt(neighbor);
+      Influence tile = map.getInfluenceAt(b.getNeighbor(pos));
       if (tile != null && tile.isMainInfluencer(source))
         return true;
     }
@@ -393,7 +391,7 @@ public final class InfluenceSystem extends EntitySystem {
 
   private void collectDistances(Entity source, int distance, MapPosition pos, Map<MapPosition, Integer> distances,
       Modifiers modifiers) {
-    for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
+    for (MapPosition neighbor : map.getNeighbors(pos)) {
       Influence inf = map.getInfluenceAt(neighbor);
       if (!inf.terrain.moveBlock()) {
         Integer old = distances.get(neighbor);

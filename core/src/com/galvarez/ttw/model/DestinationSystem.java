@@ -23,7 +23,6 @@ import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.model.map.PathFinding;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
@@ -165,7 +164,7 @@ public final class DestinationSystem extends EntitySystem {
     InfluenceSource source = source(e);
     Diplomacy treaties = relations.get(source.empire);
     for (MapPosition pos : source.influencedTiles) {
-      for (MapPosition neighbor : MapTools.getNeighbors(pos)) {
+      for (MapPosition neighbor : map.getNeighbors(pos)) {
         if (!CANNOT_ENTER.contains(map.getTerrainAt(neighbor))) {
           Influence inf = map.getInfluenceAt(neighbor);
           if (!inf.hasMainInfluence())

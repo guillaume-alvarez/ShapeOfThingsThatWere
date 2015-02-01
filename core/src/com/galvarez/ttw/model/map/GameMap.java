@@ -7,7 +7,9 @@ import java.util.List;
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.galvarez.ttw.model.data.Empire;
+import com.galvarez.ttw.utils.MyMath;
 
 public final class GameMap {
 
@@ -112,6 +114,33 @@ public final class GameMap {
   public void moveEntity(Entity e, MapPosition from, MapPosition to) {
     entitiesByCoord[from.x][from.y].remove(e);
     entitiesByCoord[to.x][to.y].add(e);
+  }
+
+  public Array<MapPosition> getNeighbors(int x, int y, int n) {
+    Array<MapPosition> coordinates = new Array<MapPosition>();
+    int min;
+    int myrow;
+    for (int row = y - n; row < y + n + 1; row++) {
+      min = MyMath.min(2 * (row - y + n), n, -2 * (row - y - n) + 1);
+      for (int col = x - min; col < x + min + 1; col++) {
+        if ((col < 0) || (col >= width))
+          continue;
+        if (x == col && y == row)
+          continue;
+        else if (x % 2 == 0)
+          myrow = 2 * y - row;
+        else
+          myrow = row;
+        if ((myrow < 0) || (myrow >= height))
+          continue;
+        coordinates.add(new MapPosition(col, myrow));
+      }
+    }
+    return coordinates;
+  }
+
+  public Array<MapPosition> getNeighbors(MapPosition pos) {
+    return getNeighbors(pos.x, pos.y, 1);
   }
 
 }
