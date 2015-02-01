@@ -12,7 +12,6 @@ import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
@@ -35,8 +34,6 @@ public final class ArmiesSystem extends EntitySystem {
   private ComponentMapper<Counter> counters;
 
   private ComponentMapper<InfluenceSource> sources;
-
-  private ComponentMapper<Capital> capitals;
 
   private ComponentMapper<ArmyCommand> commands;
 
@@ -102,15 +99,14 @@ public final class ArmiesSystem extends EntitySystem {
   }
 
   public List<Entity> getArmies(Entity empire) {
-    InfluenceSource source = sources.get(capitals.get(empire).capital);
+    InfluenceSource source = sources.get(empire);
     return source.secondarySources;
   }
 
   public Entity createNewArmy(Entity empire, int power) {
-    Capital c = capitals.get(empire);
-    MapPosition pos = positions.get(c.capital);
-    Entity army = EntityFactory.createArmy(world, pos, names.get(empire).name, empires.get(empire), c.capital, power);
-    sources.get(c.capital).secondarySources.add(army);
+    MapPosition pos = positions.get(empire);
+    Entity army = EntityFactory.createArmy(world, pos, names.get(empire).name, empires.get(empire), empire, power);
+    sources.get(empire).secondarySources.add(army);
     commands.get(empire).usedPower += power;
     map.addEntity(army, pos);
     return army;

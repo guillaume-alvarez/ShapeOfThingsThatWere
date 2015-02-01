@@ -28,7 +28,6 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
@@ -83,15 +82,13 @@ public final class DiscoverySystem extends EntitySystem {
 
   private ComponentMapper<Discoveries> empires;
 
-  private ComponentMapper<Capital> capitals;
-
   private ComponentMapper<InfluenceSource> influences;
 
   private ComponentMapper<AIControlled> ai;
 
   @SuppressWarnings("unchecked")
   public DiscoverySystem(SessionSettings s, GameMap map, OverworldScreen screen) {
-    super(Aspect.getAspectForAll(Discoveries.class, Capital.class));
+    super(Aspect.getAspectForAll(Discoveries.class));
     this.discoveries = s.getDiscoveries();
     this.buildings = s.getBuildings();
     this.map = map;
@@ -160,7 +157,7 @@ public final class DiscoverySystem extends EntitySystem {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
       if (discovery.next != null) {
-        if (progressNext(discovery, getInfluence(entity)))
+        if (progressNext(discovery, influences.get(entity)))
           discoverNext(entity, discovery);
       }
     }
@@ -177,12 +174,6 @@ public final class DiscoverySystem extends EntitySystem {
     }
     discovery.next.progress += progress;
     return discovery.next.progress >= DISCOVERY_THRESHOLD;
-  }
-
-  private InfluenceSource getInfluence(Entity empire) {
-    Entity capital = capitals.get(empire).capital;
-    InfluenceSource influence = influences.get(capital);
-    return influence;
   }
 
   private void discoverNext(Entity entity, Discoveries discovery) {
@@ -279,7 +270,7 @@ public final class DiscoverySystem extends EntitySystem {
     if (terrains == null || terrains.isEmpty())
       return true;
 
-    InfluenceSource influence = getInfluence(entity);
+    InfluenceSource influence = influences.get(entity);
     for (MapPosition pos : influence.influencedTiles)
       if (terrains.contains(map.getTerrainAt(pos)))
         return true;
@@ -288,7 +279,7 @@ public final class DiscoverySystem extends EntitySystem {
   }
 
   public int guessNbTurns(Discoveries discovery, Entity empire, Discovery d) {
-    InfluenceSource influence = getInfluence(empire);
+    InfluenceSource influence = influences.get(empire);
 
     Set<Terrain> terrains = d.terrains;
     int progressPerTurn = discovery.progressPerTurn;

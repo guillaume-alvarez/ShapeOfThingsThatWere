@@ -32,8 +32,6 @@ import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
-import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
@@ -144,7 +142,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
-    world.setSystem(new SpecialDiscoveriesSystem(map), true);
+    world.setSystem(new SpecialDiscoveriesSystem(), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings, map), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
@@ -263,7 +261,7 @@ public final class OverworldScreen extends AbstractScreen {
     for (Empire empire : map.empires)
       list.add(createEmpire(empire.newCityName(), empire));
 
-    selectedTile = player.getComponent(Capital.class).capital.getComponent(MapPosition.class);
+    selectedTile = player.getComponent(MapPosition.class);
 
     // You have to process the world once to get all the entities loaded up with
     // the "Stats" component - I'm not sure why, but if you don't, the bag of
@@ -283,18 +281,11 @@ public final class OverworldScreen extends AbstractScreen {
         || !map.getEntitiesAt(x, y).isEmpty()
         // or on neighbor tiles
         || hasNeighbourCity(x, y));
-    Entity city = EntityFactory.createCity(world, x, y, name, empire);
-    Entity entity;
-
-    entity = EntityFactory.createEmpire(world, city, empire);
-    if (empire.isComputerControlled()) {
-      city.edit().add(new AIControlled());
-      entity.edit().add(new AIControlled());
-    } else {
+    Entity entity = EntityFactory.createEmpire(world, x, y, name, empire);
+    if (!empire.isComputerControlled())
       player = entity;
-    }
-    map.addEntity(city, x, y);
-    log.info("Created city {} for empire {}", name, empire);
+    map.addEntity(entity, x, y);
+    log.info("Created {} for empire {}", name, empire);
     return entity;
   }
 

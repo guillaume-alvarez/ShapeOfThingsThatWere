@@ -9,13 +9,10 @@ import java.util.Set;
 
 import com.artemis.Component;
 import com.artemis.Entity;
-import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 
 public final class InfluenceSource extends Component {
-
-  public Entity empire;
 
   public int power = -1;
 
@@ -38,11 +35,6 @@ public final class InfluenceSource extends Component {
         terrainBonus.put(t, Integer.valueOf(0));
     }
 
-  }
-
-  @Override
-  public String toString() {
-    return empire.getComponent(Empire.class).toString();
   }
 
 }

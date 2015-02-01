@@ -159,21 +159,18 @@ public final class DestinationSystem extends EntitySystem {
   }
 
   /** Return the possible move target tiles for the source. */
-  public Collection<MapPosition> getTargetTiles(Entity e) {
+  public Collection<MapPosition> getTargetTiles(Entity empire) {
     Set<MapPosition> set = new HashSet<>();
-    InfluenceSource source = source(e);
-    Diplomacy treaties = relations.get(source.empire);
+    InfluenceSource source = source(empire);
+    Diplomacy treaties = relations.get(empire);
     for (MapPosition pos : source.influencedTiles) {
       for (MapPosition neighbor : map.getNeighbors(pos)) {
         if (!CANNOT_ENTER.contains(map.getTerrainAt(neighbor))) {
           Influence inf = map.getInfluenceAt(neighbor);
           if (!inf.hasMainInfluence())
             set.add(neighbor);
-          else {
-            InfluenceSource neighborSource = sources.get(inf.getMainInfluenceSource(world));
-            if (treaties.getRelationWith(neighborSource.empire) != State.TREATY)
-              set.add(neighbor);
-          }
+          else if (treaties.getRelationWith(inf.getMainInfluenceSource(world)) != State.TREATY)
+            set.add(neighbor);
         }
       }
     }

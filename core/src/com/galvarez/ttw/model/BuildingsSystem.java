@@ -68,10 +68,10 @@ public final class BuildingsSystem extends EntitySystem {
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    for (Entity e : entities) {
-      Buildings city = cities.get(e);
+    for (Entity empire : entities) {
+      Buildings city = cities.get(empire);
       if (city.construction == null) {
-        Building next = selectNextBuilding(city, e);
+        Building next = selectNextBuilding(city, empire);
         if (next != null) {
           city.construction = next;
           city.constructionTurns = 0;
@@ -79,25 +79,23 @@ public final class BuildingsSystem extends EntitySystem {
       } else if (++city.constructionTurns >= city.construction.turns) {
         Building newBuilding = city.construction;
         Building oldBuilding = city.built.put(newBuilding.type, newBuilding);
-        InfluenceSource source = sources.get(e);
         if (oldBuilding != null)
-          effects.apply(oldBuilding.effects, source.empire, true);
-        effects.apply(newBuilding.effects, source.empire, false);
+          effects.apply(oldBuilding.effects, empire, true);
+        effects.apply(newBuilding.effects, empire, false);
         city.construction = null;
         city.constructionTurns = 0;
-        log.info("{} built {}", names.get(e), newBuilding);
-        MapPosition pos = positions.get(e);
-        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(e).color, pos.x, pos.y);
-        if (!ai.has(e))
-          notifications.addNotification(() -> screen.select(e, false), null, Type.BUILDINGS, "Built %s in %s.",
-              newBuilding, names.get(e));
+        log.info("{} built {}", names.get(empire), newBuilding);
+        MapPosition pos = positions.get(empire);
+        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(empire).color, pos.x, pos.y);
+        if (!ai.has(empire))
+          notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS, "Built %s in %s.",
+              newBuilding, names.get(empire));
       }
     }
   }
 
-  private Building selectNextBuilding(Buildings city, Entity e) {
-    InfluenceSource source = sources.get(e);
-    Entity empire = source.empire;
+  private Building selectNextBuilding(Buildings city, Entity empire) {
+    InfluenceSource source = sources.get(empire);
     Discoveries dis = discoveries.get(empire);
     for (Discovery d : dis.done) {
       Building building = buildings.get(d.name);

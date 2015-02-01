@@ -9,7 +9,6 @@ import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Buildings;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -58,7 +57,7 @@ public class EntityFactory {
     return e;
   }
 
-  public static Entity createCity(World world, int x, int y, String name, Empire empire) {
+  public static Entity createEmpire(World world, int x, int y, String name, Empire empire) {
     Entity e = world.createEntity();
 
     EntityEdit edit = e.edit();
@@ -71,8 +70,14 @@ public class EntityFactory {
     sprite.color = empire.color;
     edit.add(sprite);
 
-    edit.add(new MapPosition(x, y)).add(new Description("Tribe of " + name)).add(new InfluenceSource())
-        .add(new Buildings()).add(new Name(name)).add(new Destination()).add(empire);
+    edit.add(new Name(name)).add(new Description("Tribe of " + name));
+
+    edit.add(new MapPosition(x, y)).add(new InfluenceSource()).add(new Buildings()).add(new Destination());
+
+    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand());
+
+    if (empire.isComputerControlled())
+      edit.add(new AIControlled());
 
     return e;
   }
@@ -89,19 +94,6 @@ public class EntityFactory {
 
     if (empire.isComputerControlled())
       edit.add(new AIControlled());
-
-    return e;
-  }
-
-  public static Entity createEmpire(World world, Entity capital, Empire empire) {
-    Entity e = world.createEntity();
-
-    String name = capital.getComponent(Name.class).name;
-    e.edit().add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand())
-        .add(new Capital(capital)).add(new Name(name)).add(new Description("Tribe of " + name));
-
-    // link the capital to its empire
-    capital.getComponent(InfluenceSource.class).empire = e;
 
     return e;
   }

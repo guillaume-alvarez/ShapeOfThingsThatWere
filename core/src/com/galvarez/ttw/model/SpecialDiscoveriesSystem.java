@@ -10,16 +10,9 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
-import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Discoveries;
-import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Discovery;
-import com.galvarez.ttw.model.data.Empire;
-import com.galvarez.ttw.model.map.GameMap;
-import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
@@ -44,18 +37,6 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private ComponentMapper<Description> descriptions;
 
-  private ComponentMapper<Empire> empires;
-
-  private ComponentMapper<Capital> capitals;
-
-  private ComponentMapper<InfluenceSource> sources;
-
-  private ComponentMapper<MapPosition> positions;
-
-  private ComponentMapper<AIControlled> ai;
-
-  private ComponentMapper<ArmyCommand> armies;
-
   private NotificationsSystem notifications;
 
   private interface Special {
@@ -64,10 +45,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private final Map<String, Special> effects = new HashMap<>();
 
-  private final GameMap map;
-
-  public SpecialDiscoveriesSystem(GameMap map) {
-    this.map = map;
+  public SpecialDiscoveriesSystem() {
     effects.put(VILLAGE, new Special() {
       @Override
       public void apply(Entity empire, Discovery d, Discoveries discoveries) {
@@ -75,7 +53,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
           String name = names.get(empire).name;
           String desc = "Village of " + name;
           setDescription(empire, name, desc);
-          cannotMove(capitals.get(empire).capital);
+          cannotMove(empire);
         }
       }
     });
@@ -85,7 +63,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
         String name = names.get(empire).name;
         String desc = "City of " + name;
         setDescription(empire, name, desc);
-        cannotMove(capitals.get(empire).capital);
+        cannotMove(empire);
       }
     });
   }
@@ -97,7 +75,6 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private void setDescription(Entity empire, String name, String desc) {
     descriptions.get(empire).desc = desc;
-    descriptions.get(capitals.get(empire).capital).desc = desc;
     log.info("{} is now known as '{}'", name, desc);
     // notify all empires to player
     notifications.addNotification(null, null, Type.BUILDINGS, "%s is now known as '%s'", name, desc);

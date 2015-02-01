@@ -29,7 +29,6 @@ import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.InfluenceSource.Modifiers;
@@ -43,6 +42,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools.Border;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -90,8 +90,6 @@ public final class InfluenceSystem extends EntitySystem {
 
   private ComponentMapper<MapPosition> positions;
 
-  private ComponentMapper<Capital> capitals;
-
   private ComponentMapper<AIControlled> ai;
 
   private ComponentMapper<Army> armies;
@@ -136,7 +134,7 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   @Override
-  protected void processEntities(ImmutableBag<Entity> cities) {
+  protected void processEntities(ImmutableBag<Entity> empires) {
     // must apply each step to all sources to have a consistent behavior
 
     // first apply delta from previous turn and display it
@@ -147,29 +145,27 @@ public final class InfluenceSystem extends EntitySystem {
     }
 
     // and update source power
-    for (Entity city : cities) {
+    for (Entity city : empires) {
       updateInfluencedTiles(city);
       accumulatePower(city);
     }
 
     // then compute the delta for every entity and tile
-    for (Entity city : cities) {
-      InfluenceSource source = sources.get(city);
-      Entity empire = source.empire;
-
+    for (Entity empire : empires) {
       IntIntMap armyInfluenceOn = new IntIntMap();
       Diplomacy diplo = relations.get(empire);
       int armyPower = commands.get(empire).militaryPower;
       for (Entity enemy : diplo.getEmpires(State.WAR))
         armyInfluenceOn.put(enemy.getId(), armyPower - commands.get(enemy).militaryPower);
 
-      checkInfluencedByOther(source, city);
-      addDistanceDelta(source, city, armyInfluenceOn);
+      InfluenceSource source = sources.get(empire);
+      checkInfluencedByOther(source, empire);
+      addDistanceDelta(source, empire, armyInfluenceOn);
     }
 
-    for (Entity city : cities) {
-      InfluenceSource source = sources.get(city);
-      checkRevolt(city, source, source.empire);
+    for (Entity empire : empires) {
+      InfluenceSource source = sources.get(empire);
+      checkRevolt(empire, source);
     }
   }
 
@@ -177,26 +173,24 @@ public final class InfluenceSystem extends EntitySystem {
    * When a city tile main influence belongs to an other empire, we add a
    * tribute diplomatic relation.
    */
-  private void checkInfluencedByOther(InfluenceSource source, Entity e) {
-    Influence tile = map.getInfluenceAt(positions.get(e));
-    if (!tile.isMainInfluencer(e) && tile.hasMainInfluence()) {
-      Entity other = tile.getMainInfluenceSource(world);
-      InfluenceSource influencer = sources.get(other);
-      if (source.empire != influencer.empire) {
-        log.info("{} conquered by {}, will now be tributary to its conqueror.", e.getComponent(Name.class).name,
-            influencer.empire.getComponent(Name.class), source.empire.getComponent(Name.class));
+  private void checkInfluencedByOther(InfluenceSource source, Entity empire) {
+    Influence tile = map.getInfluenceAt(positions.get(empire));
+    if (!tile.isMainInfluencer(empire) && tile.hasMainInfluence()) {
+      Entity influencer = tile.getMainInfluenceSource(world);
+      if (empire != influencer) {
+        log.info("{} conquered by {}, will now be tributary to its conqueror.",
+            empire.getComponent(Description.class).desc, influencer.getComponent(Description.class));
         source.power--;
-        influencer.power++;
+        sources.get(influencer).power++;
         if (source.power <= 0) {
           // TODO source was destroyed, not sure what to do
         } else {
-          Diplomacy loser = relations.get(source.empire);
-          diplomaticSystem.changeRelation(source.empire, loser, influencer.empire, relations.get(influencer.empire),
-              Action.SURRENDER);
-          loser.proposals.remove(influencer.empire);
+          Diplomacy loser = relations.get(empire);
+          diplomaticSystem.changeRelation(empire, loser, influencer, relations.get(influencer), Action.SURRENDER);
+          loser.proposals.remove(influencer);
 
           // keep influence on own tile
-          tile.setInfluence(e, tile.getMaxInfluence() + 1);
+          tile.setInfluence(empire, tile.getMaxInfluence() + 1);
           source.influencedTiles.add(tile.position);
         }
       }
@@ -207,9 +201,9 @@ public final class InfluenceSystem extends EntitySystem {
     Influence tile = map.getInfluenceAt(x, y);
     for (IntIntMap.Entry e : tile.getDelta()) {
       if (e.value != 0) {
-        InfluenceSource source = sources.get(world.getEntity(e.key));
+        Entity empire = world.getEntity(e.key);
         EntityFactory.createFadingTileLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
-            empires.get(source.empire).color, x, y);
+            empires.get(empire).color, x, y);
       }
     }
     tile.applyDelta();
@@ -233,7 +227,7 @@ public final class InfluenceSystem extends EntitySystem {
           : 0;
       // do not forget the military from war
       if (tile.hasMainInfluence())
-        target += armyInfluenceOn.get(sources.get(tile.getMainInfluenceSource(world)).empire.getId(), 0);
+        target += armyInfluenceOn.get(tile.getMainInfluenceSource(world).getId(), 0);
       targets.put(entry.getKey(), target);
     }
 
@@ -278,17 +272,17 @@ public final class InfluenceSystem extends EntitySystem {
    * <p>
    * Power is lost when cities revolt.
    */
-  private void accumulatePower(Entity e) {
-    InfluenceSource source = sources.get(e);
+  private void accumulatePower(Entity empire) {
+    InfluenceSource source = sources.get(empire);
 
     int increase = source.growth + source.influencedTiles.size();
     if (increase > 0) {
-      Diplomacy diplomacy = relations.get(source.empire);
+      Diplomacy diplomacy = relations.get(empire);
       List<Entity> tributes = diplomacy.getEmpires(State.TRIBUTE);
       int remains = increase;
       for (Entity other : tributes) {
         int tribute = min(remains, increase / tributes.size());
-        sources.get(capitals.get(other).capital).powerAdvancement += tribute;
+        sources.get(other).powerAdvancement += tribute;
         remains -= tribute;
       }
       increase = remains;
@@ -311,47 +305,44 @@ public final class InfluenceSystem extends EntitySystem {
    * Cities revolt when the source power is above its stability. The higher it
    * is the higher chance it will revolt.
    */
-  private void checkRevolt(Entity city, InfluenceSource source, Entity empire) {
+  private void checkRevolt(Entity empire, InfluenceSource source) {
     Policies empirePolicies = policies.get(empire);
-    int stability = empirePolicies.stability;
-    int instability = source.power - stability;
-    if (instability > 0 && rand.nextInt(100) >= stability) {
+    int instability = source.power - empirePolicies.stability;
+    if (instability > 0 && rand.nextInt(100) < instability) {
       // revolt happens, select the tile!
       Optional<Influence> tile = source.influencedTiles
           .stream()
           .filter(p -> map.getTerrainAt(p).canStart() && !map.isOnMapBorder(p)//
-              && map.getEntitiesAt(p).isEmpty() && isAtCityBorder(city, p))
+              && map.getEntitiesAt(p).isEmpty() && isAtCityBorder(empire, p))
           .map(p -> map.getInfluenceAt(p))
           .min(
-              (i1, i2) -> compare(i1.getInfluence(city) + i1.getDelta(city) * 2,
-                  i2.getInfluence(city) + i2.getDelta(city) * 2));
+              (i1, i2) -> compare(i1.getInfluence(empire) + i1.getDelta(empire) * 2,
+                  i2.getInfluence(empire) + i2.getDelta(empire) * 2));
       if (tile.isPresent()) {
         Influence inf = tile.get();
-        createRevoltingCity(city, stability, inf);
-        // reset stability to avoid popping revolts in loop
-        empirePolicies.stability = 100;
+        createRevoltingCity(empire, instability, inf);
+        // reset power below stability to avoid popping revolts in loop
+        source.power = empirePolicies.stability - instability;
       } else
-        log.warn("Found no tile to revolt for {} with stability at {}%", city.getComponent(Name.class), stability);
+        log.warn("Found no tile to revolt for {} with instability at {}%", empire.getComponent(Name.class), instability);
     }
   }
 
-  private void createRevoltingCity(Entity city, int stability, Influence inf) {
+  private void createRevoltingCity(Entity empire, int instability, Influence inf) {
     Entity mainInfluence = world.getEntity(inf.getMainInfluenceSource());
-    Culture culture = empires.get(sources.get(mainInfluence).empire).culture;
+    Culture culture = empires.get(empire).culture;
     Empire data = new Empire(settings.guessColor(), culture, true);
     settings.empires.add(data);
-    Entity revoltCity = EntityFactory.createCity(world, inf.position.x, inf.position.y, culture.newCityName(), data)//
-        .edit().add(new AIControlled()).getEntity();
-    Entity revoltEmpire = EntityFactory.createEmpire(world, revoltCity, data)//
-        .edit().add(new AIControlled()).getEntity();
-    inf.setInfluence(revoltCity, inf.getInfluence(mainInfluence) + inf.getDelta(mainInfluence) + inf.terrain.moveCost()
+    Entity revoltee = EntityFactory.createEmpire(world, inf.position.x, inf.position.y, culture.newCityName(), data);
+    inf.setInfluence(revoltee, inf.getInfluence(mainInfluence) + inf.getDelta(mainInfluence) + inf.terrain.moveCost()
         + 1);
-    inf.addInfluenceDelta(revoltCity, 100 - stability);
-    log.info("Created revolting city {} for empire {}", revoltCity.getComponent(Name.class),
-        revoltEmpire.getComponent(Name.class));
-    if (!ai.has(city))
-      notifications.addNotification(() -> screen.select(revoltCity, false), null, Type.REVOLT,
-          "City of %s revolted from %s!", revoltCity.getComponent(Name.class), city.getComponent(Name.class));
+    // get starting power from generating instability
+    sources.get(revoltee).power = instability;
+    inf.addInfluenceDelta(revoltee, INITIAL_POWER + instability);
+    log.info("Created revolting {}", revoltee.getComponent(Description.class));
+    if (!ai.has(empire))
+      notifications.addNotification(() -> screen.select(revoltee, false), null, Type.REVOLT, "%s revolted from %s!",
+          revoltee.getComponent(Description.class), empire.getComponent(Description.class));
   }
 
   private boolean isAtCityBorder(Entity city, MapPosition pos) {
@@ -385,8 +376,8 @@ public final class InfluenceSystem extends EntitySystem {
 
     // cannot influence on tiles from empires we have a treaty with
     if (influence.hasMainInfluence()) {
-      Diplomacy treaties = relations.get(sources.get(source).empire);
-      if (treaties.getRelationWith(sources.get(influence.getMainInfluenceSource(world)).empire) == State.TREATY)
+      Diplomacy treaties = relations.get(source);
+      if (treaties.getRelationWith(influence.getMainInfluenceSource(world)) == State.TREATY)
         return false;
     }
 

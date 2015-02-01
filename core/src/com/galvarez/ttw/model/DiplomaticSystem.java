@@ -22,7 +22,6 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
@@ -97,7 +96,7 @@ public final class DiplomaticSystem extends EntitySystem {
 
   @SuppressWarnings("unchecked")
   public DiplomaticSystem(OverworldScreen screen, boolean startWithDiplomacy) {
-    super(Aspect.getAspectForAll(Diplomacy.class, Capital.class));
+    super(Aspect.getAspectForAll(Diplomacy.class));
     this.screen = screen;
     this.startWithDiplomacy = startWithDiplomacy;
   }

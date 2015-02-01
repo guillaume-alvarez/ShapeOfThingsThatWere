@@ -13,7 +13,6 @@ import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -31,8 +30,6 @@ public final class EffectsSystem extends VoidEntitySystem {
 
   private ComponentMapper<Diplomacy> diplomacies;
 
-  private ComponentMapper<Capital> capitals;
-
   private ComponentMapper<InfluenceSource> influences;
 
   private final class TerrainEffect implements Effect<Number> {
@@ -44,7 +41,7 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public void apply(Number value, Entity empire, boolean revert) {
-      InfluenceSource source = getInfluence(empire);
+      InfluenceSource source = influences.get(empire);
       int delta = value.intValue();
       Integer current = source.modifiers.terrainBonus.get(terrain);
       if (revert)
@@ -162,7 +159,7 @@ public final class EffectsSystem extends VoidEntitySystem {
   private final class GrowthEffect implements Effect<Number> {
     @Override
     public void apply(Number value, Entity empire, boolean revert) {
-      InfluenceSource source = getInfluence(empire);
+      InfluenceSource source = influences.get(empire);
       if (revert)
         source.growth -= value.intValue();
       else
@@ -206,12 +203,6 @@ public final class EffectsSystem extends VoidEntitySystem {
   }
 
   public EffectsSystem() {
-  }
-
-  private InfluenceSource getInfluence(Entity empire) {
-    Entity capital = capitals.get(empire).capital;
-    InfluenceSource influence = influences.get(capital);
-    return influence;
   }
 
   @Override

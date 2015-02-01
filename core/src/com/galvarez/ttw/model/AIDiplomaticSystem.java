@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.IntIntMap.Entry;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Capital;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
@@ -30,8 +29,6 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   private static final Logger log = LoggerFactory.getLogger(AIDiplomaticSystem.class);
 
   private ComponentMapper<Diplomacy> relations;
-
-  private ComponentMapper<Capital> capitals;
 
   private ComponentMapper<MapPosition> positions;
 
@@ -61,14 +58,14 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     if (diplo.knownStates.contains(State.TREATY) && neighbors.size() > 2) {
       // sign treaty with half the neighbors, not the last one (WAR for him!)
       for (int i = 0; i < neighbors.size() / 2 && i < neighbors.size() - 1; i++) {
-        Entity target = empire(neighbors.get(i));
+        Entity target = neighbors.get(i);
         makeProposal(entity, diplo, target, Action.SIGN_TREATY);
       }
     }
     if (diplo.knownStates.contains(State.WAR)) {
       // try to be at war with somebody, and only that somebody
       List<Entity> atWarWith = diplo.getEmpires(State.WAR);
-      Entity target = neighbors.isEmpty() ? null : empire(neighbors.get(neighbors.size() - 1));
+      Entity target = neighbors.isEmpty() ? null : neighbors.get(neighbors.size() - 1);
       // to change our war target, first make peace with preceding one
       for (Entity war : atWarWith) {
         if (target != war)
@@ -90,22 +87,16 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     }
   }
 
-  private Entity empire(Entity source) {
-    InfluenceSource city = sources.get(source);
-    return city.empire;
-  }
-
-  /** Neighbors from the nicest to the baddest. */
+  /** Neighbors from the nicest to the worst. */
   private List<Entity> getNeighboringSources(Entity entity) {
     IntIntMap neighbors = new IntIntMap(16);
-    Entity capital = capitals.get(entity).capital;
-    MapPosition pos = positions.get(capital);
+    MapPosition pos = positions.get(entity);
     for (int i = 1; i < 10; i++) {
       // TODO really search for all tiles
-      addInfluencer(neighbors, capital, pos.x + i, pos.y + i);
-      addInfluencer(neighbors, capital, pos.x - i, pos.y + i);
-      addInfluencer(neighbors, capital, pos.x + i, pos.y - i);
-      addInfluencer(neighbors, capital, pos.x - i, pos.y - i);
+      addInfluencer(neighbors, entity, pos.x + i, pos.y + i);
+      addInfluencer(neighbors, entity, pos.x - i, pos.y + i);
+      addInfluencer(neighbors, entity, pos.x + i, pos.y - i);
+      addInfluencer(neighbors, entity, pos.x - i, pos.y - i);
     }
     List<Entry> entries = new ArrayList<>();
     neighbors.entries().forEach(e -> entries.add(e));
