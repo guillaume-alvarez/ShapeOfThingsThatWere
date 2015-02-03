@@ -61,10 +61,13 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     mainInfluence = terrain.moveCost() - 1;
     mainInfluenceSource = -1;
     if (influence.size > 0) {
-      for (Entry e : influence) {
+      for (Iterator<Entry> it = influence.iterator(); it.hasNext();) {
+        Entry e = it.next();
         if (e.value > mainInfluence) {
           mainInfluenceSource = e.key;
           mainInfluence = e.value;
+        } else if (e.value <= 0) {
+          it.remove();
         }
       }
     }
