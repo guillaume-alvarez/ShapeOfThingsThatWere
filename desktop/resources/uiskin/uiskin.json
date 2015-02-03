@@ -1,6 +1,10 @@
 {
-	com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: irisUPC.fnt } },
+	com.badlogic.gdx.graphics.g2d.BitmapFont: {
+		default-font: { file: irisUPC.fnt },
+		colored-font: { file: irisUPC.fnt, markupEnabled: true },
+	},
 	com.badlogic.gdx.graphics.Color: {
+		white: { a: 1, b: 1, g: 1, r: 1 },
 		black: { a: 1, b: 0, g: 0, r: 0 },
 		gray:  { a: 1, b: 0.5, g: 0.5, r: 0.5 },
     red: { a: 1, b: 0, g: 0, r: 1 }
@@ -17,6 +21,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		default: { font: default-font, fontColor: black },
+		colored: { font: default-font, fontColor: white },
 		inactive: { font: default-font, fontColor: gray }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {

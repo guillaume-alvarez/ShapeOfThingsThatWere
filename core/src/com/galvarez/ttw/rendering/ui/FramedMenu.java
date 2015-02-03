@@ -213,7 +213,21 @@ public class FramedMenu {
   /** Adds a label to the menu. */
   public Label addLabel(String label) {
     LabelStyle style = skin.get(LabelStyle.class);
-    style.font.setMarkupEnabled(true);
+    Label l = new Label(label, style);
+    l.setWrap(true);
+
+    table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+    table.row();
+
+    return l;
+  }
+
+  /**
+   * Adds a label to the menu, using color markup from
+   * https://github.com/libgdx/libgdx/wiki/Color-Markup-Language.
+   */
+  public Label addColoredLabel(String label) {
+    LabelStyle style = skin.get("colored", LabelStyle.class);
     Label l = new Label(label, style);
     l.setWrap(true);
 

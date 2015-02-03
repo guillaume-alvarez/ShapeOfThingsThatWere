@@ -166,15 +166,12 @@ public class MenuBuilder {
   private Influence addInfluences(MapPosition tile) {
     Influence influence = map.getInfluenceAt(tile);
     int mainSource = influence.getMainInfluenceSource();
-    StringBuilder sb = new StringBuilder("Influence: ");
+    StringBuilder sb = new StringBuilder("[BLACK]Influence: ");
     for (IntIntMap.Entry e : influence) {
       Entity source = world.getEntity(e.key);
       Empire empire = source.getComponent(Empire.class);
-      // FIXME color [] flags seems not to be taken into account, whereas it
-      // follows guidelines from
-      // https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
       sb.append("\n [#").append(empire.color.toString().toUpperCase()).append(']')
-          .append(source.getComponent(Name.class).name).append("[]: ")
+          .append(source.getComponent(Name.class).name).append(": ")
           .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
       int delta = influence.getDelta(source);
       if (delta > 0)
@@ -186,7 +183,7 @@ public class MenuBuilder {
         sb.append(" (main)");
       sb.append("[]");
     }
-    selectionMenu.addLabel(sb.toString());
+    selectionMenu.addColoredLabel(sb.toString());
     return influence;
   }
 
