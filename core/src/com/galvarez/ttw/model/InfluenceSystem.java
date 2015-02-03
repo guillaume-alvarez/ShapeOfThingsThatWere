@@ -335,10 +335,14 @@ public final class InfluenceSystem extends EntitySystem {
     settings.empires.add(data);
     Entity revoltee = EntityFactory.createEmpire(world, inf.position.x, inf.position.y, culture.newCityName(), data);
     inf.setInfluence(revoltee, inf.getInfluence(mainInfluence) + inf.getDelta(mainInfluence) + inf.terrain.moveCost()
-        + 1);
+        + instability);
     // get starting power from generating instability
     sources.get(revoltee).power = instability;
-    inf.addInfluenceDelta(revoltee, INITIAL_POWER + instability);
+    // do not forget neighboring tiles
+    for (MapPosition n : map.getNeighbors(inf.position)) {
+      Influence infn = map.getInfluenceAt(n);
+      infn.setInfluence(revoltee, instability + infn.getInfluence(mainInfluence));
+    }
     log.info("Created revolting {}", revoltee.getComponent(Description.class));
     if (!ai.has(empire))
       notifications.addNotification(() -> screen.select(revoltee, false), null, Type.REVOLT, "%s revolted from %s!",
@@ -346,17 +350,21 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   private boolean isAtCityBorder(Entity city, MapPosition pos) {
+    boolean atInfluenceBorder = false;
     for (Border b : Border.values()) {
       MapPosition neighbor = b.getNeighbor(pos);
       // don't accept tiles on map border
       if (!map.isOnMap(neighbor))
         return false;
 
+      // don't accept near entities
+      if (!map.getEntitiesAt(neighbor).isEmpty())
+        return false;
+
       // accept if different overlord
-      if (!map.getInfluenceAt(neighbor).isMainInfluencer(city))
-        return true;
+      atInfluenceBorder |= !map.getInfluenceAt(neighbor).isMainInfluencer(city);
     }
-    return false;
+    return atInfluenceBorder;
   }
 
   public int getRequiredPowerAdvancement(InfluenceSource source) {
