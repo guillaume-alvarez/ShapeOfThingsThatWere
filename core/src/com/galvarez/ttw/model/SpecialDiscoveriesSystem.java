@@ -17,6 +17,7 @@ import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * Contains 'special discoveries', having special effects not covered by
@@ -45,7 +46,10 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private final Map<String, Special> effects = new HashMap<>();
 
-  public SpecialDiscoveriesSystem() {
+  private final OverworldScreen screen;
+
+  public SpecialDiscoveriesSystem(OverworldScreen screen) {
+    this.screen = screen;
     effects.put(VILLAGE, new Special() {
       @Override
       public void apply(Entity empire, Discovery d, Discoveries discoveries) {
@@ -77,7 +81,8 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
     descriptions.get(empire).desc = desc;
     log.info("{} is now known as '{}'", name, desc);
     // notify all empires to player
-    notifications.addNotification(null, null, Type.BUILDINGS, "%s is now known as '%s'", name, desc);
+    notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS, "%s is now known as '%s'",
+        name, desc);
   }
 
   private void cannotMove(Entity capital) {

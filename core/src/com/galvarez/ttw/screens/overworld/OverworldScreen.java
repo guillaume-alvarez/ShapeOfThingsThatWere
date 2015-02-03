@@ -142,7 +142,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
-    world.setSystem(new SpecialDiscoveriesSystem(), true);
+    world.setSystem(new SpecialDiscoveriesSystem(this), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings, map), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
