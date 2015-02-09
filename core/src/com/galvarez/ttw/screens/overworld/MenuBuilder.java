@@ -171,7 +171,7 @@ public class MenuBuilder {
       Entity source = world.getEntity(e.key);
       Empire empire = source.getComponent(Empire.class);
       sb.append("\n [#").append(empire.color.toString().toUpperCase()).append(']')
-          .append(source.getComponent(Name.class).name).append(": ")
+          .append(source.getComponent(Name.class).name).append("[]: ")
           .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
       int delta = influence.getDelta(source);
       if (delta > 0)
@@ -181,7 +181,6 @@ public class MenuBuilder {
       // ignore == 0
       if (e.key == mainSource)
         sb.append(" (main)");
-      sb.append("[]");
     }
     selectionMenu.addColoredLabel(sb.toString());
     return influence;
