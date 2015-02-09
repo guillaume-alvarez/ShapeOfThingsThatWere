@@ -321,8 +321,9 @@ public final class InfluenceSystem extends EntitySystem {
       if (tile.isPresent()) {
         Influence inf = tile.get();
         createRevoltingCity(empire, instability, inf);
-        // reset power below stability to avoid popping revolts in loop
-        source.power = empirePolicies.stability - instability;
+        // decrease power of stability to avoid popping revolts in loop
+        source.power -= instability;
+        empirePolicies.stability += source.power;
       } else
         log.warn("Found no tile to revolt for {} with instability at {}%", empire.getComponent(Name.class), instability);
     }
