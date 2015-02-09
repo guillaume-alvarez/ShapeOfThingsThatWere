@@ -324,8 +324,14 @@ public final class InfluenceSystem extends EntitySystem {
         // decrease power of stability to avoid popping revolts in loop
         source.power -= instability;
         empirePolicies.stability += source.power;
-      } else
-        log.warn("Found no tile to revolt for {} with instability at {}%", empire.getComponent(Name.class), instability);
+      } else {
+        source.power -= instability;
+        log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
+            empire.getComponent(Name.class), instability, source.power);
+        if (!ai.has(empire))
+          notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
+              "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power);
+      }
     }
   }
 
