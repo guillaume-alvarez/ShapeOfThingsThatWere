@@ -138,10 +138,6 @@ public final class DestinationSystem extends EntitySystem {
       dest.target = null;
       dest.progress = 0;
     }
-    if (sources.has(e)) {
-      Influence inf = map.getInfluenceAt(target);
-      inf.addInfluenceDelta(e, inf.getMaxInfluence());
-    }
   }
 
   private static final Set<Terrain> CANNOT_ENTER = EnumSet
