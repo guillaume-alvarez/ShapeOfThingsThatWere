@@ -159,9 +159,10 @@ public final class DestinationSystem extends EntitySystem {
   }
 
   /** Return the possible move target tiles for the source. */
-  public Collection<MapPosition> getTargetTiles(Entity empire) {
+  public Collection<MapPosition> getTargetTiles(Entity e) {
+    Entity empire = armies.has(e) ? armies.get(e).source : e;
     Set<MapPosition> set = new HashSet<>();
-    InfluenceSource source = source(empire);
+    InfluenceSource source = sources.get(empire);
     Diplomacy treaties = relations.get(empire);
     for (MapPosition pos : source.influencedTiles) {
       for (MapPosition neighbor : map.getNeighbors(pos)) {
@@ -175,13 +176,6 @@ public final class DestinationSystem extends EntitySystem {
       }
     }
     return set;
-  }
-
-  private InfluenceSource source(Entity e) {
-    if (sources.has(e))
-      return sources.get(e);
-    else
-      return sources.get(armies.get(e).source);
   }
 
   public void computePath(Entity e, MapPosition target) {
