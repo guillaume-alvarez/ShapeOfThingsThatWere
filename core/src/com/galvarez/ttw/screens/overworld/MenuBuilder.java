@@ -25,6 +25,7 @@ import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
+import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
@@ -76,7 +77,7 @@ public class MenuBuilder {
 
     skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
-    turnMenu = new FramedMenu(skin, 256, 128);
+    turnMenu = new FramedMenu(skin, 256, 256);
     indicationMenu = new FramedMenu(skin, 512, 512);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
@@ -89,7 +90,11 @@ public class MenuBuilder {
 
     // EndTurn button
     turnMenu.addButton("End turn (year " + screen.getCurrentYear() + ")",//
-        null, () -> screen.endTurn(), screen.canFinishTurn());
+        null, screen::endTurn, screen.canFinishTurn());
+
+    // Access to score ladder
+    Score score = screen.player.getComponent(Score.class);
+    turnMenu.addButton(score.totalScore + " (+" + score.lastTurnPoints + ")", screen::scoresMenu);
 
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
   }
@@ -114,26 +119,26 @@ public class MenuBuilder {
     empireMenu.addLabel("- " + screen.player.getComponent(Name.class).name + " -");
 
     // here present a new screen with diplomatic relations
-    empireMenu.addButton("Diplomacy", () -> screen.diplomacyMenu());
+    empireMenu.addButton("Diplomacy", screen::diplomacyMenu);
 
     // here present a new screen with army preferences
     ArmyCommand command = screen.player.getComponent(ArmyCommand.class);
     empireMenu.addButton("Army (power=" + (command.militaryPower - command.usedPower) + "/" + command.militaryPower
-        + ")", () -> screen.armiesMenu());
+        + ")", screen::armiesMenu);
 
     // here present a sub-menu to see current discovery and be able to change it
     Discoveries discoveries = screen.player.getComponent(Discoveries.class);
     empireMenu.addButton("Discovery "
         + (discoveries != null && discoveries.next != null ? "(" + discoveries.next.progress + "%)" : "(NONE)"),
-        () -> screen.discoveryMenu());
+        screen::discoveryMenu);
 
     // here present a new screen to choose policies
     Policies policies = screen.player.getComponent(Policies.class);
     int stability = policies.stability - screen.player.getComponent(InfluenceSource.class).power;
     if (stability >= 0)
-      empireMenu.addButton("Policies (stability +" + stability + ")", () -> screen.policiesMenu());
+      empireMenu.addButton("Policies (stability +" + stability + ")", screen::policiesMenu);
     else
-      empireMenu.addButton("Policies (stability [RED]" + stability + "[])", () -> screen.policiesMenu());
+      empireMenu.addButton("Policies (stability [RED]" + stability + "[])", screen::policiesMenu);
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }

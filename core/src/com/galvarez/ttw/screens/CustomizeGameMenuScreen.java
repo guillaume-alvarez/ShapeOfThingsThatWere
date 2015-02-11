@@ -107,7 +107,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     actions.clear();
     actions.addBooleanSelectBox("Start with diplomacy?", settings.startWithDiplomacy.get(),
         s -> settings.startWithDiplomacy.set(s));
-    actions.addButton("Add new empire", "", () -> createNewEmpire(),
+    actions.addButton("Add new empire", "", this::createNewEmpire,
         settings.empires.size() < SessionSettings.COLORS.size());
     actions.addButton("Start new game", () -> game.startGame(settings));
     actions.addToStage(stage, 30, empires.getY() - 30, false);

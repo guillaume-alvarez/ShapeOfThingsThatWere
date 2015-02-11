@@ -59,7 +59,7 @@ public final class ArmiesMenuScreen extends AbstractPausedScreen<AbstractScreen>
 
   private void createTopMenu() {
     topMenu.clear();
-    topMenu.addButton("Resume game", () -> resumeGame());
+    topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
   }
 

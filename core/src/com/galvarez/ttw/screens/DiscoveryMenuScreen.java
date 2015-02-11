@@ -45,7 +45,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
   @Override
   protected void initMenu() {
     topMenu.clear();
-    topMenu.addButton("Resume game", () -> resumeGame());
+    topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     lastDiscovery.clear();

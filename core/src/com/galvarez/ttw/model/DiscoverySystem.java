@@ -147,7 +147,7 @@ public final class DiscoverySystem extends EntitySystem {
     super.inserted(e);
     if (e == screen.player) {
       Discoveries d = empires.get(e);
-      notifications.addNotification(() -> screen.discoveryMenu(), () -> d.next != null, Type.DISCOVERY,
+      notifications.addNotification(screen::discoveryMenu, () -> d.next != null, Type.DISCOVERY,
           "No research selected!");
     }
   }
@@ -183,8 +183,8 @@ public final class DiscoverySystem extends EntitySystem {
     if (!ai.has(entity)) {
       Condition condition = !possibleDiscoveries(entity, discovery).isEmpty() ? (() -> discovery.next != null
           || possibleDiscoveries(entity, discovery).isEmpty()) : null;
-      notifications.addNotification(() -> screen.discoveryMenu(), condition, Type.DISCOVERY, "Discovered %s: %s",
-          target, target.effects.isEmpty() ? "No effect." : join(", ", effectsStrings(target)));
+      notifications.addNotification(screen::discoveryMenu, condition, Type.DISCOVERY, "Discovered %s: %s", target,
+          target.effects.isEmpty() ? "No effect." : join(", ", effectsStrings(target)));
     }
     discovery.done.add(target);
     discovery.next = null;

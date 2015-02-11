@@ -31,6 +31,7 @@ import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
+import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
@@ -52,6 +53,7 @@ import com.galvarez.ttw.screens.DiplomacyMenuScreen;
 import com.galvarez.ttw.screens.DiscoveryMenuScreen;
 import com.galvarez.ttw.screens.PauseMenuScreen;
 import com.galvarez.ttw.screens.PoliciesMenuScreen;
+import com.galvarez.ttw.screens.ScoresMenuScreen;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
 
 public final class OverworldScreen extends AbstractScreen {
@@ -85,6 +87,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final ArmiesSystem armiesSystem;
 
   private final DestinationSystem destinationSystem;
+
+  private final ScoreSystem scoreSystem;
 
   private final AIDestinationSystem aiDestination;
 
@@ -123,6 +127,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final PoliciesMenuScreen policiesScreen;
 
+  private final ScoresMenuScreen scoresScreen;
+
   private final ArmiesMenuScreen armiesScreen;
 
   private final NotificationsSystem notificationsSystem;
@@ -150,6 +156,7 @@ public final class OverworldScreen extends AbstractScreen {
     influenceSystem = world.setSystem(new InfluenceSystem(map, settings, this), true);
     armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
+    scoreSystem = world.setSystem(new ScoreSystem(), true);
     aiDestination = world.setSystem(new AIDestinationSystem(map, this), true);
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
@@ -168,6 +175,7 @@ public final class OverworldScreen extends AbstractScreen {
     influenceSystem.process();
     armiesSystem.process();
     destinationSystem.process();
+    scoreSystem.process();
     influenceRenderSystem.preprocess();
     notificationsSystem.process();
     log.info("The world is initialized");
@@ -188,6 +196,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
     policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem);
+    scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem);
     armiesScreen = new ArmiesMenuScreen(game, world, batch, this, player, armiesSystem);
   }
 
@@ -314,6 +323,7 @@ public final class OverworldScreen extends AbstractScreen {
     armiesSystem.process();
     destinationSystem.process();
     influenceSystem.process();
+    scoreSystem.process();
 
     world.setDelta(0);
     world.process();
@@ -402,6 +412,10 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void policiesMenu() {
     game.setScreen(policiesScreen);
+  }
+
+  public void scoresMenu() {
+    game.setScreen(scoresScreen);
   }
 
   public void select(Entity e, boolean flagIfMoveable) {

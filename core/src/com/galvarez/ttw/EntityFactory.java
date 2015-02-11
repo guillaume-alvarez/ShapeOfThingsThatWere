@@ -14,6 +14,7 @@ import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
+import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.components.ColorAnimation;
@@ -74,7 +75,8 @@ public class EntityFactory {
 
     edit.add(new MapPosition(x, y)).add(new InfluenceSource()).add(new Buildings()).add(new Destination());
 
-    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand());
+    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand())
+        .add(new Score());
 
     if (empire.isComputerControlled())
       edit.add(new AIControlled());

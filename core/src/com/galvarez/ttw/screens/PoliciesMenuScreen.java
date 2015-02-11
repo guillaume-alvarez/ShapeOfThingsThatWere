@@ -69,7 +69,7 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
   @Override
   protected void initMenu() {
     topMenu.clear();
-    topMenu.addButton("Resume game", () -> resumeGame());
+    topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     empirePolicies.clear();

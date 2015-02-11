@@ -59,7 +59,7 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     if (actionMenu != null)
       actionMenu.clear();
     topMenu.clear();
-    topMenu.addButton("Resume game", () -> resumeGame());
+    topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     menus.forEach(m -> m.clear());

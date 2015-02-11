@@ -142,11 +142,11 @@ public final class DiplomaticSystem extends EntitySystem {
     log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
         target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
     if (!ai.has(entity))
-      notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
-          "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
+      notifications.addNotification(screen::diplomacyMenu, null, Type.DIPLOMACY, "Your relation with %s is now %s!",
+          target.getComponent(Name.class), action.afterMe);
     else if (!ai.has(target))
-      notifications.addNotification(() -> screen.diplomacyMenu(), null, Type.DIPLOMACY,
-          "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
+      notifications.addNotification(screen::diplomacyMenu, null, Type.DIPLOMACY, "Your relation with %s is now %s!",
+          entity.getComponent(Name.class), action.afterYou);
   }
 
   public Collection<Action> getPossibleActions(Diplomacy diplo, Entity target) {
