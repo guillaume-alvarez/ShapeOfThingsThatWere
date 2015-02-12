@@ -341,14 +341,13 @@ public final class InfluenceSystem extends EntitySystem {
     Empire data = new Empire(settings.guessColor(), culture, true);
     settings.empires.add(data);
     Entity revoltee = EntityFactory.createEmpire(world, inf.position.x, inf.position.y, culture.newCityName(), data);
-    inf.setInfluence(revoltee, inf.getInfluence(mainInfluence) + inf.getDelta(mainInfluence) + inf.terrain.moveCost()
-        + instability);
+    inf.setInfluence(revoltee, inf.getMaxInfluence() + inf.getDelta(mainInfluence) + instability);
     // get starting power from generating instability
     sources.get(revoltee).power = instability;
     // do not forget neighboring tiles
     for (MapPosition n : map.getNeighbors(inf.position)) {
-      Influence infn = map.getInfluenceAt(n);
-      infn.setInfluence(revoltee, instability + infn.getInfluence(mainInfluence));
+      Influence neighbor = map.getInfluenceAt(n);
+      neighbor.setInfluence(revoltee, instability + neighbor.getInfluence(mainInfluence));
     }
     log.info("Created revolting {}", revoltee.getComponent(Description.class));
     if (!ai.has(empire))

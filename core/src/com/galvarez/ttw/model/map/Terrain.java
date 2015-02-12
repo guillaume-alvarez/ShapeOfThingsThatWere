@@ -19,7 +19,7 @@ public enum Terrain {
 
   GRASSLAND("grassland", new Color(0, 0.5f, 0, 1), 15, true),
 
-  FOREST("forest", Color.OLIVE, 30, false),
+  FOREST("forest", Color.OLIVE, 30, true),
 
   HILLS("hills", Color.ORANGE, 30, true),
 
