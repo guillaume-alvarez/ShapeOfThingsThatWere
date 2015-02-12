@@ -145,7 +145,7 @@ public final class DestinationSystem extends EntitySystem {
 
   private boolean canMoveTo(Entity e, MapPosition next) {
     Terrain terrain = map.getTerrainAt(next);
-    if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || !map.getEntitiesAt(next).isEmpty())
+    if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || map.hasEntity(next))
       return false;
 
     if (armies.has(e))

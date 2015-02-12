@@ -85,8 +85,10 @@ public final class ArmiesMenuScreen extends AbstractPausedScreen<AbstractScreen>
       listMenu.addButton("Create new army with " + availablePower + " power (of " + command.militaryPower + ")",
           () -> {
             Entity newArmy = system.createNewArmy(player, availablePower);
-            createListMenu();
-            createArmyMenu(newArmy);
+            if (newArmy != null) {
+              createListMenu();
+              createArmyMenu(newArmy);
+            }
           });
     else
       listMenu.addLabel("- Cannot create a new army: no available military power. -");

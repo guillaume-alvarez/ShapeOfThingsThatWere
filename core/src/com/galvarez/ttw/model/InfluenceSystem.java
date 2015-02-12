@@ -313,7 +313,7 @@ public final class InfluenceSystem extends EntitySystem {
       Optional<Influence> tile = source.influencedTiles
           .stream()
           .filter(p -> map.getTerrainAt(p).canStart() && !map.isOnMapBorder(p)//
-              && map.getEntitiesAt(p).isEmpty() && isAtCityBorder(empire, p))
+              && !map.hasEntity(p) && isAtCityBorder(empire, p))
           .map(p -> map.getInfluenceAt(p))
           .min(
               (i1, i2) -> compare(i1.getInfluence(empire) + i1.getDelta(empire) * 2,
@@ -364,7 +364,7 @@ public final class InfluenceSystem extends EntitySystem {
         return false;
 
       // don't accept near entities
-      if (!map.getEntitiesAt(neighbor).isEmpty())
+      if (map.hasEntity(pos))
         return false;
 
       // accept if different overlord

@@ -1,7 +1,5 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
-import java.util.List;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Input.Keys;
@@ -63,20 +61,7 @@ public final class OverworldSelectorController extends InputAdapter {
     // in any case there is a tile
     if (gameMap.isOnMap(coords)) {
       // Check the entityID of the tile they click on
-      List<Entity> entities = gameMap.getEntitiesAt(coords.x, coords.y);
-      if (entities.isEmpty())
-        inputManager.select(coords, null, true);
-      else if (entities.size() == 1)
-        inputManager.select(coords, entities.get(0), true);
-      // select next when clicking multiple times one the same tile
-      else if (coords.equals(screen.selectedTile)) {
-        int i = entities.indexOf(inputManager.selectedEntity);
-        if (i >= 0)
-          inputManager.select(coords, entities.get((i + 1) % entities.size()), true);
-        else
-          inputManager.select(coords, entities.get(0), true);
-      } else
-        inputManager.select(coords, entities.get(0), true);
+      inputManager.select(coords, gameMap.getEntityAt(coords), true);
       return true;
     }
 

@@ -1,7 +1,5 @@
 package com.galvarez.ttw.model;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,9 +95,8 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
   private int estimate(Entity e, MapPosition p) {
     int score = 0;
     for (MapPosition n : map.getNeighbors(p.x, p.y, 2)) {
-      List<Entity> ne = map.getEntitiesAt(n);
       // worst case when near other city
-      if (!ne.isEmpty() && !ne.contains(e))
+      if (map.getEntityAt(n) != null)
         score -= 10;
       // some terrains are best
       Terrain terrain = map.getTerrainAt(p);

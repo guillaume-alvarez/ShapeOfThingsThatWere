@@ -287,20 +287,20 @@ public final class OverworldScreen extends AbstractScreen {
       y = MathUtils.random(map.height - 4) + 2;
     } while (!map.getTerrainAt(x, y).canStart()
     // avoid having two cities on the same tile
-        || !map.getEntitiesAt(x, y).isEmpty()
+        || map.getEntityAt(x, y) != null
         // or on neighbor tiles
         || hasNeighbourCity(x, y));
     Entity entity = EntityFactory.createEmpire(world, x, y, name, empire);
     if (!empire.isComputerControlled())
       player = entity;
-    map.addEntity(entity, x, y);
+    map.setEntity(entity, x, y);
     log.info("Created {} for empire {}", name, empire);
     return entity;
   }
 
   private boolean hasNeighbourCity(int x, int y) {
     for (MapPosition pos : map.getNeighbors(x, y, 2))
-      if (!map.getEntitiesAt(pos.x, pos.y).isEmpty())
+      if (map.getEntityAt(pos.x, pos.y) != null)
         return true;
     return false;
   }

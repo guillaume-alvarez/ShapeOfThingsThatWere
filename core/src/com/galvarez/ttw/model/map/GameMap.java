@@ -1,8 +1,6 @@
 package com.galvarez.ttw.model.map;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -15,7 +13,7 @@ public final class GameMap {
 
   public final Terrain[][] map;
 
-  private final List<Entity>[][] entitiesByCoord;
+  private final Entity[][] entityByCoord;
 
   private final MapPosition[][] posByCoord;
 
@@ -35,7 +33,7 @@ public final class GameMap {
     width = map.length;
     height = map[0].length;
 
-    entitiesByCoord = new List[width][height];
+    entityByCoord = new Entity[width][height];
     influenceByCoord = new Influence[width][height];
     posByCoord = new MapPosition[width][height];
 
@@ -45,7 +43,6 @@ public final class GameMap {
       for (int y = 0; y < height; y++) {
         MapPosition pos = posByCoord[x][y] = new MapPosition(x, y);
         influenceByCoord[x][y] = new Influence(pos, map[x][y]);
-        entitiesByCoord[x][y] = new ArrayList<Entity>();
         pixmap.setColor(map[x][y].getColor());
         pixmap.drawPixel(x, y);
       }
@@ -55,14 +52,18 @@ public final class GameMap {
     pixmap.dispose();
   }
 
-  public List<Entity> getEntitiesAt(int x, int y) {
-    if (x < 0 || x >= entitiesByCoord.length || y < 0 || y >= entitiesByCoord[0].length)
+  public Entity getEntityAt(int x, int y) {
+    if (x < 0 || x >= entityByCoord.length || y < 0 || y >= entityByCoord[0].length)
       return null;
-    return entitiesByCoord[x][y];
+    return entityByCoord[x][y];
   }
 
-  public List<Entity> getEntitiesAt(MapPosition pos) {
-    return getEntitiesAt(pos.x, pos.y);
+  public Entity getEntityAt(MapPosition pos) {
+    return getEntityAt(pos.x, pos.y);
+  }
+
+  public boolean hasEntity(MapPosition pos) {
+    return getEntityAt(pos) != null;
   }
 
   public Terrain getTerrainAt(MapPosition pos) {
@@ -103,17 +104,17 @@ public final class GameMap {
     return posByCoord[x][y];
   }
 
-  public void addEntity(Entity e, int x, int y) {
-    entitiesByCoord[x][y].add(e);
+  public void setEntity(Entity e, int x, int y) {
+    entityByCoord[x][y] = e;
   }
 
-  public void addEntity(Entity e, MapPosition p) {
-    addEntity(e, p.x, p.y);
+  public void setEntity(Entity e, MapPosition p) {
+    setEntity(e, p.x, p.y);
   }
 
   public void moveEntity(Entity e, MapPosition from, MapPosition to) {
-    entitiesByCoord[from.x][from.y].remove(e);
-    entitiesByCoord[to.x][to.y].add(e);
+    entityByCoord[from.x][from.y] = null;
+    entityByCoord[to.x][to.y] = e;
   }
 
   public Array<MapPosition> getNeighbors(int x, int y, int n) {

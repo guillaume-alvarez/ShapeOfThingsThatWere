@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.artemis.Aspect;
@@ -20,6 +21,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Counter;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -38,6 +40,8 @@ public final class ArmiesSystem extends EntitySystem {
   private ComponentMapper<ArmyCommand> commands;
 
   private ComponentMapper<Army> armies;
+
+  private ComponentMapper<Description> descriptions;
 
   private ComponentMapper<MapPosition> positions;
 
@@ -66,7 +70,8 @@ public final class ArmiesSystem extends EntitySystem {
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity city : entities) {
       InfluenceSource source = sources.get(city);
-      for (Entity s : source.secondarySources) {
+      for (Iterator<Entity> it = source.secondarySources.iterator(); it.hasNext();) {
+        Entity s = it.next();
         Army army = armies.get(s);
         if (onOtherInfluence(city, s)) {
           army.currentPower--;
@@ -83,10 +88,19 @@ public final class ArmiesSystem extends EntitySystem {
         if (army.currentPower <= 0) {
           // army is defeated, move it to capital
           army.currentPower = 0;
-          destinationSystem.moveTo(s, positions.get(city));
-          if (!ai.has(city))
-            notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
-                "Depleted %s moved to capital.", names.get(s));
+          MapPosition newPos = emptyPositionNextTo(city);
+          if (newPos != null) {
+            destinationSystem.moveTo(s, newPos);
+            if (!ai.has(city))
+              notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
+                  "Depleted %s moved to capital.", names.get(s));
+          } else {
+            s.deleteFromWorld();
+            it.remove();
+            if (!ai.has(city))
+              notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
+                  "Depleted %s destroyed.", names.get(s));
+          }
         }
         counters.get(s).value = army.currentPower;
       }
@@ -104,11 +118,28 @@ public final class ArmiesSystem extends EntitySystem {
   }
 
   public Entity createNewArmy(Entity empire, int power) {
+    MapPosition pos = emptyPositionNextTo(empire);
+    if (pos != null) {
+      Entity army = EntityFactory.createArmy(world, pos, names.get(empire).name, empires.get(empire), empire, power);
+      sources.get(empire).secondarySources.add(army);
+      commands.get(empire).usedPower += power;
+      map.setEntity(army, pos);
+      return army;
+    } else {
+      notifications.addNotification(null, null, Type.MILITARY, "Cannot create an army near %s, no empty tile.",
+          descriptions.get(empire));
+      return null;
+    }
+  }
+
+  private MapPosition emptyPositionNextTo(Entity empire) {
     MapPosition pos = positions.get(empire);
-    Entity army = EntityFactory.createArmy(world, pos, names.get(empire).name, empires.get(empire), empire, power);
-    sources.get(empire).secondarySources.add(army);
-    commands.get(empire).usedPower += power;
-    map.addEntity(army, pos);
-    return army;
+    for (int dist = 1; dist < 4; dist++) {
+      for (MapPosition neighbor : map.getNeighbors(pos.x, pos.y, dist))
+        if (!map.hasEntity(neighbor) && map.getInfluenceAt(neighbor).isMainInfluencer(empire))
+          return neighbor;
+    }
+    // should rarely happen
+    return null;
   }
 }
