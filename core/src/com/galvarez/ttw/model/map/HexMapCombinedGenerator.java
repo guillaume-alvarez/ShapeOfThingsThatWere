@@ -87,8 +87,8 @@ public class HexMapCombinedGenerator implements MapGenerator {
   public Properties getDefaultValues() {
     Properties props = new Properties();
     props.setProperty("noise", "4");
-    props.setProperty("width", "2");
-    props.setProperty("height", "2");
+    props.setProperty("width", "3");
+    props.setProperty("height", "3");
     return props;
   }
 }
