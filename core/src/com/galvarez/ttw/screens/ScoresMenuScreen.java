@@ -1,5 +1,8 @@
 package com.galvarez.ttw.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
@@ -37,15 +40,17 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     ladderMenu.clear();
-    ladderMenu
-        .addLabel("One point per influenced tile, \n half the score from tributary, \n a quarter of the score from allies.");
+    ladderMenu.nbColumns(3).addLabel(
+        "One point per influenced tile, \n half the score from tributary, \n a quarter of the score from allies.");
     ladderMenu.addLabel(" --- ");
 
     int rank = 1;
-    for (Item i : scoreSystem.getScores()) {
-      ladderMenu.addLabel("No" + rank++ + " " + i.empire.getComponent(Description.class).desc + ": "
-          + i.score.totalScore + " (+" + i.score.lastTurnPoints + ")");
-    }
+    List<Object[]> ladder = new ArrayList<>();
+    ladder.add(new Object[] { "Rank", "Empire", "Score (progress)" });
+    for (Item i : scoreSystem.getScores())
+      ladder.add(new Object[] { rank++, i.empire.getComponent(Description.class).desc,
+          i.score.totalScore + " (+" + i.score.lastTurnPoints + ")" });
+    ladderMenu.addTable(ladder.toArray(new Object[0][0]));
 
     ladderMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
   }

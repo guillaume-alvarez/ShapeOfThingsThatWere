@@ -228,7 +228,7 @@ public class FramedMenu {
 
     for (int row = 0; row < data.length; row++) {
       for (int col = 0; col < data[row].length; col++)
-        table.add(new Label(String.valueOf(data[row][col]), style)).left().padRight(15f);
+        table.add(new Label(String.valueOf(data[row][col]), style)).left().padLeft(5f).padRight(15f);
       table.row();
     }
   }
