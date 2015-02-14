@@ -310,4 +310,14 @@ public final class DiscoverySystem extends EntitySystem {
     return list;
   }
 
+  public void copyDiscoveries(Entity from, Entity to) {
+    Discoveries fromD = empires.get(from);
+    Discoveries toD = empires.get(to);
+    for (Discovery d : fromD.done)
+      if (toD.done.add(d)) {
+        effects.apply(d.effects, to, true);
+        special.apply(to, d, toD);
+      }
+  }
+
 }

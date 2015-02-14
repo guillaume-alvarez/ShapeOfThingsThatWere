@@ -31,6 +31,7 @@ import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
+import com.galvarez.ttw.model.RevoltSystem;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.data.Empire;
@@ -83,6 +84,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final DiplomaticSystem diplomaticSystem;
 
   private final InfluenceSystem influenceSystem;
+
+  private final RevoltSystem revoltSystem;
 
   private final ArmiesSystem armiesSystem;
 
@@ -153,7 +156,8 @@ public final class OverworldScreen extends AbstractScreen {
     buildingsSystem = world.setSystem(new BuildingsSystem(this, settings, map), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
-    influenceSystem = world.setSystem(new InfluenceSystem(map, settings, this), true);
+    influenceSystem = world.setSystem(new InfluenceSystem(map), true);
+    revoltSystem = world.setSystem(new RevoltSystem(map, settings, this), true);
     armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
     scoreSystem = world.setSystem(new ScoreSystem(), true);
@@ -173,6 +177,7 @@ public final class OverworldScreen extends AbstractScreen {
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
+    revoltSystem.process();
     armiesSystem.process();
     destinationSystem.process();
     scoreSystem.process();
@@ -323,6 +328,7 @@ public final class OverworldScreen extends AbstractScreen {
     armiesSystem.process();
     destinationSystem.process();
     influenceSystem.process();
+    revoltSystem.process();
     scoreSystem.process();
 
     world.setDelta(0);
