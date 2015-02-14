@@ -92,8 +92,10 @@ public final class RevoltSystem extends EntitySystem {
     int instability = source.power - empirePolicies.stability;
     if (instability > 0 && rand.nextInt(100) < instability) {
       // revolt happens, select the tile!
-      Optional<Influence> tile = source.influencedTiles.stream().filter(p -> isValidRevoltTile(empire, p))
-          .map(p -> map.getInfluenceAt(p)).min(comparingInt(i -> i.getSecondInfluenceDiff()));
+      Optional<Influence> tile = source.influencedTiles.stream() //
+          .filter(p -> isValidRevoltTile(empire, p)) //
+          .map(p -> map.getInfluenceAt(p)) //
+          .min(comparingInt(Influence::getSecondInfluenceDiff));
       if (tile.isPresent()) {
         Influence inf = tile.get();
         createRevoltingEmpire(empire, instability, inf);
@@ -120,8 +122,8 @@ public final class RevoltSystem extends EntitySystem {
       if (!map.isOnMap(neighbor))
         return false;
 
-      // don't accept near entities
-      if (map.hasEntity(pos))
+      // don't accept near other entities
+      if (map.hasEntity(neighbor))
         return false;
 
       // accept if different overlord
