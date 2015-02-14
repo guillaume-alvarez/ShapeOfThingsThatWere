@@ -21,6 +21,8 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
 
   private int mainInfluenceSource = -1;
 
+  private int secondInfluenceDiff = 0;
+
   public final MapPosition position;
 
   public Influence(MapPosition position, Terrain terrain) {
@@ -58,23 +60,33 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
   }
 
   private void recomputeMain() {
+    int secondInfluence = Integer.MIN_VALUE;
     mainInfluence = terrain.moveCost() - 1;
     mainInfluenceSource = -1;
     if (influence.size > 0) {
       for (Iterator<Entry> it = influence.iterator(); it.hasNext();) {
         Entry e = it.next();
         if (e.value > mainInfluence) {
+          secondInfluence = mainInfluence;
           mainInfluenceSource = e.key;
           mainInfluence = e.value;
         } else if (e.value <= 0) {
           it.remove();
+        } else if (e.value > secondInfluence) {
+          secondInfluence = e.value;
         }
       }
     }
+    if (secondInfluence > 0)
+      secondInfluenceDiff = mainInfluence - secondInfluence;
   }
 
   public int getInfluence(Entity e) {
     return influence.get(e.getId(), 0);
+  }
+
+  public int getSecondInfluenceDiff() {
+    return secondInfluenceDiff;
   }
 
   public int getMainInfluenceSource() {

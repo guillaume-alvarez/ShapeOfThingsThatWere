@@ -1,6 +1,6 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Integer.compare;
+import static java.util.Comparator.comparingInt;
 
 import java.util.Optional;
 import java.util.Random;
@@ -92,45 +92,40 @@ public final class RevoltSystem extends EntitySystem {
     int instability = source.power - empirePolicies.stability;
     if (instability > 0 && rand.nextInt(100) < instability) {
       // revolt happens, select the tile!
-      Optional<Influence> tile = source.influencedTiles
-          .stream()
-          .filter(p -> map.getTerrainAt(p).canStart() && !map.isOnMapBorder(p)//
-              && !map.hasEntity(p) && isAtCityBorder(empire, p))
-          .map(p -> map.getInfluenceAt(p))
-          .min(
-              (i1, i2) -> compare(i1.getInfluence(empire) + i1.getDelta(empire) * 2,
-                  i2.getInfluence(empire) + i2.getDelta(empire) * 2));
+      Optional<Influence> tile = source.influencedTiles.stream().filter(p -> isValidRevoltTile(empire, p))
+          .map(p -> map.getInfluenceAt(p)).min(comparingInt(i -> i.getSecondInfluenceDiff()));
       if (tile.isPresent()) {
         Influence inf = tile.get();
         createRevoltingEmpire(empire, instability, inf);
-        // decrease power of stability to avoid popping revolts in loop
-        source.power -= instability;
-        empirePolicies.stability += source.power;
       } else {
-        source.power -= instability;
         log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
             empire.getComponent(Name.class), instability, source.power);
         if (!ai.has(empire))
           notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
               "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power);
       }
+      // decrease power of stability to avoid popping revolts in loop
+      source.power -= instability;
     }
   }
 
-  private boolean isAtCityBorder(Entity city, MapPosition pos) {
+  private boolean isValidRevoltTile(Entity empire, MapPosition pos) {
+    if (!map.getTerrainAt(pos).canStart() || map.hasEntity(pos))
+      return false;
+
     boolean atInfluenceBorder = false;
     for (Border b : Border.values()) {
       MapPosition neighbor = b.getNeighbor(pos);
       // don't accept tiles on map border
       if (!map.isOnMap(neighbor))
         return false;
-  
+
       // don't accept near entities
       if (map.hasEntity(pos))
         return false;
-  
+
       // accept if different overlord
-      atInfluenceBorder |= !map.getInfluenceAt(neighbor).isMainInfluencer(city);
+      atInfluenceBorder |= !map.getInfluenceAt(neighbor).isMainInfluencer(empire);
     }
     return atInfluenceBorder;
   }
