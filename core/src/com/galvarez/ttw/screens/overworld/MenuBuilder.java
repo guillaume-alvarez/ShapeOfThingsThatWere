@@ -24,7 +24,6 @@ import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
-import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Empire;
@@ -133,12 +132,11 @@ public class MenuBuilder {
         screen::discoveryMenu);
 
     // here present a new screen to choose policies
-    Policies policies = screen.player.getComponent(Policies.class);
-    int stability = policies.stability - screen.player.getComponent(InfluenceSource.class).power;
-    if (stability >= 0)
-      empireMenu.addButton("Policies (stability +" + stability + ")", screen::policiesMenu);
+    int instability = screen.revoltSystem.getInstability(screen.player);
+    if (instability <= 0)
+      empireMenu.addButton("Policies (instability " + instability + ")", screen::policiesMenu);
     else
-      empireMenu.addButton("Policies (stability [RED]" + stability + "[])", screen::policiesMenu);
+      empireMenu.addButton("Policies (instability [RED]" + instability + "[])", screen::policiesMenu);
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }

@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
+import com.galvarez.ttw.model.RevoltSystem;
+import com.galvarez.ttw.model.components.ArmyCommand;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.data.Policy;
@@ -25,7 +28,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  */
 public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScreen> {
 
-  private final FramedMenu topMenu, empirePolicies;
+  private final FramedMenu topMenu, stabilityMenu, policiesMenu;
 
   private final Policies policies;
 
@@ -35,16 +38,20 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
 
   private final EffectsSystem effects;
 
+  private final RevoltSystem revolts;
+
   public PoliciesMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      Entity empire, PoliciesSystem policiesSystem, EffectsSystem effects) {
+      Entity empire, PoliciesSystem policiesSystem, EffectsSystem effects, RevoltSystem revolts) {
     super(game, world, batch, gameScreen);
     this.empire = empire;
     this.effects = effects;
+    this.revolts = revolts;
     this.policies = empire.getComponent(Policies.class);
     this.policiesSystem = policiesSystem;
 
     topMenu = new FramedMenu(skin, 800, 600);
-    empirePolicies = new FramedMenu(skin, 800, 600);
+    stabilityMenu = new FramedMenu(skin, 800, 600);
+    policiesMenu = new FramedMenu(skin, 800, 600);
   }
 
   public final class Item {
@@ -72,15 +79,26 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
-    empirePolicies.clear();
+    stabilityMenu.clear();
+    int stability = empire.getComponent(Policies.class).stability;
+    InfluenceSource source = empire.getComponent(InfluenceSource.class);
+    ArmyCommand army = empire.getComponent(ArmyCommand.class);
+    stabilityMenu.addTable( //
+        new Object[] { "Empire stability is", stability }, //
+        new Object[] { " + military power ", army.militaryPower }, //
+        new Object[] { " - source extension ", 5 * source.influencedTiles.size() }, //
+        new Object[] { "=> current instability is ", revolts.getInstability(empire) });
+    stabilityMenu.addToStage(stage, 30, topMenu.getY() - 30, false);
+
+    policiesMenu.clear();
     for (Policy choice : Policy.values()) {
-      empirePolicies.addLabel(choice.msg);
+      policiesMenu.addLabel(choice.msg);
 
       Map<Discovery, Item> items = new HashMap<Discovery, Item>();
       for (Discovery d : policiesSystem.getAvailablePolicies(empire, choice))
         items.put(d, new Item(d));
       if (items.isEmpty()) {
-        empirePolicies.addLabel("  No policy available");
+        policiesMenu.addLabel("  No policy available");
       } else {
         Item selected = NONE;
         if (policies.policies.containsKey(choice)) {
@@ -89,11 +107,10 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
           items.put(NONE.discovery, NONE);
           selected = NONE;
         }
-        empirePolicies.addSelectBox("  ", selected, items.values().toArray(new Item[items.size()]),
+        policiesMenu.addSelectBox("  ", selected, items.values().toArray(new Item[items.size()]),
             i -> policiesSystem.applyPolicy(empire, choice, i != NONE ? i.discovery : null));
       }
     }
-    empirePolicies.addToStage(stage, 30, topMenu.getY() - 30, false);
+    policiesMenu.addToStage(stage, 30, stabilityMenu.getY() - 30, false);
   }
-
 }

@@ -85,7 +85,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final InfluenceSystem influenceSystem;
 
-  private final RevoltSystem revoltSystem;
+  final RevoltSystem revoltSystem;
 
   private final ArmiesSystem armiesSystem;
 
@@ -200,7 +200,8 @@ public final class OverworldScreen extends AbstractScreen {
     pauseScreen = new PauseMenuScreen(game, world, batch, this, settings);
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
-    policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem);
+    policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem,
+        revoltSystem);
     scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem);
     armiesScreen = new ArmiesMenuScreen(game, world, batch, this, player, armiesSystem);
   }

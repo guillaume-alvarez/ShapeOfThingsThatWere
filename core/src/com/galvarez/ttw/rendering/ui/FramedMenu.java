@@ -222,6 +222,17 @@ public class FramedMenu {
     return l;
   }
 
+  /** Adds a label to the menu. */
+  public void addTable(Object[] ... data) {
+    LabelStyle style = skin.get(LabelStyle.class);
+
+    for (int row = 0; row < data.length; row++) {
+      for (int col = 0; col < data[row].length; col++)
+        table.add(new Label(String.valueOf(data[row][col]), style)).left().padRight(15f);
+      table.row();
+    }
+  }
+
   /**
    * Adds a label to the menu, using color markup from
    * https://github.com/libgdx/libgdx/wiki/Color-Markup-Language.

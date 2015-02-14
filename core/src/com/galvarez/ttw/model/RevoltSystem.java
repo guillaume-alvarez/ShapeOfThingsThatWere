@@ -16,6 +16,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.data.Culture;
@@ -43,6 +44,8 @@ public final class RevoltSystem extends EntitySystem {
   private static final Logger log = LoggerFactory.getLogger(RevoltSystem.class);
 
   private ComponentMapper<Empire> empires;
+
+  private ComponentMapper<ArmyCommand> army;
 
   private ComponentMapper<Policies> policies;
 
@@ -77,25 +80,34 @@ public final class RevoltSystem extends EntitySystem {
 
   @Override
   protected void processEntities(ImmutableBag<Entity> empires) {
-    for (Entity empire : empires) {
-      InfluenceSource source = sources.get(empire);
-      checkRevolt(empire, source);
-    }
+    for (Entity empire : empires)
+      checkRevolt(empire);
+  }
+
+  public int getInstability(Entity empire) {
+    InfluenceSource source = sources.get(empire);
+    Policies empirePolicies = policies.get(empire);
+    return source.influencedTiles.size() * 5 - (empirePolicies.stability + army.get(empire).militaryPower);
   }
 
   /**
    * Cities revolt when the source power is above its stability. The higher it
    * is the higher chance it will revolt.
    */
-  private void checkRevolt(Entity empire, InfluenceSource source) {
-    Policies empirePolicies = policies.get(empire);
-    int instability = source.power - empirePolicies.stability;
+  private void checkRevolt(Entity empire) {
+    int instability = getInstability(empire);
     if (instability > 0 && rand.nextInt(100) < instability) {
+      InfluenceSource source = sources.get(empire);
       // revolt happens, select the tile!
       Optional<Influence> tile = source.influencedTiles.stream() //
           .filter(p -> isValidRevoltTile(empire, p)) //
           .map(p -> map.getInfluenceAt(p)) //
           .min(comparingInt(Influence::getSecondInfluenceDiff));
+
+      // decrease power by instability to avoid popping revolts in loop
+      source.power -= instability * 3;
+      policies.get(empire).stability += instability * 3;
+
       if (tile.isPresent()) {
         Influence inf = tile.get();
         createRevoltingEmpire(empire, instability, inf);
@@ -106,8 +118,6 @@ public final class RevoltSystem extends EntitySystem {
           notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
               "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power);
       }
-      // decrease power of stability to avoid popping revolts in loop
-      source.power -= instability;
     }
   }
 
