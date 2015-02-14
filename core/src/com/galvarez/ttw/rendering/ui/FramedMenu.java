@@ -147,8 +147,11 @@ public class FramedMenu {
    * the right
    */
   public void addButton(String label, String secondaryLabel, Runnable action, boolean active) {
-    LabelStyle style = active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class);
+    addButton(active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class), label, secondaryLabel,
+        action, active);
+  }
 
+  public void addButton(LabelStyle style, String label, String secondaryLabel, Runnable action, boolean active) {
     Button b = new Button(skin.get(ButtonStyle.class));
     if (action != null)
       b.addListener(new ChangeListener() {
@@ -224,8 +227,11 @@ public class FramedMenu {
 
   /** Adds a label to the menu. */
   public void addTable(Object[] ... data) {
-    LabelStyle style = skin.get(LabelStyle.class);
+    addTable(skin.get(LabelStyle.class), data);
+  }
 
+  /** Adds a label to the menu. */
+  public void addTable(LabelStyle style, Object[] ... data) {
     for (int row = 0; row < data.length; row++) {
       for (int col = 0; col < data[row].length; col++)
         table.add(new Label(String.valueOf(data[row][col]), style)).left().padLeft(5f).padRight(15f);
@@ -239,6 +245,7 @@ public class FramedMenu {
    */
   public Label addColoredLabel(String label) {
     LabelStyle style = skin.get("colored", LabelStyle.class);
+    style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
     l.setWrap(true);
 

@@ -1,5 +1,6 @@
 package com.galvarez.ttw.screens.overworld;
 
+import static com.galvarez.ttw.utils.Colors.markup;
 import static java.lang.Math.min;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -135,8 +137,12 @@ public class MenuBuilder {
     int instability = screen.revoltSystem.getInstability(screen.player);
     if (instability <= 0)
       empireMenu.addButton("Policies (instability " + instability + ")", screen::policiesMenu);
-    else
-      empireMenu.addButton("Policies (instability [RED]" + instability + "[])", screen::policiesMenu);
+    else {
+      LabelStyle style = empireMenu.getSkin().get("colored", LabelStyle.class);
+      style.font.setMarkupEnabled(true);
+      empireMenu.addButton(style, "[BLACK]Policies (instability [RED]" + instability + "[])", null,
+          screen::policiesMenu, true);
+    }
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
   }
@@ -173,8 +179,7 @@ public class MenuBuilder {
     for (IntIntMap.Entry e : influence) {
       Entity source = world.getEntity(e.key);
       Empire empire = source.getComponent(Empire.class);
-      sb.append("\n [#").append(empire.color.toString().toUpperCase()).append(']')
-          .append(source.getComponent(Name.class).name).append("[]: ")
+      sb.append("\n ").append(markup(empire.color)).append(source.getComponent(Name.class).name).append("[]: ")
           .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
       int delta = influence.getDelta(source);
       if (delta > 0)

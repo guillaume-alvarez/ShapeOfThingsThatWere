@@ -1,10 +1,13 @@
 package com.galvarez.ttw.screens;
 
+import static com.galvarez.ttw.utils.Colors.markup;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.ScoreSystem.Item;
@@ -41,16 +44,18 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
     ladderMenu.clear();
     ladderMenu.nbColumns(3).addLabel(
-        "One point per influenced tile, \n half the score from tributary, \n a quarter of the score from allies.");
+        "One point per influenced tile, \n\thalf the score from tributary, \n\ta quarter of the score from allies.");
     ladderMenu.addLabel(" --- ");
 
     int rank = 1;
     List<Object[]> ladder = new ArrayList<>();
-    ladder.add(new Object[] { "Rank", "Empire", "Score (progress)" });
+    ladder.add(new Object[] { "[BLACK]Rank", "[BLACK]Empire", "[BLACK]Score (progress)" });
     for (Item i : scoreSystem.getScores())
-      ladder.add(new Object[] { rank++, i.empire.getComponent(Description.class).desc,
-          i.score.totalScore + " (+" + i.score.lastTurnPoints + ")" });
-    ladderMenu.addTable(ladder.toArray(new Object[0][0]));
+      ladder.add(new Object[] { "[BLACK]" + rank++, markup(i.empire) + i.empire.getComponent(Description.class).desc,
+          "[BLACK]" + i.score.totalScore + " (+" + i.score.lastTurnPoints + ")" });
+    LabelStyle style = ladderMenu.getSkin().get("colored", LabelStyle.class);
+    style.font.setMarkupEnabled(true);
+    ladderMenu.addTable(style, ladder.toArray(new Object[0][]));
 
     ladderMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
   }
