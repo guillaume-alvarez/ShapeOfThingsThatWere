@@ -10,6 +10,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.EntityProcessingSystem;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Destination;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -36,7 +37,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
 
   @SuppressWarnings("unchecked")
   public AIDestinationSystem(GameMap gameMap, OverworldScreen screen) {
-    super(Aspect.getAspectForAll(AIControlled.class, Destination.class));
+    super(Aspect.getAspectForAll(AIControlled.class, Destination.class, InfluenceSource.class));
     this.map = gameMap;
     this.screen = screen;
   }
@@ -106,6 +107,9 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
       Influence inf = map.getInfluenceAt(p);
       if (!inf.isMainInfluencer(e))
         score += 1;
+      // favor empty tiles
+      if (!inf.hasMainInfluence())
+        score *= 2;
     }
     return score;
   }
