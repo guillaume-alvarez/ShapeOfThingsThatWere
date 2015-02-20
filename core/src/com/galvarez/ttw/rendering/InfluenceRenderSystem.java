@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -34,10 +35,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private final GameMap map;
 
-  private final EnumMap<Border, Border> nextBorder = new EnumMap<>(Border.class);
-
-  private final EnumMap<Border, Border> neighbourBorder = new EnumMap<>(Border.class);
-
   private final EnumMap<Border, AtlasRegion> borderTexture = new EnumMap<>(Border.class);
 
   private final AtlasRegion blank;
@@ -56,20 +53,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     borderTexture.put(Border.TOP_LEFT, atlas.findRegion("border_top_left"));
     borderTexture.put(Border.TOP_RIGHT, atlas.findRegion("border_top_right"));
     borderTexture.put(Border.TOP, atlas.findRegion("border_top"));
-
-    nextBorder.put(Border.BOTTOM, Border.BOTTOM_LEFT);
-    nextBorder.put(Border.BOTTOM_LEFT, Border.TOP_LEFT);
-    nextBorder.put(Border.TOP_LEFT, Border.TOP);
-    nextBorder.put(Border.TOP, Border.TOP_RIGHT);
-    nextBorder.put(Border.TOP_RIGHT, Border.BOTTOM_RIGHT);
-    nextBorder.put(Border.BOTTOM_RIGHT, Border.BOTTOM);
-
-    neighbourBorder.put(Border.BOTTOM, Border.TOP_RIGHT);
-    neighbourBorder.put(Border.BOTTOM_LEFT, Border.BOTTOM_RIGHT);
-    neighbourBorder.put(Border.TOP_LEFT, Border.BOTTOM);
-    neighbourBorder.put(Border.TOP, Border.BOTTOM_LEFT);
-    neighbourBorder.put(Border.TOP_RIGHT, Border.TOP_LEFT);
-    neighbourBorder.put(Border.BOTTOM_RIGHT, Border.TOP);
   }
 
   @Override
@@ -92,6 +75,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   }
 
+  private final Map<MapPosition, Float> colors = new HashMap<>();
+
   /**
    * Collect the borders for every influence source. Should be done only when
    * the borders changed, meaning after processing a turn.
@@ -105,6 +90,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
         Entity source = inf.getMainInfluenceSource(world);
         if (source != null) {
           Empire empire = empires.get(source);
+
+          // collect borders
           for (Border b : Border.values()) {
             MapPosition neighbor = b.getNeighbor(x, y);
             Influence neighborTile = map.getInfluenceAt(neighbor);
@@ -118,6 +105,10 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
             list.add(new InfluenceBorder(map.getPositionAt(x, y), tmp.toArray(new Border[tmp.size()])));
             tmp.clear();
           }
+
+          // collect color
+          Color c = empire.color;
+          colors.put(inf.position, Color.toFloatBits(c.r, c.g, c.b, inf.getMaxInfluence() / 300f));
         }
       }
     }
@@ -142,17 +133,9 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
           draw(borderTexture.get(b), ib.position);
     }
 
-    for (Entity e : entities) {
-      InfluenceSource source = sources.get(e);
-      Empire empire = empires.get(e);
-      Color color = empire.color;
-      for (MapPosition p : source.influencedTiles) {
-        Influence inf = map.getInfluenceAt(p);
-        if (inf.isMainInfluencer(e)) {
-          batch.setColor(color.r, color.g, color.b, inf.getMaxInfluence() / 200f);
-          draw(blank, p);
-        }
-      }
+    for (Entry<MapPosition, Float> e : colors.entrySet()) {
+      batch.setColor(e.getValue().floatValue());
+      draw(blank, e.getKey());
     }
 
     // revert to previous (may be it is the last source?)
