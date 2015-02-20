@@ -1,6 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.min;
 import static java.util.Comparator.comparingInt;
 
 import java.util.Optional;
@@ -106,7 +105,7 @@ public final class RevoltSystem extends EntitySystem {
           .min(comparingInt(Influence::getSecondInfluenceDiff));
 
       // decrease power by instability to avoid popping revolts in loop
-      source.power -= min(instability, source.power / 2);
+      // source.power -= min(instability, source.power / 2);
       policies.get(empire).stability += instability * 3;
 
       if (tile.isPresent()) {
@@ -164,7 +163,8 @@ public final class RevoltSystem extends EntitySystem {
     discoveries.copyDiscoveries(empire, revoltee);
 
     // notify player
-    log.info("Created revolting {}", revoltee.getComponent(Description.class));
+    log.info("{} revolted from {} (instability={})", revoltee.getComponent(Description.class),
+        empire.getComponent(Description.class), instability);
     if (!ai.has(empire))
       notifications.addNotification(() -> screen.select(revoltee, false), null, Type.REVOLT, "%s revolted from %s!",
           revoltee.getComponent(Description.class), empire.getComponent(Description.class));
