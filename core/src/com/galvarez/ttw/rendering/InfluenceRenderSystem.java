@@ -30,6 +30,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private ComponentMapper<Empire> empires;
 
+  private ComponentMapper<InfluenceSource> sources;
+
   private final GameMap map;
 
   private final EnumMap<Border, Border> nextBorder = new EnumMap<>(Border.class);
@@ -38,11 +40,15 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private final EnumMap<Border, AtlasRegion> borderTexture = new EnumMap<>(Border.class);
 
+  private final AtlasRegion blank;
+
   public InfluenceRenderSystem(OrthographicCamera camera, SpriteBatch batch, GameMap map) {
     super(with(InfluenceSource.class), camera, batch);
     this.map = map;
 
     TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("textures/maptiles.atlas"), Gdx.files.internal("textures"));
+
+    blank = atlas.findRegion("hex_blank");
 
     borderTexture.put(Border.BOTTOM_LEFT, atlas.findRegion("border_bottom_left"));
     borderTexture.put(Border.BOTTOM_RIGHT, atlas.findRegion("border_bottom_right"));
@@ -134,6 +140,19 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
       for (InfluenceBorder ib : borders.get(empire))
         for (Border b : ib.borders)
           draw(borderTexture.get(b), ib.position);
+    }
+
+    for (Entity e : entities) {
+      InfluenceSource source = sources.get(e);
+      Empire empire = empires.get(e);
+      Color color = empire.color;
+      for (MapPosition p : source.influencedTiles) {
+        Influence inf = map.getInfluenceAt(p);
+        if (inf.isMainInfluencer(e)) {
+          batch.setColor(color.r, color.g, color.b, inf.getMaxInfluence() / 200f);
+          draw(blank, p);
+        }
+      }
     }
 
     // revert to previous (may be it is the last source?)
