@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.min;
 import static java.util.Comparator.comparingInt;
 
 import java.util.Optional;
@@ -105,7 +106,7 @@ public final class RevoltSystem extends EntitySystem {
           .min(comparingInt(Influence::getSecondInfluenceDiff));
 
       // decrease power by instability to avoid popping revolts in loop
-      source.power -= instability * 3;
+      source.power -= min(instability, source.power / 2);
       policies.get(empire).stability += instability * 3;
 
       if (tile.isPresent()) {
