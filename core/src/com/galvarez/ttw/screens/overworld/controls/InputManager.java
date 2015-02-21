@@ -72,6 +72,7 @@ public class InputManager {
     Actor keyboardFocus = stage.getKeyboardFocus();
     Actor scrollFocus = stage.getScrollFocus();
 
+    menuBuilder.clearSubMenus();
     menuBuilder.buildTurnMenu();
     menuBuilder.buildIndicationMenu();
     menuBuilder.buildEmpireMenu();
@@ -119,6 +120,7 @@ public class InputManager {
       log.info("Selected {}: no entity", coords);
 
     // Put up a menu for the selected entity
+    menuBuilder.clearSubMenus();
     menuBuilder.buildSelectionMenu(coords, entity);
     menuBuilder.buildBuildingsMenu(entity);
 

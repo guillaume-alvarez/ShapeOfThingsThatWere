@@ -86,6 +86,17 @@ public class MenuBuilder {
     notifMenu = new FramedMenu(skin, 400, 512);
   }
 
+  public void clearSubMenus() {
+    if (mapMenu != null) {
+      mapMenu.clear();
+      mapMenu = null;
+    }
+    if (actionMenu != null) {
+      actionMenu.clear();
+      actionMenu = null;
+    }
+  }
+
   public void buildTurnMenu() {
     turnMenu.clear();
 
@@ -242,23 +253,26 @@ public class MenuBuilder {
   }
 
   private void displayDiplomaticActionMenu(FramedMenu parent, Diplomacy diplo, Entity target) {
-    if (actionMenu != null)
-      actionMenu.clear();
-    actionMenu = new FramedMenu(skin, 256, 128, parent);
-    boolean hasActions = false;
-    for (Action action : world.getSystem(DiplomaticSystem.class).getPossibleActions(diplo, target)) {
-      hasActions = true;
-      actionMenu.addButton(action.str, () -> {
-        if (action != Action.NO_CHANGE)
-          diplo.proposals.put(target, action);
-        actionMenu.clear();
-        inputManager.reloadMenus();
-      });
-    }
-    if (!hasActions)
-      actionMenu.addLabel("No possible actions!");
+    if (actionMenu == null) {
+      actionMenu = new FramedMenu(skin, 256, 128, parent);
+      boolean hasActions = false;
+      for (Action action : world.getSystem(DiplomaticSystem.class).getPossibleActions(diplo, target)) {
+        hasActions = true;
+        actionMenu.addButton(action.str, () -> {
+          if (action != Action.NO_CHANGE)
+            diplo.proposals.put(target, action);
+          actionMenu.clear();
+          inputManager.reloadMenus();
+        });
+      }
+      if (!hasActions)
+        actionMenu.addLabel("No possible actions!");
 
-    actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+      actionMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
+    } else {
+      actionMenu.clear();
+      actionMenu = null;
+    }
   }
 
   public void buildBuildingsMenu(Entity e) {
