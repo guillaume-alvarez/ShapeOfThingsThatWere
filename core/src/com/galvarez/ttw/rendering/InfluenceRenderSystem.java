@@ -31,8 +31,6 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   private ComponentMapper<Empire> empires;
 
-  private ComponentMapper<InfluenceSource> sources;
-
   private final GameMap map;
 
   private final EnumMap<Border, AtlasRegion> borderTexture = new EnumMap<>(Border.class);
@@ -76,6 +74,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
   }
 
   private final Map<MapPosition, Float> colors = new HashMap<>();
+
+  private volatile boolean displayColoredInfluence = true;
 
   /**
    * Collect the borders for every influence source. Should be done only when
@@ -133,10 +133,11 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
           draw(borderTexture.get(b), ib.position);
     }
 
-    for (Entry<MapPosition, Float> e : colors.entrySet()) {
-      batch.setColor(e.getValue().floatValue());
-      draw(blank, e.getKey());
-    }
+    if (displayColoredInfluence)
+      for (Entry<MapPosition, Float> e : colors.entrySet()) {
+        batch.setColor(e.getValue().floatValue());
+        draw(blank, e.getKey());
+      }
 
     // revert to previous (may be it is the last source?)
     batch.setColor(c);
@@ -145,5 +146,13 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
   private void draw(AtlasRegion reg, MapPosition p) {
     FloatPair position = MapTools.world2window(p);
     batch.draw(reg, position.x - reg.getRegionWidth() / 2, position.y - reg.getRegionHeight() / 2);
+  }
+
+  public void displayColoredInfluence(boolean b) {
+    displayColoredInfluence = b;
+  }
+
+  public boolean displayColoredInfluence() {
+    return displayColoredInfluence;
   }
 }

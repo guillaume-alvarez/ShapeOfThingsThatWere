@@ -434,4 +434,12 @@ public final class OverworldScreen extends AbstractScreen {
     return indications;
   }
 
+  public void displayColoredInfluence(boolean b) {
+    influenceRenderSystem.displayColoredInfluence(b);
+  }
+  
+  public boolean displayColoredInfluence() {
+    return influenceRenderSystem.displayColoredInfluence();
+  }
+
 }

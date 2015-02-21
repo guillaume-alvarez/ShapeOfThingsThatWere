@@ -50,7 +50,7 @@ public class MenuBuilder {
 
   private final Skin skin;
 
-  private final FramedMenu turnMenu, indicationMenu, empireMenu, notifMenu;
+  private final FramedMenu turnMenu, indicationMenu, empireMenu, notifMenu, mapMenu;
 
   private final FramedMenu selectionMenu;
 
@@ -84,6 +84,8 @@ public class MenuBuilder {
     selectionMenu = new FramedMenu(skin, 256, 512);
     buildingsMenu = new FramedMenu(skin, 256, 1024);
     notifMenu = new FramedMenu(skin, 400, 512);
+
+    mapMenu = new FramedMenu(skin, 256, 128, turnMenu);
   }
 
   public void buildTurnMenu() {
@@ -97,7 +99,17 @@ public class MenuBuilder {
     Score score = screen.player.getComponent(Score.class);
     turnMenu.addButton(score.totalScore + " (+" + score.lastTurnPoints + ")", screen::scoresMenu);
 
+    // access to map options
+    turnMenu.addButton("Map options", () -> displayMapMenu(turnMenu));
+
     turnMenu.addToStage(stage, MENU_PADDING, stage.getHeight() - MENU_PADDING, false);
+  }
+
+  private void displayMapMenu(FramedMenu parent) {
+    mapMenu.clear();
+    mapMenu
+        .addCheckBox("Display colored influence?", screen.displayColoredInfluence(), screen::displayColoredInfluence);
+    mapMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
   }
 
   public void buildIndicationMenu() {
