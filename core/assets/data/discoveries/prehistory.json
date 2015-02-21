@@ -173,7 +173,7 @@
 {
   name: Village,
   previous: [[House, Agriculture], [Tent, Agriculture]],
-  effects: {militaryPower: 1, growth: 1, discovery: 1}
+  effects: {militaryPower: 1, growth: 1, discovery: 1, stability: 1}
 },
 {
   name: Crop,
@@ -223,7 +223,7 @@
   name: "Elders Council",
   previous: [[Village, Fire], [Village, Family, Equality]],
   groups: [GOVERNMENT],
-  effects: {growth: 1}
+  effects: {growth: 1, stability: 1}
 },
 {
   name: Wheat,
