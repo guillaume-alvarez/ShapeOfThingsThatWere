@@ -68,10 +68,13 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void apply(Number value, Entity empire, boolean revert) {
       Policies p = policies.get(empire);
-      if (revert)
+      if (revert) {
         p.stabilityGrowth -= value.intValue();
-      else
+        p.stabilityMax -= 10 * value.intValue();
+      } else {
         p.stabilityGrowth += value.intValue();
+        p.stabilityMax += 10 * value.intValue();
+      }
     }
 
     @Override
