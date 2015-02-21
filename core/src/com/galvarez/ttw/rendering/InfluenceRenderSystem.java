@@ -83,6 +83,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
    */
   public void preprocess() {
     borders.clear();
+    colors.clear();
     List<Border> tmp = new ArrayList<>();
     for (int x = 0; x < map.map.length; x++) {
       for (int y = 0; y < map.map[0].length; y++) {
