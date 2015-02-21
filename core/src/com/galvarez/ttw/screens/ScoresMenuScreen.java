@@ -52,11 +52,27 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     ladder.add(new Object[] { "[BLACK]Rank", "[BLACK]Empire", "[BLACK]Score (progress)" });
     for (Item i : scoreSystem.getScores())
       ladder.add(new Object[] { "[BLACK]" + rank++, markup(i.empire) + i.empire.getComponent(Description.class).desc,
-          "[BLACK]" + i.score.totalScore + " (+" + i.score.lastTurnPoints + ")" });
+          "[BLACK]" + shorten(i.score.totalScore) + " (+" + i.score.lastTurnPoints + ")" });
     LabelStyle style = ladderMenu.getSkin().get("colored", LabelStyle.class);
     style.font.setMarkupEnabled(true);
     ladderMenu.addTable(style, ladder.toArray(new Object[0][]));
 
     ladderMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
+  }
+
+  private static final int KILO = 1000;
+
+  private static final int MEGA = 1000 * KILO;
+
+  private static final int GIGA = 1000 * MEGA;
+
+  private static String shorten(int score) {
+    if (score >= 2 * GIGA)
+      return score / GIGA + "G";
+    else if (score >= 2 * MEGA)
+      return score / MEGA + "M";
+    if (score >= 2 * KILO)
+      return score / KILO + "K";
+    return String.valueOf(score);
   }
 }
