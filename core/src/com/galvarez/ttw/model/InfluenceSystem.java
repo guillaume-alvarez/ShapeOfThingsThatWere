@@ -104,13 +104,17 @@ public final class InfluenceSystem extends EntitySystem {
   protected void inserted(Entity e) {
     super.inserted(e);
     InfluenceSource source = sources.get(e);
-    source.power = INITIAL_POWER;
     if (source.power > 0) {
       MapPosition pos = positions.get(e);
 
       // first influence own tile
       Influence tile = map.getInfluenceAt(pos);
-      tile.setInfluence(e, tile.getMaxInfluence());
+      if (tile.hasMainInfluence()) {
+        Entity main = tile.getMainInfluenceSource(world);
+        tile.setInfluence(e, tile.getMaxInfluence() + tile.getDelta(main) + 1);
+      } else {
+        tile.setInfluence(e, tile.getMaxInfluence());
+      }
       source.influencedTiles.add(pos);
     }
   }

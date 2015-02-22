@@ -9,12 +9,13 @@ import java.util.Set;
 
 import com.artemis.Component;
 import com.artemis.Entity;
+import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 
 public final class InfluenceSource extends Component {
 
-  public int power = -1;
+  public int power = InfluenceSystem.INITIAL_POWER;
 
   public final Set<MapPosition> influencedTiles = new HashSet<>();
 

@@ -101,7 +101,7 @@ public final class RevoltSystem extends EntitySystem {
       InfluenceSource source = sources.get(empire);
       // revolt happens, select the tile!
       Optional<Influence> tile = source.influencedTiles.stream() //
-          .filter(p -> isValidRevoltTile(empire, p)) //
+          .filter(p -> isValidRevoltTile(empire, p, instability)) //
           .map(p -> map.getInfluenceAt(p)) //
           .min(comparingInt(Influence::getSecondInfluenceDiff));
 
@@ -110,8 +110,7 @@ public final class RevoltSystem extends EntitySystem {
       source.power = max(max(1, source.power / 2), source.power - instability / 2);
 
       if (tile.isPresent()) {
-        Influence inf = tile.get();
-        createRevoltingEmpire(empire, instability, inf);
+        createRevoltingEmpire(empire, instability, tile.get());
       } else {
         log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
             empire.getComponent(Name.class), instability, source.power);
@@ -122,8 +121,11 @@ public final class RevoltSystem extends EntitySystem {
     }
   }
 
-  private boolean isValidRevoltTile(Entity empire, MapPosition pos) {
+  private boolean isValidRevoltTile(Entity empire, MapPosition pos, int instability) {
     if (!map.getTerrainAt(pos).canStart() || map.hasEntity(pos))
+      return false;
+
+    if (instability < map.getInfluenceAt(pos).getMaxInfluence())
       return false;
 
     boolean atInfluenceBorder = false;
@@ -144,22 +146,20 @@ public final class RevoltSystem extends EntitySystem {
   }
 
   private void createRevoltingEmpire(Entity empire, int instability, Influence inf) {
-    Entity mainInfluence = world.getEntity(inf.getMainInfluenceSource());
     Culture culture = empires.get(empire).culture;
     Empire data = new Empire(settings.guessColor(), culture, true);
     settings.empires.add(data);
     Entity revoltee = EntityFactory.createEmpire(world, inf.position.x, inf.position.y, culture.newCityName(), data);
     map.setEntity(revoltee, inf.position);
-    inf.setInfluence(revoltee, inf.getMaxInfluence() + inf.getDelta(mainInfluence) + instability);
 
     // get starting power from generating instability
-    sources.get(revoltee).power = instability;
+    // ensure it has enough power to control its own tile and resist a bit
+    sources.get(revoltee).power = max(max(instability, inf.getMaxInfluence() + 1), sources.get(empire).power / 2);
+    inf.setInfluence(revoltee, sources.get(revoltee).power);
 
     // do not forget neighboring tiles
-    for (MapPosition n : map.getNeighbors(inf.position)) {
-      Influence neighbor = map.getInfluenceAt(n);
-      neighbor.setInfluence(revoltee, instability + neighbor.getInfluence(mainInfluence));
-    }
+    for (MapPosition n : map.getNeighbors(inf.position))
+      map.getInfluenceAt(n).setInfluence(revoltee, instability);
 
     // add all discoveries from original empire
     discoveries.copyDiscoveries(empire, revoltee);
