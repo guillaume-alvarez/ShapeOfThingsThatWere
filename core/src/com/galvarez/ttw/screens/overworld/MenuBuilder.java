@@ -106,7 +106,8 @@ public class MenuBuilder {
 
     // Access to score ladder
     Score score = screen.player.getComponent(Score.class);
-    turnMenu.addButton(score.totalScore + " (+" + score.lastTurnPoints + ")", screen::scoresMenu);
+    turnMenu.addButton("#" + score.rank + " " + score.totalScore + " (+" + score.lastTurnPoints + ")",
+        screen::scoresMenu);
 
     // access to map options
     turnMenu.addButton("Map options", () -> displayMapMenu(turnMenu));

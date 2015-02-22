@@ -3,6 +3,7 @@ package com.galvarez.ttw.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -41,9 +42,28 @@ public final class ScoreSystem extends EntitySystem {
 
   private ComponentMapper<Diplomacy> relations;
 
+  private final List<Item> list = new ArrayList<>();
+
   @SuppressWarnings("unchecked")
   public ScoreSystem() {
     super(Aspect.getAspectForAll(Score.class, InfluenceSource.class));
+  }
+
+  @Override
+  protected void inserted(Entity e) {
+    super.inserted(e);
+    list.add(new Item(e, scores.get(e)));
+  }
+
+  @Override
+  protected void removed(Entity e) {
+    super.removed(e);
+
+    for (Iterator<Item> it = list.iterator(); it.hasNext();)
+      if (it.next().empire.equals(e)) {
+        it.remove();
+        return;
+      }
   }
 
   @Override
@@ -53,13 +73,19 @@ public final class ScoreSystem extends EntitySystem {
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    for (Entity empire : entities)
-      scores.get(empire).lastTurnPoints = 0;
+    for (Entity empire : entities) {
+      Score score = scores.get(empire);
+      score.lastTurnPoints = 0;
+    }
 
     for (Entity empire : entities) {
       InfluenceSource source = sources.get(empire);
       add(empire, source.influencedTiles.size());
     }
+
+    Collections.sort(list, Comparator.comparingInt((Item i) -> i.score.totalScore).reversed());
+    for (int r = 0; r < list.size(); r++)
+      list.get(r).score.rank = r + 1;
   }
 
   /** Recursive method to add score to all. */
@@ -95,15 +121,7 @@ public final class ScoreSystem extends EntitySystem {
   }
 
   public List<Item> getScores() {
-    List<Item> list = new ArrayList<Item>();
-    for (Entity empire : getActives())
-      list.add(new Item(empire, scores.get(empire)));
-    Collections.sort(list, Comparator.comparingInt((Item i) -> i.score.totalScore).reversed());
     return list;
   }
 
-  public int getRank(Entity empire) {
-    List<Item> list = getScores();
-    return list.indexOf(empire) + 1;
-  }
 }
