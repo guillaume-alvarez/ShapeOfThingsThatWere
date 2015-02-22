@@ -26,7 +26,6 @@ public final class GameMap {
 
   public final Empire[] empires;
 
-  @SuppressWarnings("unchecked")
   public GameMap(Terrain[][] map, Collection<Empire> empires) {
     this.map = map;
     this.empires = empires.toArray(new Empire[0]);

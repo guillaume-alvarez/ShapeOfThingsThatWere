@@ -36,6 +36,13 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     recomputeMain();
   }
 
+  /** Remove the source influence from the tile. */
+  public void removeInfluence(Entity source) {
+    influence.remove(source.getId(), 0);
+    influenceDelta.remove(source.getId(), 0);
+    recomputeMain();
+  }
+
   /** Add to the delta for source influence on next turn to the tile. */
   public void addInfluenceDelta(Entity source, int delta) {
     influenceDelta.getAndIncrement(source.getId(), 0, delta);

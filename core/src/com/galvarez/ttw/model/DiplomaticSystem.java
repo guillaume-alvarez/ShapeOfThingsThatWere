@@ -109,6 +109,17 @@ public final class DiplomaticSystem extends EntitySystem {
   }
 
   @Override
+  protected void removed(Entity removed) {
+    super.removed(removed);
+    for (Entity e : getActives()) {
+      Diplomacy diplo = relations.get(e);
+      diplo.lastChange.remove(e, 0);
+      diplo.proposals.remove(e);
+      diplo.relations.remove(e);
+    }
+  }
+
+  @Override
   protected boolean checkProcessing() {
     return true;
   }

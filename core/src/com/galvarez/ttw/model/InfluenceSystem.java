@@ -102,6 +102,7 @@ public final class InfluenceSystem extends EntitySystem {
 
   @Override
   protected void inserted(Entity e) {
+    super.inserted(e);
     InfluenceSource source = sources.get(e);
     source.power = INITIAL_POWER;
     if (source.power > 0) {
@@ -112,6 +113,14 @@ public final class InfluenceSystem extends EntitySystem {
       tile.setInfluence(e, tile.getMaxInfluence());
       source.influencedTiles.add(pos);
     }
+  }
+
+  @Override
+  protected void removed(Entity e) {
+    super.removed(e);
+    for (int x = 0; x < map.width; x++)
+      for (int y = 0; y < map.height; y++)
+        map.getInfluenceAt(x, y).removeInfluence(e);
   }
 
   @Override
@@ -154,12 +163,14 @@ public final class InfluenceSystem extends EntitySystem {
     if (!tile.isMainInfluencer(empire) && tile.hasMainInfluence()) {
       Entity influencer = tile.getMainInfluenceSource(world);
       if (empire != influencer) {
-        log.info("{} conquered by {}, will now be tributary to its conqueror.",
-            empire.getComponent(Description.class).desc, influencer.getComponent(Description.class));
+        log.info("{} conquered by {}, will now be tributary to its conqueror.", empire.getComponent(Description.class),
+            influencer.getComponent(Description.class));
         source.power--;
         sources.get(influencer).power++;
         if (source.power <= 0) {
-          // TODO source was destroyed, not sure what to do
+          log.info("{} conquered by {}, was destroyed.", empire.getComponent(Description.class),
+              influencer.getComponent(Description.class));
+          delete(empire);
         } else {
           Diplomacy loser = relations.get(empire);
           diplomaticSystem.changeRelation(empire, loser, influencer, relations.get(influencer), Action.SURRENDER);
@@ -171,6 +182,15 @@ public final class InfluenceSystem extends EntitySystem {
         }
       }
     }
+  }
+
+  private void delete(Entity entity) {
+    log.info("{} is deleted", entity.getComponent(Description.class));
+    map.setEntity(null, positions.get(entity));
+    if (sources.has(entity))
+      for (Entity s : sources.get(entity).secondarySources)
+        delete(s);
+    entity.edit().deleteEntity();
   }
 
   private void updateTileInfluence(int x, int y) {
