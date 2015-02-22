@@ -1,6 +1,7 @@
 package com.galvarez.ttw.model;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Comparator.comparingInt;
 
 import java.util.Optional;
@@ -154,7 +155,8 @@ public final class RevoltSystem extends EntitySystem {
 
     // get starting power from generating instability
     // ensure it has enough power to control its own tile and resist a bit
-    sources.get(revoltee).power = max(max(instability, inf.getMaxInfluence() + 1), sources.get(empire).power / 2);
+    int sourcePower = sources.get(empire).power;
+    sources.get(revoltee).power = max(min(sourcePower, instability + sourcePower / 2), inf.getMaxInfluence() + 1);
     inf.setInfluence(revoltee, sources.get(revoltee).power);
 
     // do not forget neighboring tiles

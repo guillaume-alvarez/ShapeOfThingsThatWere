@@ -112,7 +112,10 @@ public final class DestinationSystem extends EntitySystem {
         map.moveEntity(e, current, next);
         if (sources.has(e)) {
           Influence inf = map.getInfluenceAt(next);
-          inf.addInfluenceDelta(e, inf.getMaxInfluence());
+          // just make sure to have enough influence
+          inf.setInfluence(e, inf.getMaxInfluence());
+          if (inf.hasMainInfluence() && !inf.isMainInfluencer(e))
+            inf.addInfluenceDelta(e, inf.getDelta(inf.getMainInfluenceSource(world)) + 1);
         }
         if (dest.path.isEmpty()) {
           dest.target = null;
