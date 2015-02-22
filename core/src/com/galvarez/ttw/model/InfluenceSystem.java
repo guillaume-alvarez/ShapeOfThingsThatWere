@@ -3,10 +3,13 @@ package com.galvarez.ttw.model;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import java.util.ArrayDeque;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -33,6 +36,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools.Border;
+import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.components.Description;
 
 /**
@@ -82,6 +86,8 @@ public final class InfluenceSystem extends EntitySystem {
   private DiplomaticSystem diplomaticSystem;
 
   private final GameMap map;
+
+  private Modifiers modifiers;
 
   @SuppressWarnings("unchecked")
   public InfluenceSystem(GameMap gameMap) {
@@ -190,10 +196,10 @@ public final class InfluenceSystem extends EntitySystem {
    */
   private void addDistanceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
-    for (Entry<MapPosition, Integer> entry : getDistances(e, positions.get(e)).entrySet()) {
+    for (Entry<MapPosition, Integer> entry : getTargetInfluence(e, positions.get(e), source.power).entrySet()) {
       Influence tile = map.getInfluenceAt(entry.getKey());
-      int target = canInfluence(e, entry.getKey()) ? target = max(0, source.power - max(0, entry.getValue().intValue()))
-          // start losing influence when no neighboring tile
+      int target = canInfluence(e, entry.getKey()) ? entry.getValue().intValue()
+      // start losing influence when no neighboring tile
           : 0;
       // do not forget the military from war
       if (tile.hasMainInfluence())
@@ -202,13 +208,11 @@ public final class InfluenceSystem extends EntitySystem {
     }
 
     for (Entity s : source.secondarySources) {
-      for (Entry<MapPosition, Integer> entry : getDistances(e, positions.get(s)).entrySet()) {
+      for (Entry<MapPosition, Integer> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)
+          .entrySet()) {
         MapPosition pos = entry.getKey();
-        if (canInfluence(e, pos)) {
-          int target = armies.get(s).currentPower - max(0, entry.getValue().intValue());
-          if (target > 0)
-            targets.getAndIncrement(pos, 0, target);
-        }
+        if (canInfluence(e, pos))
+          targets.getAndIncrement(pos, 0, entry.getValue().intValue());
       }
     }
 
@@ -222,6 +226,67 @@ public final class InfluenceSystem extends EntitySystem {
         tile.addInfluenceDelta(e, -max(1, (current - target) / 10));
       // do nothing if same obviously
     }
+  }
+
+  private Map<MapPosition, Integer> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
+    Map<Terrain, Integer> costs = terrainCosts(source);
+    Queue<MapPosition> frontier = new ArrayDeque<>(32);
+    frontier.add(startPos);
+    Map<MapPosition, Integer> targets = new HashMap<>();
+    targets.put(startPos, startingPower);
+
+    while (!frontier.isEmpty()) {
+      MapPosition current = frontier.poll();
+      int currentPower = targets.get(current);
+
+      for (MapPosition next : map.getNeighbors(current)) {
+        Influence inf = map.getInfluenceAt(next);
+        if (!inf.terrain.moveBlock()) {
+          int newTarget = currentPower - costs.get(inf.terrain);
+          Integer oldTarget = targets.get(next);
+          if (oldTarget == null || newTarget > oldTarget.intValue()) {
+            targets.put(next, newTarget);
+            if (inf.hasInfluence(source) && newTarget > 0)
+              // only one tile from already influenced tiles
+              frontier.offer(next);
+          }
+        }
+      }
+    }
+    return targets;
+  }
+
+  private Map<Terrain, Integer> terrainCosts(Entity source) {
+    modifiers = sources.get(source).modifiers;
+    Map<Terrain, Integer> res = new EnumMap<>(Terrain.class);
+    for (Terrain t : Terrain.values())
+      res.put(t, max(1, t.moveCost() - modifiers.terrainBonus.get(t)));
+    return res;
+  }
+
+  /**
+   * Can only influence a tile if it belongs to the source or one of its
+   * neighbor does. Cannot influence if we have a treaty.
+   */
+  private boolean canInfluence(Entity source, MapPosition pos) {
+    Influence influence = map.getInfluenceAt(pos);
+    if (influence.isMainInfluencer(source))
+      return true;
+
+    // cannot influence on tiles from empires we have a treaty with
+    if (influence.hasMainInfluence()) {
+      Diplomacy treaties = relations.get(source);
+      if (treaties.getRelationWith(influence.getMainInfluenceSource(world)) == State.TREATY)
+        return false;
+    }
+
+    // need a neighbor we already have influence on
+    for (Border b : Border.values()) {
+      Influence tile = map.getInfluenceAt(b.getNeighbor(pos));
+      if (tile != null && tile.isMainInfluencer(source))
+        return true;
+    }
+    return false;
   }
 
   /**
@@ -274,56 +339,6 @@ public final class InfluenceSystem extends EntitySystem {
   public int getRequiredPowerAdvancement(InfluenceSource source) {
     // TODO the base power should depend on the empire
     return source.power + 1;
-  }
-
-  /**
-   * Can only influence a tile if it belongs to the source or one of its
-   * neighbor does. Cannot influence if we have a treaty.
-   */
-  public boolean canInfluence(Entity source, MapPosition pos) {
-    // that tile should never be null: there is a flag on it
-    Influence influence = map.getInfluenceAt(pos);
-    if (influence.isMainInfluencer(source))
-      return true;
-
-    // cannot influence on tiles from empires we have a treaty with
-    if (influence.hasMainInfluence()) {
-      Diplomacy treaties = relations.get(source);
-      if (treaties.getRelationWith(influence.getMainInfluenceSource(world)) == State.TREATY)
-        return false;
-    }
-
-    // need s neighbor we already have influence on
-    for (Border b : Border.values()) {
-      Influence tile = map.getInfluenceAt(b.getNeighbor(pos));
-      if (tile != null && tile.isMainInfluencer(source))
-        return true;
-    }
-    return false;
-  }
-
-  private Map<MapPosition, Integer> getDistances(Entity source, MapPosition pos) {
-    Map<MapPosition, Integer> distances = new HashMap<>();
-    distances.put(pos, 0);
-    collectDistances(source, 0, pos, distances, sources.get(source).modifiers);
-    return distances;
-  }
-
-  private void collectDistances(Entity source, int distance, MapPosition pos, Map<MapPosition, Integer> distances,
-      Modifiers modifiers) {
-    for (MapPosition neighbor : map.getNeighbors(pos)) {
-      Influence inf = map.getInfluenceAt(neighbor);
-      if (!inf.terrain.moveBlock()) {
-        Integer old = distances.get(neighbor);
-        int newDistance = distance + max(1, inf.terrain.moveCost() - modifiers.terrainBonus.get(inf.terrain));
-        if (old == null || newDistance < old.intValue()) {
-          distances.put(neighbor, Integer.valueOf(newDistance));
-          if (inf.hasInfluence(source))
-            // only one tile from already influenced tiles
-            collectDistances(source, newDistance, neighbor, distances, modifiers);
-        }
-      }
-    }
   }
 
 }
