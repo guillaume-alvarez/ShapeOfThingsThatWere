@@ -104,8 +104,8 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
       float delta = value.intValue();
-      scores.getAndIncrement(Faction.MILITARY, 0, delta * 2f);
-      scores.getAndIncrement(Faction.CULTURAL, 0, -delta);
+      scores.getAndIncrement(Faction.MILITARY, 0, delta * 3f);
+      scores.getAndIncrement(Faction.CULTURAL, 0, -delta * 3f);
     }
 
     @Override

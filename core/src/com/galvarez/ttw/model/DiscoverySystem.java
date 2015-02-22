@@ -41,6 +41,7 @@ import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Condition;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -232,23 +233,23 @@ public final class DiscoverySystem extends EntitySystem {
       Collections.sort(possible, new Comparator<Research>() {
         @Override
         public int compare(Research d1, Research d2) {
-          float score1 = getDiscoveryScore(d1);
-          float score2 = getDiscoveryScore(d2);
-
           // reverse order: greatest first
-          return -Float.compare(score1, score2);
-        }
-
-        private float getDiscoveryScore(Research r) {
-          float score = r.target.factions.get(f, Float.NEGATIVE_INFINITY);
-          for (Discovery p : r.previous)
-            score += p.factions.get(f, 0);
-          return score;
+          return -Float.compare(d1.factions.get(f, 0f), d2.factions.get(f, 0f));
         }
       });
 
-      if (!possible.isEmpty())
-        res.put(f, possible.remove(rand.nextInt(min(3, possible.size()))));
+      if (possible.isEmpty())
+        continue;
+
+      Research selected = null;
+      for (int i = rand.nextInt(min(2, possible.size())); i >= 0 && selected == null; i--)
+        if (possible.get(i).factions.get(f, 0f) >= 0f)
+          selected = possible.remove(i);
+
+      if (selected != null)
+        res.put(f, selected);
+      else
+        log.info("Found no {} research among {} for {}", f, possible, entity.getComponent(Description.class));
     }
     return res;
   }
