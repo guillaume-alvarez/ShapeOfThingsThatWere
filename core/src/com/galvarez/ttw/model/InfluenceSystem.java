@@ -203,7 +203,7 @@ public final class InfluenceSystem extends EntitySystem {
       if (e.value != 0) {
         Entity empire = world.getEntity(e.key);
         EntityFactory.createFadingTileLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
-            empires.get(empire).color, x, y);
+            empires.get(empire).color, x, y, 1f);
       }
     }
     tile.applyDelta();

@@ -86,7 +86,7 @@ public final class BuildingsSystem extends EntitySystem {
         city.constructionTurns = 0;
         log.info("{} built {}", names.get(empire), newBuilding);
         MapPosition pos = positions.get(empire);
-        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(empire).color, pos.x, pos.y);
+        EntityFactory.createFadingTileLabel(world, newBuilding.getName(), empires.get(empire).color, pos.x, pos.y, 3f);
         if (!ai.has(empire))
           notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS, "Built %s in %s.",
               newBuilding, names.get(empire));

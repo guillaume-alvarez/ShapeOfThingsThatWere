@@ -100,7 +100,7 @@ public class EntityFactory {
     return e;
   }
 
-  public static Entity createFadingTileLabel(World world, String label, Color color, float x, float y) {
+  public static Entity createFadingTileLabel(World world, String label, Color color, float x, float y, float duration) {
     Entity e = world.createEntity();
     EntityEdit edit = e.edit();
 
@@ -111,7 +111,7 @@ public class EntityFactory {
     FadingMessage fading = edit.create(FadingMessage.class);
     fading.label = label;
     fading.color = color;
-    fading.duration = 1.2f;
+    fading.duration = duration;
     fading.vx = 0f;
     fading.vy = 1.3f;
 

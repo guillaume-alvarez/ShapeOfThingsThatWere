@@ -27,12 +27,14 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.ObjectFloatMap;
+import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Discovery;
+import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.Policy;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
@@ -202,6 +204,9 @@ public final class DiscoverySystem extends EntitySystem {
 
     // may be some 'special discovery'
     special.apply(entity, target, discovery);
+
+    MapPosition pos = entity.getComponent(MapPosition.class);
+    EntityFactory.createFadingTileLabel(world, target.name, entity.getComponent(Empire.class).color, pos.x, pos.y, 3f);
   }
 
   /**
