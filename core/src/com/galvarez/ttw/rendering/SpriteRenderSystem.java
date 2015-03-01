@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -84,17 +83,6 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
       batch.draw(spriteRegion, posX, posY, 0, 0, spriteRegion.getRegionWidth(), spriteRegion.getRegionHeight(),
           sprite.scaleX, sprite.scaleY, sprite.rotation);
-
-      if (names.has(e)) {
-        String name = names.get(e).name;
-
-        TextBounds bounds = font.getBounds(name);
-        posX = drawPosition.x - bounds.width / 2;
-        posY = drawPosition.y + (spriteRegion.getRegionWidth() * sprite.scaleX) - font.getDescent();
-
-        font.setColor(sprite.color);
-        font.draw(batch, name, posX, posY);
-      }
     }
   }
 

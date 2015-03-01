@@ -3,8 +3,12 @@ package com.galvarez.ttw.model.data;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
+import com.galvarez.ttw.utils.Colors;
 
 /**
  * Represent an empire (and a player) in the game.
@@ -15,11 +19,15 @@ import com.badlogic.gdx.graphics.Color;
  */
 public final class Empire extends Component {
 
+  private static final Logger log = LoggerFactory.getLogger(Empire.class);
+
   private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
   public final int id;
 
   public final Color color;
+
+  public final Color backColor;
 
   public final Culture culture;
 
@@ -28,6 +36,7 @@ public final class Empire extends Component {
   public Empire(Color color, Culture culture, boolean computer) {
     this.id = COUNTER.getAndIncrement();
     this.color = color;
+    this.backColor = Colors.contrast(color);
     this.culture = culture;
     this.computer = computer;
   }

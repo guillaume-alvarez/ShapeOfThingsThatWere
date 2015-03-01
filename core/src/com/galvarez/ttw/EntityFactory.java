@@ -25,6 +25,7 @@ import com.galvarez.ttw.rendering.components.MutableMapPosition;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.ScaleAnimation;
 import com.galvarez.ttw.rendering.components.Sprite;
+import com.galvarez.ttw.rendering.components.TextBox;
 import com.galvarez.ttw.utils.Colors;
 
 public class EntityFactory {
@@ -71,9 +72,11 @@ public class EntityFactory {
     sprite.color = empire.color;
     edit.add(sprite);
 
-    edit.add(new Name(name)).add(new Description("Tribe of " + name));
+    InfluenceSource source = new InfluenceSource();
+    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination());
 
-    edit.add(new MapPosition(x, y)).add(new InfluenceSource()).add(new Buildings()).add(new Destination());
+    edit.add(new Name(name)).add(new Description("Tribe of " + name))
+        .add(new TextBox(() -> name + ": " + source.power));
 
     edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand())
         .add(new Score());

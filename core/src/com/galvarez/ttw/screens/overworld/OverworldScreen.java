@@ -45,6 +45,7 @@ import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.SpriteRenderSystem;
+import com.galvarez.ttw.rendering.TextBoxRenderSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.map.MapHighlighter;
 import com.galvarez.ttw.rendering.map.MapRenderer;
@@ -68,6 +69,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final CounterRenderSystem counterRenderSystem;
 
   private final InfluenceRenderSystem influenceRenderSystem;
+
+  private final TextBoxRenderSystem textBoxRenderSystem;
 
   private final DestinationRenderSystem destinationRenderSystem;
 
@@ -165,6 +168,7 @@ public final class OverworldScreen extends AbstractScreen {
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, map), true);
+    textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(camera, batch), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     counterRenderSystem = world.setSystem(new CounterRenderSystem(camera, batch), true);
@@ -182,6 +186,7 @@ public final class OverworldScreen extends AbstractScreen {
     destinationSystem.process();
     scoreSystem.process();
     influenceRenderSystem.preprocess();
+    textBoxRenderSystem.preprocess();
     notificationsSystem.process();
     log.info("The world is initialized");
 
@@ -230,6 +235,7 @@ public final class OverworldScreen extends AbstractScreen {
     destinationRenderSystem.process();
     counterRenderSystem.process();
     spriteRenderSystem.process();
+    textBoxRenderSystem.process();
 
     if (renderHighlighter) {
       mapHighlighter.render(highlightedTiles);
@@ -336,6 +342,7 @@ public final class OverworldScreen extends AbstractScreen {
     world.process();
 
     influenceRenderSystem.preprocess();
+    textBoxRenderSystem.preprocess();
     notificationsSystem.process();
     turnNumber++;
 
@@ -437,7 +444,7 @@ public final class OverworldScreen extends AbstractScreen {
   public void displayColoredInfluence(boolean b) {
     influenceRenderSystem.displayColoredInfluence(b);
   }
-  
+
   public boolean displayColoredInfluence() {
     return influenceRenderSystem.displayColoredInfluence();
   }
