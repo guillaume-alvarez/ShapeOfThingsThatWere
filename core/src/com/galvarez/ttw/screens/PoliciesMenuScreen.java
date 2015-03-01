@@ -86,7 +86,7 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     stabilityMenu.addTable( //
         new Object[] { "Empire stability is", stability }, //
         new Object[] { " + military power ", army.militaryPower }, //
-        new Object[] { " - source extension ", 5 * source.influencedTiles.size() }, //
+        new Object[] { " - source extension ", RevoltSystem.INSTABILITY_PER_TILE * source.influencedTiles.size() }, //
         new Object[] { "=> current instability is ", revolts.getInstability(empire) });
     stabilityMenu.addToStage(stage, 30, topMenu.getY() - 30, false);
 

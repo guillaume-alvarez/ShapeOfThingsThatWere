@@ -43,6 +43,8 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 @Wire
 public final class RevoltSystem extends EntitySystem {
 
+  public static final int INSTABILITY_PER_TILE = 5;
+
   private static final Logger log = LoggerFactory.getLogger(RevoltSystem.class);
 
   private ComponentMapper<Empire> empires;
@@ -89,7 +91,8 @@ public final class RevoltSystem extends EntitySystem {
   public int getInstability(Entity empire) {
     InfluenceSource source = sources.get(empire);
     Policies empirePolicies = policies.get(empire);
-    return source.influencedTiles.size() * 5 - (empirePolicies.stability + army.get(empire).militaryPower);
+    return source.influencedTiles.size() * INSTABILITY_PER_TILE
+        - (empirePolicies.stability + army.get(empire).militaryPower);
   }
 
   /**
@@ -106,13 +109,13 @@ public final class RevoltSystem extends EntitySystem {
           .map(p -> map.getInfluenceAt(p)) //
           .min(comparingInt(Influence::getSecondInfluenceDiff));
 
-      // decrease power by instability to avoid popping revolts in loop
-      policies.get(empire).stability += instability * 3;
-      source.power = max(max(1, source.power / 2), source.power - instability / 2);
-
       if (tile.isPresent()) {
+        updateEmpireAfterRevolt(empire, instability, source);
+
         createRevoltingEmpire(empire, instability, tile.get());
-      } else {
+      } else if (instability > 50) {
+        updateEmpireAfterRevolt(empire, instability, source);
+
         log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
             empire.getComponent(Name.class), instability, source.power);
         if (!ai.has(empire))
@@ -120,6 +123,12 @@ public final class RevoltSystem extends EntitySystem {
               "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power);
       }
     }
+  }
+
+  private void updateEmpireAfterRevolt(Entity empire, int instability, InfluenceSource source) {
+    // decrease power by instability to avoid popping revolts in loop
+    policies.get(empire).stability += instability;
+    source.power = max(max(1, source.power / 2), source.power - instability / 2);
   }
 
   private boolean isValidRevoltTile(Entity empire, MapPosition pos, int instability) {
