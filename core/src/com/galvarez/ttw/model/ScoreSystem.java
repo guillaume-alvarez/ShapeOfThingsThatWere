@@ -90,7 +90,9 @@ public final class ScoreSystem extends EntitySystem {
 
   /** Recursive method to add score to all. */
   private void add(Entity empire, int delta) {
-    if (delta > 0) {
+    if (delta > 0
+    // do not forget an empire can be deleted
+        && scores.has(empire)) {
       Diplomacy diplomacy = relations.get(empire);
 
       Score score = scores.get(empire);
