@@ -23,7 +23,7 @@ public final class Colors {
    */
   @SuppressWarnings("javadoc")
   public static Color contrast(Color c) {
-    float yiq = ((c.r * 299f) + (c.g * 587f) + (c.b * 114f)) / 1000f;
+    float yiq = ((c.r * 256 * 299f) + (c.g * 256 * 587f) + (c.b * 256 * 114f)) / 1000f;
     return (yiq >= 128f) ? Color.BLACK : Color.WHITE;
 
   }
