@@ -26,11 +26,11 @@ import com.galvarez.ttw.utils.Font;
 @Wire
 public final class SpriteRenderSystem extends AbstractRendererSystem {
 
-  private ComponentMapper<MapPosition> pm;
+  private ComponentMapper<MapPosition> positions;
 
-  private ComponentMapper<Sprite> sm;
+  private ComponentMapper<Sprite> sprites;
 
-  private ComponentMapper<SpriteAnimation> sam;
+  private ComponentMapper<SpriteAnimation> animations;
 
   private ComponentMapper<Name> names;
 
@@ -61,14 +61,14 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
   }
 
   private void process(Entity e) {
-    if (pm.has(e)) {
-      MapPosition position = pm.getSafe(e);
+    if (positions.has(e)) {
+      MapPosition position = positions.getSafe(e);
 
       // If sprite is off-screen, don't bother drawing it!
       if (!isOnScreen(position))
         return;
 
-      Sprite sprite = sm.get(e);
+      Sprite sprite = sprites.get(e);
 
       TextureRegion spriteRegion = sprite.region;
       batch.setColor(sprite.color);
@@ -100,20 +100,20 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
   @Override
   protected void inserted(Entity e) {
-    Sprite sprite = sm.get(e);
     sortedEntities.add(e);
+    Sprite sprite = sprites.get(e);
     TextureRegion reg = atlas.findRegion(sprite.name);
     sprite.region = reg;
     sprite.x = reg.getRegionX();
     sprite.y = reg.getRegionY();
     sprite.width = reg.getRegionWidth();
     sprite.height = reg.getRegionHeight();
-    if (sam.has(e)) {
-      SpriteAnimation anim = sam.getSafe(e);
+    if (animations.has(e)) {
+      SpriteAnimation anim = animations.getSafe(e);
       anim.animation = new Animation(anim.frameDuration, atlas.findRegions(sprite.name), anim.playMode);
     }
 
-    sortedEntities.sort((e1, e2) -> sm.get(e1).layer.compareTo(sm.get(e2).layer));
+    sortedEntities.sort((e1, e2) -> sprites.get(e1).layer.compareTo(sprites.get(e2).layer));
   }
 
   @Override
