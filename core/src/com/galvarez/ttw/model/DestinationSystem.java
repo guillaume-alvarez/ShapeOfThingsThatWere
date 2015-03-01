@@ -180,7 +180,8 @@ public final class DestinationSystem extends EntitySystem {
   public void computePath(Entity e, MapPosition target) {
     Destination dest = destinations.get(e);
     dest.target = target;
-    dest.path = astar.aStarSearch(positions.get(e), target, p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)));
+    dest.path = astar.aStarSearch(positions.get(e), target,
+        p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)) && map.getEntityAt(p) == null);
     dest.progress = 0;
   }
 
