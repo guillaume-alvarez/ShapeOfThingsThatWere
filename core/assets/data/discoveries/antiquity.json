@@ -115,12 +115,12 @@
 },
 {
   name: Irrigation,
-  previous: [[Crop, River], [River, Pottery]],
-  effects: {growth: 1}
+  previous: [[Crop, River], [River, Pottery], [Crop, Village], [Crop, City]],
+  effects: {growth: 2}
 },
 {
   name: Granary,
-  previous: [[House, CEREAL], [Pottery, CEREAL]],
+  previous: [[House, CEREAL], [Pottery, CEREAL], [City, Crop]],
   effects: {growth: 1}
 },
 {

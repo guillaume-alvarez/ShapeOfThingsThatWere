@@ -172,7 +172,7 @@
 },
 {
   name: Village,
-  previous: [[House, Agriculture], [Tent, Agriculture]],
+  previous: [[House, Agriculture], [Tent, Agriculture], [House, Irrigation], [Desert, Irrigation]],
   effects: {militaryPower: 1, growth: 1, discovery: 1, stability: 1}
 },
 {
