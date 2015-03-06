@@ -7,7 +7,7 @@
 },
 {
   name: Sword,
-  previous: [[Metallurgy, Knife]],
+  previous: [[Metallurgy, Knife], [Stone, Knife]],
   groups: [WEAPON],
   effects: {militaryPower: 3}
 },
@@ -19,7 +19,7 @@
 },
 {
   name: Lance,
-  previous: [[Metallurgy, Stick]],
+  previous: [[Metallurgy, Stick], [Stone, Stick]],
   groups: [WEAPON],
   effects: {militaryPower: 3}
 },
@@ -31,7 +31,7 @@
 },
 {
   name: War,
-  previous: [[Chief, WEAPON], [City, WEAPON]],
+  previous: [[Chief, WEAPON], [City, WEAPON], [Village, Hunt]],
   terrains: [GRASSLAND, PLAIN],
   groups: [RELATION],
   effects: {diplomacy: WAR, militaryPower: 3, stability: -2}
@@ -97,7 +97,7 @@
 },
 {
   name: Wheel,
-  previous: [[MATERIAL]],
+  previous: [[MATERIAL], [Path]],
   terrains: [GRASSLAND, PLAIN]
 },
 {

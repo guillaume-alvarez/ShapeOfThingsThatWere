@@ -37,7 +37,7 @@
 },
 {
   name: Skin,
-  previous: [[Knife, Animal]]
+  previous: [[Knife, Animal], [Knife, Slave]]
 },
 {
   name: Fur,
@@ -73,13 +73,13 @@
 },
 {
   name: Agriculture,
-  previous: [[Grassland, Gathering]],
+  previous: [[Grassland, Gathering], [Animal, Gathering]],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 2}
 },
 {
   name: Breeding,
-  previous: [[Agriculture, Animal]],
+  previous: [[Agriculture, Animal], [Animal, Village]],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 2}
 },
@@ -131,7 +131,7 @@
 },
 {
   name: Pottery,
-  previous: [[Fire, Clay]],
+  previous: [[Fire, Clay], [Clay, Desert]],
 },
 {
   name: Metallurgy,
@@ -141,7 +141,7 @@
 },
 {
   name: Bronze,
-  previous: [[Copper, Tin, Metallurgy]],
+  previous: [[Copper, Tin, Metallurgy], [Copper, Tin, Fire]],
   groups: [METAL],
   effects: {militaryPower: 2}
 },
@@ -153,7 +153,7 @@
 },
 {
   name: Forge,
-  previous: [[Metallurgy, House]],
+  previous: [[Metallurgy, House], [Iron, House]],
   terrains: [FOREST, HILLS],
   effects: {growth: 1}
 },
@@ -183,7 +183,7 @@
 },
 {
   name: Peasant,
-  previous: [[Crop, Family]],
+  previous: [[Crop, Family], [Village, Crop], [Slave, Liberty]],
   terrains: [GRASSLAND, PLAIN],
   groups: [JOBS],
   effects: {growth: 1, GRASSLAND: 1, PLAIN: 1, militaryPower: 1}
@@ -215,7 +215,7 @@
 },
 {
   name: Chief,
-  previous: [[Village, WEAPON], [Family, WEAPON]],
+  previous: [[Village, WEAPON], [Family, WEAPON], [War]],
   groups: [GOVERNMENT, LEADER],
   effects: {militaryPower: 1}
 },

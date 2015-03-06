@@ -56,7 +56,7 @@
 },
 {
   name: Ore,
-  previous: [[Dirt]],
+  previous: [[Dirt], [METAL]],
   terrains: [MOUNTAIN, HILLS],
   effects: {HILLS: 1, MOUNTAIN: 1}
 },
@@ -79,7 +79,7 @@
   previous: [[Metallurgy, Ore]],
   groups: [METAL],
   terrains: [MOUNTAIN, HILLS],
-  effects: {militaryPower: 3, HILLS: 1, MOUNTAIN: 1}
+  effects: {militaryPower: 3, HILLS: 1}
 },
 {
   name: Gold,
