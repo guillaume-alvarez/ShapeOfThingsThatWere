@@ -115,9 +115,9 @@ public class InputManager {
     selectedEntity = entity;
 
     if (entity != null)
-      log.info("Selected {}: {}", coords, entity.getComponent(Description.class));
+      log.debug("Selected {}: {}", coords, entity.getComponent(Description.class));
     else
-      log.info("Selected {}: no entity", coords);
+      log.debug("Selected {}: no entity", coords);
 
     // Put up a menu for the selected entity
     menuBuilder.clearSubMenus();

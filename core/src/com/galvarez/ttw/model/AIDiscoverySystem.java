@@ -61,7 +61,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
         }
       }
       if (prefered != null) {
-        log.info("{} follows {} advice to investigate {} from {}", e.getComponent(Name.class), prefered.getKey(),
+        log.debug("{} follows {} advice to investigate {} from {}", e.getComponent(Name.class), prefered.getKey(),
             prefered.getValue().target, prefered.getValue().previous);
         d.next = prefered.getValue();
       }
@@ -78,7 +78,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
                 oldScore, newD, newScore);
             empirePolicies.policies.put(p, newD);
           } else
-            log.info("{} did not replace policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
+            log.debug("{} did not replace policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
                 oldScore, newD, newScore);
         }
       }

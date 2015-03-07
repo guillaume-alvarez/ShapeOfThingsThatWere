@@ -182,7 +182,7 @@ public final class DiscoverySystem extends EntitySystem {
   private void discoverNext(Entity entity, Discoveries discovery) {
     Research next = discovery.next;
     Discovery target = next.target;
-    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
+    log.debug("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
     if (!ai.has(entity)) {
       Condition condition = !possibleDiscoveries(entity, discovery).isEmpty() ? (() -> discovery.next != null
           || possibleDiscoveries(entity, discovery).isEmpty()) : null;

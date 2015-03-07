@@ -125,7 +125,7 @@ public final class DestinationSystem extends EntitySystem {
             notifications.addNotification(() -> screen.select(e, true), null, Type.FLAG, "Finished moving %s!",
                 names.get(e));
           }
-          log.info("Moved {} to {}", names.get(e), next);
+          log.debug("Moved {} to {}", names.get(e), next);
         }
       }
     }
