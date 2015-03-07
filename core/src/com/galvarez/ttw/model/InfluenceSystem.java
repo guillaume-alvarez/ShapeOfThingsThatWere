@@ -154,7 +154,7 @@ public final class InfluenceSystem extends EntitySystem {
 
       InfluenceSource source = sources.get(empire);
       checkInfluencedByOther(source, empire);
-      addDistanceDelta(source, empire, armyInfluenceOn);
+      addInfluenceDelta(source, empire, armyInfluenceOn);
     }
   }
 
@@ -218,7 +218,7 @@ public final class InfluenceSystem extends EntitySystem {
    * or next to one we compute the minimal distance to the source. Then from the
    * distance we compute the target influence level. Then apply the delta.
    */
-  private void addDistanceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
+  private void addInfluenceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
     for (Entry<MapPosition, Integer> entry : getTargetInfluence(e, positions.get(e), source.power).entrySet()) {
       Influence tile = map.getInfluenceAt(entry.getKey());
@@ -252,6 +252,12 @@ public final class InfluenceSystem extends EntitySystem {
     }
   }
 
+  /**
+   * Compute the target influence on all tiles around the starting position.
+   * <p>
+   * Note: resulting target can be negative. It stops on tiles where there is no
+   * source influence AND target is not positive.
+   */
   private Map<MapPosition, Integer> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
     Map<Terrain, Integer> costs = terrainCosts(source);
     Queue<MapPosition> frontier = new ArrayDeque<>(32);
@@ -270,8 +276,12 @@ public final class InfluenceSystem extends EntitySystem {
           Integer oldTarget = targets.get(next);
           if (oldTarget == null || newTarget > oldTarget.intValue()) {
             targets.put(next, newTarget);
-            if (inf.hasInfluence(source) && newTarget > 0)
-              // only one tile from already influenced tiles
+            /*
+             * Increase only one tile from already influenced tiles. Decreases
+             * wherever we have some influence (makes no sense to decrease
+             * elsewhere.
+             */
+            if (inf.hasInfluence(source))
               frontier.offer(next);
           }
         }
