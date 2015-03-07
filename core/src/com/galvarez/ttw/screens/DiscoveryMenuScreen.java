@@ -1,5 +1,8 @@
 package com.galvarez.ttw.screens;
 
+import static java.lang.Math.max;
+import static java.lang.String.format;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,7 +13,9 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.Faction;
 import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
+import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -22,9 +27,11 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  */
 public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScreen> {
 
-  private final FramedMenu topMenu, lastDiscovery, discoveryChoices;
+  private final FramedMenu topMenu, lastDiscovery, terrains, discoveryChoices;
 
   private final Discoveries empire;
+
+  private final InfluenceSource source;
 
   private final DiscoverySystem discoverySystem;
 
@@ -35,10 +42,12 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     super(game, world, batch, gameScreen);
     this.entity = empire;
     this.empire = empire.getComponent(Discoveries.class);
+    this.source = empire.getComponent(InfluenceSource.class);
     this.discoverySystem = discoverySystem;
 
     topMenu = new FramedMenu(skin, 800, 600);
     lastDiscovery = new FramedMenu(skin, 800, 600);
+    terrains = new FramedMenu(skin, 800, 600);
     discoveryChoices = new FramedMenu(skin, 800, 600);
   }
 
@@ -59,6 +68,15 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
         lastDiscovery.addLabel(" - " + effect);
     }
     lastDiscovery.addToStage(stage, 30, topMenu.getY() - 30, false);
+
+    terrains.clear();
+    terrains.addLabel("- Terrains move costs -");
+    for (Terrain t : Terrain.values()) {
+      Integer mod = source.modifiers.terrainBonus.get(t);
+      int cost = max(1, mod != null ? t.moveCost() - mod : t.moveCost());
+      terrains.addLabel(format("%s: %d (%s)", t.getDesc(), cost, mod != null && mod != 0 ? -mod : "no modifier"));
+    }
+    terrains.addToStage(stage, 30, lastDiscovery.getY() - 30, false);
 
     discoveryChoices.clear();
     if (empire.next != null) {
@@ -84,6 +102,6 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
               }, true);
       }
     }
-    discoveryChoices.addToStage(stage, 30, lastDiscovery.getY() - 30, false);
+    discoveryChoices.addToStage(stage, 30, terrains.getY() - 30, false);
   }
 }
