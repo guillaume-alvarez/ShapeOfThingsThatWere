@@ -3,7 +3,7 @@
   name: "City Council",
   previous: [["Elders Council", City], [Law, City]],
   groups: [GOVERNMENT],
-  effects: {growth: 1}
+  effects: {growth: 1, stability: 2}
 },
 {
   name: Temple,
@@ -17,24 +17,26 @@
 {
   name: Republic,
   previous: [[Election, City], [Equality, JOBS]],
-  groups: [GOVERNMENT]
+  groups: [GOVERNMENT],
+  effects: {stability: 3}
 },
 {
   name: Democracy,
   previous: [[Citizens]],
-  groups: [GOVERNMENT]
+  groups: [GOVERNMENT],
+  effects: {stability: 2, growth: 1}
 },
 {
   name: Aristocracy,
   previous: [[War, Crop]],
   groups: [GOVERNMENT, LEADER],
-  effects: {growth: 1, militaryPower: 1}
+  effects: {growth: 1, militaryPower: 1, stability: 1}
 },
 {
   name: Oligarchy,
   previous: [[Aristocracy, Trade]],
   groups: [GOVERNMENT, LEADER],
-  effects: {growth: 1}
+  effects: {growth: 2, stability: 1}
 },
 {
   name: Citizens,
@@ -56,7 +58,7 @@
   name: Tyranny,
   previous: [[King, War]],
   groups: [GOVERNMENT],
-  effects: {militaryPower: 2}
+  effects: {militaryPower: 4, stability: -1}
 },
 {
   name: Theatre,
