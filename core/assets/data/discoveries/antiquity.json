@@ -37,10 +37,16 @@
   effects: {diplomacy: WAR, militaryPower: 3, stability: -2}
 },
 {
+  name: Hunter,
+  previous: [[Hunt, Family], [Hunt, Peasant], [Hunt]],
+  groups: [JOBS],
+  effects: {growth: 1, militaryPower: 1, FOREST: 1}
+},
+{
   name: Soldier,
   previous: [[War, Family], [War, Peasant]],
   groups: [JOBS],
-  effects: {growth: -1, militaryPower: 3}
+  effects: {growth: -2, militaryPower: 5}
 },
 {
   name: "Scorched earth",

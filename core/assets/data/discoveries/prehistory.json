@@ -186,7 +186,7 @@
   previous: [[Crop, Family], [Village, Crop], [Slave, Liberty]],
   terrains: [GRASSLAND, PLAIN],
   groups: [JOBS],
-  effects: {growth: 1, GRASSLAND: 1, PLAIN: 1, militaryPower: 1}
+  effects: {growth: 1, GRASSLAND: 1, PLAIN: 1}
 },
 {
   name: "Slash-and-burn cultivation",
@@ -320,6 +320,7 @@
 {
   name: Symbols,
   previous: [[Sky, Beliefs]],
+  effects: {discovery: 1}
 },
 {
   name: Spirits,
@@ -328,6 +329,7 @@
 {
   name: Animism,
   previous: [[TERRAIN, Beliefs]],
+  effects: {stability: 1}
 },
 {
   name: Shamanism,
@@ -337,11 +339,11 @@
 {
   name: Burying,
   previous: [[Death, Beliefs], [Death, Family]],
-  effects: {militaryPower: 1}
+  effects: {militaryPower: 1, stability: 1}
 },
 {
   name: Ritual,
   previous: [[Shamanism, Crop], [Beliefs, Family]],
-  effects: {growth: 1}
+  effects: {growth: 1, stability: 1}
 },
 ]
