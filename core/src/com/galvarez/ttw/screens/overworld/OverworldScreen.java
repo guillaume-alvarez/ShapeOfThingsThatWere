@@ -163,7 +163,7 @@ public final class OverworldScreen extends AbstractScreen {
     revoltSystem = world.setSystem(new RevoltSystem(map, settings, this), true);
     armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
-    scoreSystem = world.setSystem(new ScoreSystem(), true);
+    scoreSystem = world.setSystem(new ScoreSystem(settings), true);
     aiDestination = world.setSystem(new AIDestinationSystem(map, this), true);
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);

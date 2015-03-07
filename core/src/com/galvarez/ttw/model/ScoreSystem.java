@@ -18,8 +18,10 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Score;
+import com.galvarez.ttw.model.data.SessionSettings;
 
 /**
  * For every empire, compute score every turn.
@@ -42,17 +44,25 @@ public final class ScoreSystem extends EntitySystem {
 
   private ComponentMapper<Diplomacy> relations;
 
+  private ComponentMapper<Discoveries> discoveries;
+
   private final List<Item> list = new ArrayList<>();
 
+  private final int nbDiscoveries;
+
   @SuppressWarnings("unchecked")
-  public ScoreSystem() {
+  public ScoreSystem(SessionSettings s) {
     super(Aspect.getAspectForAll(Score.class, InfluenceSource.class));
+
+    nbDiscoveries = s.getDiscoveries().size();
   }
 
   @Override
   protected void inserted(Entity e) {
     super.inserted(e);
-    list.add(new Item(e, scores.get(e)));
+    Score score = scores.get(e);
+    score.nbDiscoveriesMax = nbDiscoveries;
+    list.add(new Item(e, score));
   }
 
   @Override
@@ -76,11 +86,17 @@ public final class ScoreSystem extends EntitySystem {
     for (Entity empire : entities) {
       Score score = scores.get(empire);
       score.lastTurnPoints = 0;
+      score.nbControlled = 0;
     }
+    int nbControlledMax = entities.size();
 
     for (Entity empire : entities) {
       InfluenceSource source = sources.get(empire);
-      add(empire, source.influencedTiles.size());
+      add(empire, source.influencedTiles.size(), 0);
+
+      Score score = scores.get(empire);
+      score.nbDiscoveries = discoveries.get(empire).done.size();
+      score.nbControlledMax = nbControlledMax;
     }
 
     Collections.sort(list, Comparator.comparingInt((Item i) -> i.score.totalScore).reversed());
@@ -89,7 +105,7 @@ public final class ScoreSystem extends EntitySystem {
   }
 
   /** Recursive method to add score to all. */
-  private void add(Entity empire, int delta) {
+  private void add(Entity empire, int delta, int nbControlled) {
     if (delta > 0
     // do not forget an empire can be deleted
         && scores.has(empire)) {
@@ -98,13 +114,15 @@ public final class ScoreSystem extends EntitySystem {
       Score score = scores.get(empire);
       score.lastTurnPoints += delta;
       score.totalScore += delta;
+      score.nbControlled += nbControlled;
 
       // add to overlords and allies
       for (Entry<Entity, State> e : diplomacy.relations.entrySet()) {
         if (e.getValue() == State.TREATY)
-          add(e.getKey(), delta / 4);
+          add(e.getKey(), delta / 4, 0);
         else if (e.getValue() == State.TRIBUTE)
-          add(e.getKey(), delta / 2);
+          // overlord controls me and my vassals
+          add(e.getKey(), delta / 2, score.nbControlled + 1);
       }
     }
   }

@@ -49,10 +49,13 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
     int rank = 1;
     List<Object[]> ladder = new ArrayList<>();
-    ladder.add(new Object[] { "[BLACK]Rank", "[BLACK]Empire", "[BLACK]Score (progress)" });
+    ladder.add(new Object[] { "[BLACK]Rank", "[BLACK]Empire", "[BLACK]Score (progress)", "[BLACK]Discoveries",
+        "[BLACK]Controlled empires" });
     for (Item i : scoreSystem.getScores())
       ladder.add(new Object[] { "[BLACK]" + rank++, markup(i.empire) + i.empire.getComponent(Description.class).desc,
-          "[BLACK]" + shorten(i.score.totalScore) + " (+" + i.score.lastTurnPoints + ")" });
+          "[BLACK]" + shorten(i.score.totalScore) + " (+" + i.score.lastTurnPoints + ")",
+          "[BLACK]" + i.score.nbDiscoveries + "/" + i.score.nbDiscoveriesMax,
+          "[BLACK]" + i.score.nbControlled + "/" + i.score.nbControlledMax, });
     LabelStyle style = ladderMenu.getSkin().get("colored", LabelStyle.class);
     style.font.setMarkupEnabled(true);
     ladderMenu.addTable(style, ladder.toArray(new Object[0][]));
