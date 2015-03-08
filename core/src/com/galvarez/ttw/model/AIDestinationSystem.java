@@ -90,7 +90,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
       ai.lastMove = screen.getTurnNumber();
       ai.lastPosition = positions.get(e);
     } else
-      log.error("Cannot find a destination for {}", e.getComponent(Description.class));
+      log.warn("Cannot find a destination for {}", e.getComponent(Description.class));
   }
 
   private int estimate(Entity e, MapPosition p) {
