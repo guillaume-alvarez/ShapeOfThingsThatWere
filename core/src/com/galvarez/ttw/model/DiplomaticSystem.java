@@ -25,6 +25,7 @@ import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -111,6 +112,7 @@ public final class DiplomaticSystem extends EntitySystem {
   @Override
   protected void removed(Entity removed) {
     super.removed(removed);
+    log.debug("Remove {} from all empires relations.", removed.getComponent(Description.class));
     for (Entity e : getActives()) {
       Diplomacy diplo = relations.get(e);
       diplo.lastChange.remove(e, 0);
