@@ -362,7 +362,7 @@ public final class OverworldScreen extends AbstractScreen {
       highlightedTiles.put(tile, String.valueOf(map.getInfluenceAt(tile).requiredInfluence(source)));
     renderHighlighter = true;
     setHighlightColor(0f, 0f, 0.2f, 0.3f);
-    indications.add("Select destination for " + source.getComponent(Description.class));
+    indications.add("Select destination  in highlighted tiles for " + source.getComponent(Description.class));
 
     inputManager.reloadMenus();
   }
