@@ -70,7 +70,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     lastDiscovery.addToStage(stage, 30, topMenu.getY() - 30, false);
 
     terrains.clear();
-    terrains.addLabel("- Terrains move costs -");
+    terrains.addLabel("- Terrains influence costs -");
     for (Terrain t : Terrain.values()) {
       Integer mod = source.modifiers.terrainBonus.get(t);
       int cost = max(1, mod != null ? t.moveCost() - mod : t.moveCost());
