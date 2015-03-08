@@ -3,12 +3,10 @@ package com.galvarez.ttw.model;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import java.util.ArrayDeque;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.Predicate;
 
@@ -220,23 +218,22 @@ public final class InfluenceSystem extends EntitySystem {
    */
   private void addInfluenceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
-    for (Entry<MapPosition, Integer> entry : getTargetInfluence(e, positions.get(e), source.power).entrySet()) {
-      Influence tile = map.getInfluenceAt(entry.getKey());
-      int target = canInfluence(e, entry.getKey()) ? entry.getValue().intValue()
+    for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power)) {
+      Influence tile = map.getInfluenceAt(entry.key);
+      int target = canInfluence(e, entry.key) ? entry.value
       // start losing influence when no neighboring tile
           : 0;
       // do not forget the military from war
       if (tile.hasMainInfluence())
-        target += armyInfluenceOn.get(tile.getMainInfluenceSource(world).getId(), 0);
-      targets.put(entry.getKey(), target);
+        target += armyInfluenceOn.get(tile.getMainInfluenceSource(), 0);
+      targets.put(entry.key, target);
     }
 
     for (Entity s : source.secondarySources) {
-      for (Entry<MapPosition, Integer> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)
-          .entrySet()) {
-        MapPosition pos = entry.getKey();
+      for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)) {
+        MapPosition pos = entry.key;
         if (canInfluence(e, pos))
-          targets.getAndIncrement(pos, 0, entry.getValue().intValue());
+          targets.getAndIncrement(pos, 0, entry.value);
       }
     }
 
@@ -258,23 +255,22 @@ public final class InfluenceSystem extends EntitySystem {
    * Note: resulting target can be negative. It stops on tiles where there is no
    * source influence AND target is not positive.
    */
-  private Map<MapPosition, Integer> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
+  private ObjectIntMap<MapPosition> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
     Map<Terrain, Integer> costs = terrainCosts(source);
-    Queue<MapPosition> frontier = new ArrayDeque<>(32);
-    frontier.add(startPos);
-    Map<MapPosition, Integer> targets = new HashMap<>();
+    Queue<Pos> frontier = new PriorityQueue<>();
+    frontier.add(new Pos(startPos, startingPower));
+    ObjectIntMap<MapPosition> targets = new ObjectIntMap<MapPosition>();
     targets.put(startPos, startingPower);
 
     while (!frontier.isEmpty()) {
-      MapPosition current = frontier.poll();
-      int currentPower = targets.get(current);
+      Pos current = frontier.poll();
 
-      for (MapPosition next : map.getNeighbors(current)) {
+      for (MapPosition next : map.getNeighbors(current.pos)) {
         Influence inf = map.getInfluenceAt(next);
         if (!inf.terrain.moveBlock()) {
-          int newTarget = currentPower - costs.get(inf.terrain);
-          Integer oldTarget = targets.get(next);
-          if (oldTarget == null || newTarget > oldTarget.intValue()) {
+          int newTarget = current.target - costs.get(inf.terrain);
+          int oldTarget = targets.get(next, Integer.MIN_VALUE);
+          if (newTarget > oldTarget) {
             targets.put(next, newTarget);
             /*
              * Increase only one tile from already influenced tiles. Decreases
@@ -282,12 +278,28 @@ public final class InfluenceSystem extends EntitySystem {
              * elsewhere.
              */
             if (inf.hasInfluence(source))
-              frontier.offer(next);
+              frontier.offer(new Pos(next, newTarget));
           }
         }
       }
     }
     return targets;
+  }
+
+  private static final class Pos implements Comparable<Pos> {
+    private final MapPosition pos;
+
+    private final int target;
+
+    private Pos(MapPosition pos, int target) {
+      this.pos = pos;
+      this.target = target;
+    }
+
+    @Override
+    public int compareTo(Pos o) {
+      return -Integer.compare(target, o.target);
+    }
   }
 
   private Map<Terrain, Integer> terrainCosts(Entity source) {
