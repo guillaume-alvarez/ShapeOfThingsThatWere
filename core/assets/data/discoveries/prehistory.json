@@ -132,6 +132,7 @@
 {
   name: Pottery,
   previous: [[Fire, Clay], [Clay, Desert]],
+  effects: {growth: 1}
 },
 {
   name: Metallurgy,
