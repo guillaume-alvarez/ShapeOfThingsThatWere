@@ -82,7 +82,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
         && diplo.proposals.get(target) != action
         // do no make proposal to ourself
         && entity != target) {
-      log.info("{} wants to {} with {}", entity.getComponent(Name.class), action.str, target.getComponent(Name.class));
+      log.debug("{} wants to {} with {}", entity.getComponent(Name.class), action.str, target.getComponent(Name.class));
       diplo.proposals.put(target, action);
     }
   }
