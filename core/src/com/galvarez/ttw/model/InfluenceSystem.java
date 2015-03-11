@@ -85,8 +85,6 @@ public final class InfluenceSystem extends EntitySystem {
 
   private final GameMap map;
 
-  private Modifiers modifiers;
-
   @SuppressWarnings("unchecked")
   public InfluenceSystem(GameMap gameMap) {
     super(Aspect.getAspectForAll(InfluenceSource.class));
@@ -123,6 +121,12 @@ public final class InfluenceSystem extends EntitySystem {
     for (int x = 0; x < map.width; x++)
       for (int y = 0; y < map.height; y++)
         map.getInfluenceAt(x, y).removeInfluence(e);
+    map.setEntity(null, positions.get(e));
+
+    InfluenceSource source = sources.get(e);
+    source.influencedTiles.clear();
+    for (Entity army : source.secondarySources)
+      map.setEntity(null, positions.get(army));
   }
 
   @Override
@@ -163,8 +167,9 @@ public final class InfluenceSystem extends EntitySystem {
   private void checkInfluencedByOther(InfluenceSource source, Entity empire) {
     Influence tile = map.getInfluenceAt(positions.get(empire));
     if (!tile.isMainInfluencer(empire) && tile.hasMainInfluence()) {
+      Diplomacy loser = relations.get(empire);
       Entity influencer = tile.getMainInfluenceSource(world);
-      if (empire != influencer) {
+      if (empire != influencer && loser.getRelationWith(influencer) != State.TRIBUTE) {
         log.info("{} conquered by {}, will now be tributary to its conqueror.", empire.getComponent(Description.class),
             influencer.getComponent(Description.class));
         source.power--;
@@ -174,7 +179,6 @@ public final class InfluenceSystem extends EntitySystem {
               influencer.getComponent(Description.class));
           delete(empire);
         } else {
-          Diplomacy loser = relations.get(empire);
           diplomaticSystem.changeRelation(empire, loser, influencer, relations.get(influencer), Action.SURRENDER);
           loser.proposals.remove(influencer);
 
@@ -187,7 +191,7 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   private void delete(Entity entity) {
-    log.info("{} is deleted", entity.getComponent(Description.class));
+    log.info("{} ({}) is deleted", entity.getComponent(Description.class), entity);
     map.setEntity(null, positions.get(entity));
     if (sources.has(entity))
       for (Entity s : sources.get(entity).secondarySources)
@@ -232,7 +236,8 @@ public final class InfluenceSystem extends EntitySystem {
     for (Entity s : source.secondarySources) {
       for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)) {
         MapPosition pos = entry.key;
-        if (canInfluence(e, pos))
+        // armies only add to influence, they do not reduce it
+        if (entry.value > 0 && canInfluence(e, pos))
           targets.getAndIncrement(pos, 0, entry.value);
       }
     }
@@ -303,7 +308,7 @@ public final class InfluenceSystem extends EntitySystem {
   }
 
   private Map<Terrain, Integer> terrainCosts(Entity source) {
-    modifiers = sources.get(source).modifiers;
+    Modifiers modifiers = sources.get(source).modifiers;
     Map<Terrain, Integer> res = new EnumMap<>(Terrain.class);
     for (Terrain t : Terrain.values())
       res.put(t, max(1, t.moveCost() - modifiers.terrainBonus.get(t)));
