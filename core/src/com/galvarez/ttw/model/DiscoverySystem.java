@@ -188,6 +188,12 @@ public final class DiscoverySystem extends EntitySystem {
           || possibleDiscoveries(entity, discovery).isEmpty()) : null;
       notifications.addNotification(screen::discoveryMenu, condition, Type.DISCOVERY, "Discovered %s: %s", target,
           target.effects.isEmpty() ? "No effect." : join(", ", effectsStrings(target)));
+      Set<Policy> policies = PoliciesSystem.getPolicies(target);
+      if (policies != null) {
+        for (Policy policy : policies)
+          notifications
+              .addNotification(screen::policiesMenu, null, Type.DISCOVERY, "New %s policy: %s", policy, target);
+      }
     }
     discovery.done.add(target);
     discovery.next = null;

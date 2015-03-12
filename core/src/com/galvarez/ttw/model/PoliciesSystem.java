@@ -3,7 +3,9 @@ package com.galvarez.ttw.model;
 import static java.lang.Math.min;
 import static java.util.stream.Collectors.toList;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,5 +80,19 @@ public final class PoliciesSystem extends EntitySystem {
 
   public List<Discovery> getAvailablePolicies(Entity empire, Policy choice) {
     return discoveries.get(empire).done.stream().filter(d -> d.groups.contains(choice.name())).collect(toList());
+  }
+
+  public static Set<Policy> getPolicies(Discovery d) {
+    Set<Policy> set = null;
+    for (String group : d.groups) {
+      Policy p = Policy.get(group);
+      if (p != null) {
+        if (set == null)
+          set = EnumSet.of(p);
+        else
+          set.add(p);
+      }
+    }
+    return set;
   }
 }

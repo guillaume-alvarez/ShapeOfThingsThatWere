@@ -1,6 +1,5 @@
 package com.galvarez.ttw.model;
 
-import java.util.EnumSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -66,7 +65,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
         d.next = prefered.getValue();
       }
       Set<Policy> newPolicies;
-      if (d.last != null && (newPolicies = getPolicies(d.last.target)) != null) {
+      if (d.last != null && (newPolicies = PoliciesSystem.getPolicies(d.last.target)) != null) {
         Policies empirePolicies = policies.get(e);
         for (Policy p : newPolicies) {
           Discovery newD = d.last.target;
@@ -94,17 +93,4 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
     return score;
   }
 
-  private static Set<Policy> getPolicies(Discovery d) {
-    Set<Policy> set = null;
-    for (String group : d.groups) {
-      Policy p = Policy.get(group);
-      if (p != null) {
-        if (set == null)
-          set = EnumSet.of(p);
-        else
-          set.add(p);
-      }
-    }
-    return set;
-  }
 }
