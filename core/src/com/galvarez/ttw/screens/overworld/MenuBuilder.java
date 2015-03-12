@@ -133,10 +133,11 @@ public class MenuBuilder {
 
     List<String> indications = screen.getIndications();
     if (indications != null && !indications.isEmpty()) {
+      // set width before for better layout
+      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + buildingsMenu.getWidth() + MENU_PADDING * 3));
       for (String i : indications)
         indicationMenu.addLabel(i);
 
-      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + buildingsMenu.getWidth() + MENU_PADDING * 3));
       indicationMenu.addToStage(stage, MENU_PADDING + turnMenu.getX() + turnMenu.getWidth(), stage.getHeight()
           - MENU_PADDING, false);
     }

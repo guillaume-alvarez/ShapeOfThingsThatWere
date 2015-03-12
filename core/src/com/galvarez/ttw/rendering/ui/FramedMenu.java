@@ -218,6 +218,7 @@ public class FramedMenu {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
     l.setWrap(true);
+    l.setWidth(width);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
     table.row();
