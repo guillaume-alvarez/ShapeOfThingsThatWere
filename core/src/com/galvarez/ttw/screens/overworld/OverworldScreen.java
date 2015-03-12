@@ -319,6 +319,7 @@ public final class OverworldScreen extends AbstractScreen {
 
   private void processTurn() {
     log.info("Process new turn");
+    long start = System.currentTimeMillis();
 
     // If they don't have AI, give control to the human player
     inputManager.setEnabled(true);
@@ -346,6 +347,7 @@ public final class OverworldScreen extends AbstractScreen {
     notificationsSystem.process();
     turnNumber++;
 
+    log.debug("Processed turn #{} in {}ms", turnNumber, System.currentTimeMillis() - start);
   }
 
   public void flag(Entity source, int x, int y) {
