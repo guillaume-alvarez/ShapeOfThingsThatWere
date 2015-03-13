@@ -132,7 +132,7 @@ public final class DiscoverySystem extends EntitySystem {
     for (String group : discovery.groups)
       if (Policy.get(group) != null) {
         for (Faction f : Faction.values())
-          scores.put(f, scores.get(f, 0f) * 0.5f);
+          scores.put(f, scores.get(f, 0f) * 1.5f);
         scores.getAndIncrement(Faction.CULTURAL, 0, 0.5f);
       }
     if (scores.size == 0)

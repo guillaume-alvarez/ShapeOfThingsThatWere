@@ -25,7 +25,7 @@ public class Research extends Component {
     for (Faction f : Faction.values()) {
       factions.put(f, target.factions.get(f, 0f));
       for (Discovery p : previous)
-        factions.getAndIncrement(f, 0f, p.factions.get(f, 0f));
+        factions.getAndIncrement(f, 0f, p.factions.get(f, 0f) * 0.5f);
     }
   }
 
