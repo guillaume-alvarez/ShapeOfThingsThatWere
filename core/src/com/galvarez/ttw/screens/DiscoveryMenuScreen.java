@@ -15,6 +15,7 @@ import com.galvarez.ttw.model.Faction;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
+import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -62,7 +63,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       lastDiscovery.addLabel("- No last discovery -");
     } else {
       lastDiscovery.addLabel("- Last discovery (effect doubled): " + empire.last.target.name + " -");
-      lastDiscovery.addLabel("Discovered from " + discoverySystem.previousString(empire.last));
+      lastDiscovery.addLabel("Discovered from " + previousString(empire.last));
       lastDiscovery.addLabel("Effects:");
       for (String effect : discoverySystem.effectsStrings(empire.last.target))
         lastDiscovery.addLabel(" - " + effect);
@@ -80,18 +81,18 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
 
     discoveryChoices.clear();
     if (empire.next != null) {
-      discoveryChoices.addLabel("Progress toward new discovery from " + discoverySystem.previousString(empire.next)
-          + ": " + empire.next.progress + "%");
+      discoveryChoices.addLabel("Progress toward new discovery from " + previousString(empire.next) + ": "
+          + empire.next.progress + "%");
     } else {
       Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(entity, empire);
       if (possible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
-        discoveryChoices.addLabel("Choose discoveries to combine:");
+        discoveryChoices.addLabel("Choose a direction to make new discoveries:");
         for (Entry<Faction, Research> next : possible.entrySet())
           discoveryChoices.addButton(
-              next.getKey() + " faction advises: ",
-              discoverySystem.previousString(next.getValue()) + " (~"
+              action(next.getKey()),
+              previousString(next.getValue()) + " (~"
                   + discoverySystem.guessNbTurns(empire, entity, next.getValue().target) + " turns)", //
               new Runnable() {
                 @Override
@@ -103,5 +104,29 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       }
     }
     discoveryChoices.addToStage(stage, 30, terrains.getY() - 30, false);
+  }
+
+  private static String action(Faction faction) {
+    switch (faction) {
+      case CULTURAL:
+        return "Cultural faction advises to meditate on ";
+      case ECONOMIC:
+        return "Economic faction recommends we look for profit in ";
+      case MILITARY:
+        return "Military faction commands us to investigate ";
+      default:
+        throw new IllegalStateException("Unknown faction " + faction);
+    }
+  }
+
+  private static String previousString(Research next) {
+    if (next.previous.isEmpty())
+      return "our environment";
+
+    StringBuilder sb = new StringBuilder();
+    for (Discovery previous : next.previous)
+      sb.append(previous.name).append(", ");
+    sb.setLength(sb.length() - 2);
+    return sb.toString();
   }
 }

@@ -304,17 +304,6 @@ public final class DiscoverySystem extends EntitySystem {
     return DISCOVERY_THRESHOLD / progressPerTurn;
   }
 
-  public String previousString(Research next) {
-    if (next.previous.isEmpty())
-      return "NOTHING";
-
-    StringBuilder sb = new StringBuilder();
-    for (Discovery previous : next.previous)
-      sb.append(previous.name).append(", ");
-    sb.setLength(sb.length() - 2);
-    return sb.toString();
-  }
-
   public List<String> effectsStrings(Discovery d) {
     List<String> list = effects.toString(d.effects);
     if (buildings.containsKey(d.name))
