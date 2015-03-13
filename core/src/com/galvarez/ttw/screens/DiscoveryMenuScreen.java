@@ -88,7 +88,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       if (possible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
-        discoveryChoices.addLabel("Choose a direction to make new discoveries:");
+        discoveryChoices.addLabel("Which faction do you choose to make new discoveries?");
         for (Entry<Faction, Research> next : possible.entrySet())
           discoveryChoices.addButton(
               action(next.getKey()),
@@ -111,7 +111,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       case CULTURAL:
         return "Cultural faction advises to meditate on ";
       case ECONOMIC:
-        return "Economic faction recommends we look for profit in ";
+        return "Economic faction recommends we pursue profit in ";
       case MILITARY:
         return "Military faction commands us to investigate ";
       default:
