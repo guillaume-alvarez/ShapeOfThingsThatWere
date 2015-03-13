@@ -6,6 +6,13 @@
   effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1, growth: 1}
 },
 {
+  name: Sailor,
+  previous: [[Boat, Hunter], [Harbor, Merchant], [Boat, Harbor]],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  groups: [JOBS],
+  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2}
+},
+{
   name: Sword,
   previous: [[Metallurgy, Knife], [Stone, Knife]],
   groups: [WEAPON],
