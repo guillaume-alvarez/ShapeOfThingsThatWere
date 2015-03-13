@@ -96,9 +96,9 @@ public final class EffectsSystem extends VoidEntitySystem {
     public void apply(Number value, Entity empire, boolean revert) {
       ArmyCommand army = armies.get(empire);
       if (revert)
-        army.militaryPower -= value.intValue();
+        army.militaryPower -= 2 * value.intValue();
       else
-        army.militaryPower += value.intValue();
+        army.militaryPower += 2 * value.intValue();
     }
 
     @Override
@@ -110,8 +110,8 @@ public final class EffectsSystem extends VoidEntitySystem {
 
     @Override
     public String toString(Number value) {
-      int i = value.intValue();
-      return (i > 0 ? "military power: +" : "military power: ") + i;
+      int delta = 2 * value.intValue();
+      return (delta > 0 ? "military power: +" : "military power: ") + delta;
     }
   }
 
