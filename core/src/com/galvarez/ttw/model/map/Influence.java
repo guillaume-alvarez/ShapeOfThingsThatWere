@@ -13,6 +13,7 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
 
   public final Terrain terrain;
 
+  /** Entity id to influence score. */
   private final IntIntMap influence = new IntIntMap();
 
   private final IntIntMap influenceDelta = new IntIntMap();

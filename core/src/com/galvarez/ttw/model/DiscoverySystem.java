@@ -26,9 +26,12 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
+import com.badlogic.gdx.utils.IntIntMap.Entry;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.components.AIControlled;
+import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
@@ -71,6 +74,9 @@ public final class DiscoverySystem extends EntitySystem {
 
   private final Map<String, Discovery> discoveries;
 
+  /** Discoveries free to be discovered by any empire. */
+  private final Map<String, Discovery> toDiscover;
+
   private final Map<String, Building> buildings;
 
   private final GameMap map;
@@ -85,6 +91,8 @@ public final class DiscoverySystem extends EntitySystem {
 
   private ComponentMapper<Discoveries> empires;
 
+  private ComponentMapper<Diplomacy> relations;
+
   private ComponentMapper<InfluenceSource> influences;
 
   private ComponentMapper<AIControlled> ai;
@@ -93,6 +101,7 @@ public final class DiscoverySystem extends EntitySystem {
   public DiscoverySystem(SessionSettings s, GameMap map, OverworldScreen screen) {
     super(Aspect.getAspectForAll(Discoveries.class));
     this.discoveries = s.getDiscoveries();
+    this.toDiscover = new HashMap<>(discoveries);
     this.buildings = s.getBuildings();
     this.map = map;
     this.screen = screen;
@@ -182,7 +191,7 @@ public final class DiscoverySystem extends EntitySystem {
   private void discoverNext(Entity entity, Discoveries discovery) {
     Research next = discovery.next;
     Discovery target = next.target;
-    log.debug("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
+    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
     if (!ai.has(entity)) {
       Condition condition = !possibleDiscoveries(entity, discovery).isEmpty() ? (() -> discovery.next != null
           || possibleDiscoveries(entity, discovery).isEmpty()) : null;
@@ -197,6 +206,11 @@ public final class DiscoverySystem extends EntitySystem {
     }
     discovery.done.add(target);
     discovery.next = null;
+
+    // Once an empire made a discovery, none other can research it. Those
+    // already researching it can continue. It makes sure starting discoveries
+    // are not found only by a single empire.
+    toDiscover.remove(target.name);
 
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
@@ -234,10 +248,16 @@ public final class DiscoverySystem extends EntitySystem {
       }
     }
 
+    Set<Discovery> toDiscover = new HashSet<>(this.toDiscover.values());
+    // add discoveries already made by neighboring empires
+    for (Entity neighbor : getNeighbors(entity))
+      for (Discovery d : empires.get(neighbor).done)
+        if (!done.contains(d.name))
+          toDiscover.add(d);
+
     // select new possible discoveries
-    List<Research> possible = discoveries.values().stream()
-        .filter(d -> !done.contains(d.name) && hasTerrain(entity, d.terrains)).map(d -> toResearch(d, done, groups))
-        .filter(Objects::nonNull).collect(toList());
+    List<Research> possible = toDiscover.stream().filter(d -> !done.contains(d.name) && hasTerrain(entity, d.terrains))
+        .map(d -> toResearch(d, done, groups)).filter(Objects::nonNull).collect(toList());
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
     for (Faction f : Faction.values()) {
@@ -288,6 +308,22 @@ public final class DiscoverySystem extends EntitySystem {
         return true;
 
     return false;
+  }
+
+  private Iterable<Entity> getNeighbors(Entity empire) {
+    IntMap<Entity> neighbors = new IntMap<>();
+
+    // collect entities we have relations with
+    for (Entity e : relations.get(empire).relations.keySet())
+      neighbors.put(e.getId(), e);
+
+    // collect entities we share influence with
+    for (MapPosition p : influences.get(empire).influencedTiles)
+      for (Entry inf : map.getInfluenceAt(p))
+        if (inf.key != empire.getId() && !neighbors.containsKey(inf.key))
+          neighbors.put(inf.key, world.getEntity(inf.key));
+
+    return neighbors.values();
   }
 
   public int guessNbTurns(Discoveries discovery, Entity empire, Discovery d) {
