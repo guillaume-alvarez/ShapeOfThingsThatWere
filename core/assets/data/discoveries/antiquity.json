@@ -10,7 +10,7 @@
   previous: [[Boat, Hunter], [Harbor, Merchant], [Boat, Harbor]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   groups: [JOBS],
-  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2}
+  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1}
 },
 {
   name: Sword,
@@ -209,7 +209,7 @@
 },
 {
   name: Music,
-  previous: [[River, Art], [Art, Forest, Sky]],
+  previous: [[River, Art], [Art, Wind]],
   groups: [ART],
   effects: {stability: 1}
 }

@@ -23,11 +23,34 @@
   effects: {militaryPower: 1, growth: 1}
 },
 {
+  name: Raft,
+  previous: [[Fishing, Wood], [Sea, Wood], [Beach, Wood]],
+  terrains: [SHALLOW_WATER],
+  groups: [MOVE],
+  effects: {SHALLOW_WATER: 2}
+},
+{
+  name: Oar,
+  previous: [[Raft, Wood]],
+  terrains: [SHALLOW_WATER],
+  effects: {SHALLOW_WATER: 1}
+},
+{
+  name: Wind,
+  previous: [[CEREAL, Sky], [Forest, Sky]],
+},
+{
+  name: Sail,
+  previous: [[Wind, Raft, Textile], [Wind, Textile]],
+  terrains: [SHALLOW_WATER, DEEP_WATER],
+  effects: {SHALLOW_WATER: 2, DEEP_WATER: 1}
+},
+{
   name: Boat,
-  previous: [[Fishing, Wood], [Sea, Wood]],
+  previous: [[Raft, Oar], [Raft, Sail]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   groups: [MOVE],
-  effects: {DEEP_WATER: 2, SHALLOW_WATER: 2, militaryPower: 1}
+  effects: {DEEP_WATER: 3, SHALLOW_WATER: 2, militaryPower: 1}
 },
 {
   name: Knife,
