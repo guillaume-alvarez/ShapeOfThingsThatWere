@@ -8,8 +8,8 @@ public class MidpointDisplacement {
   public float smoothness;
 
   public MidpointDisplacement() {
-    // Smoothness controls how smooth the resultant terrain is. Higher = more
-    // smooth
+    // Smoothness controls how smooth the resultant terrain is.
+    // Higher = smoother
     smoothness = 2f;
   }
 
@@ -27,8 +27,7 @@ public class MidpointDisplacement {
     int count;
 
     // h determines the fineness of the scale it is working on. After every
-    // step, h
-    // is decreased by a factor of "smoothness"
+    // step, h is decreased by a factor of "smoothness"
     float h = 1;
 
     // Initialize the grid points
