@@ -252,30 +252,58 @@
 {
   name: Wheat,
   previous: [[Agriculture, Grassland]],
-  groups: [CEREAL],
+  groups: [CEREAL, FOOD],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 1}
+  effects: {growth: 2}
 },
 {
   name: Oat,
   previous: [[Agriculture, Grassland]],
-  groups: [CEREAL],
+  groups: [CEREAL, FOOD],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1}
 },
 {
   name: Rye,
   previous: [[Agriculture, Grassland]],
-  groups: [CEREAL],
+  groups: [CEREAL, FOOD],
   terrains: [GRASSLAND, PLAIN],
+  effects: {growth: 1}
+},
+{
+  name: Barley,
+  previous: [[Agriculture, Hill], [Agriculture, Grassland]],
+  groups: [CEREAL, FOOD],
+  terrains: [GRASSLAND, PLAIN, HILLS],
+  effects: {growth: 1}
+},
+{
+  name: Millet,
+  previous: [[Agriculture, Hill], [Agriculture, Grassland], [Agriculture, Desert]],
+  groups: [CEREAL, FOOD],
+  terrains: [PLAIN, HILLS, DESERT],
+  effects: {growth: 1}
+},
+{
+  name: Quinoa,
+  previous: [[Agriculture, Hill], [Agriculture, Mountain]],
+  groups: [CEREAL, FOOD],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {growth: 1}
+},
+{
+  name: Sorghum ,
+  previous: [[Agriculture, Grassland], [Agriculture, Desert]],
+  groups: [CEREAL, FOOD],
+  terrains: [PLAIN, DESERT],
   effects: {growth: 1}
 },
 {
   name: Rice,
   previous: [[Agriculture, River]],
-  groups: [CEREAL],
+  groups: [CEREAL, FOOD],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 1}
+  effects: {growth: 2}
 },
 {
   name: Trail,

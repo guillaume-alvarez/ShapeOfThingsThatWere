@@ -11,28 +11,28 @@
   previous: [[]],
   groups: [TERRAIN],
   terrains: [FOREST],
-  effects: {FOREST: 1}
+  effects: {FOREST: 2}
 },
 {
   name: Desert,
   previous: [[]],
   groups: [TERRAIN],
   terrains: [DESERT],
-  effects: {DESERT: 1}
+  effects: {DESERT: 2}
 },
 {
   name: Hill,
   previous: [[]],
   groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [HILLS],
-  effects: {HILLS: 1}
+  effects: {HILLS: 2}
 },
 {
   name: Mountain,
   previous: [[]],
   groups: [TERRAIN, HIGH_TERRAIN],
   terrains: [MOUNTAIN],
-  effects: {MOUNTAIN: 1}
+  effects: {MOUNTAIN: 3}
 },
 {
   name: Sea,
@@ -45,7 +45,7 @@
   name: River,
   previous: [[HIGH_TERRAIN, Grassland], [Grassland, Sea]],
   groups: [TERRAIN],
-  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN],
+  terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, SHALLOW_WATER],
   effects: {growth: 2}
 },
 {
