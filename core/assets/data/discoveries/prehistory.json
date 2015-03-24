@@ -314,7 +314,7 @@
 },
 {
   name: Path,
-  previous: [[Trail, FOOD], [Trail, Hunt], [Trail, Village]],
+  previous: [[Trail, Animal], [Trail, Hunt], [Trail, Village]],
   terrains: [GRASSLAND, FOREST, HILLS],
   effects: {PLAIN: 1, GRASSLAND: 1, HILLS: 1, MOUNTAIN: -1}
 },
