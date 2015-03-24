@@ -92,7 +92,8 @@
 {
   name: Walk,
   previous: [[Hunt], [Gathering], [Fishing, Beach], [Fishing, River]],
-  groups: [MOVE]
+  groups: [MOVE],
+  effects: {FOREST: 1, HILLS: 1}
 },
 {
   name: Agriculture,
