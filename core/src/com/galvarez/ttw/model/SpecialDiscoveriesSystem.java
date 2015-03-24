@@ -1,5 +1,7 @@
 package com.galvarez.ttw.model;
 
+import static java.util.Arrays.asList;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +14,9 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Discovery;
+import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
@@ -34,9 +38,17 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private static final String CITY = "City";
 
+  private static final String RAFT = "Raft";
+
+  private static final String BOAT = "Boat";
+
   private ComponentMapper<Name> names;
 
   private ComponentMapper<Description> descriptions;
+
+  private ComponentMapper<InfluenceSource> sources;
+
+  private ComponentMapper<Destination> destinations;
 
   private NotificationsSystem notifications;
 
@@ -68,6 +80,22 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
         String desc = "City of " + name;
         setDescription(empire, name, desc);
         cannotMove(empire);
+      }
+    });
+    effects.put(RAFT, new Special() {
+      @Override
+      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+        if (sources.has(empire))
+          for (Entity army : sources.get(empire).secondarySources)
+            destinations.get(army).forbiddenTiles.add(Terrain.SHALLOW_WATER);
+      }
+    });
+    effects.put(BOAT, new Special() {
+      @Override
+      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+        if (sources.has(empire))
+          for (Entity army : sources.get(empire).secondarySources)
+            destinations.get(army).forbiddenTiles.addAll(asList(Terrain.DEEP_WATER, Terrain.SHALLOW_WATER));
       }
     });
   }

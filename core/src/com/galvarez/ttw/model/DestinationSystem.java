@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -104,7 +105,7 @@ public final class DestinationSystem extends EntitySystem {
   private void moveToNext(Entity e, Destination dest) {
     MapPosition current = positions.get(e);
     MapPosition next = dest.path.get(0);
-    if (canMoveTo(e, next)) {
+    if (canMoveTo(e, dest, next)) {
       if (++dest.progress >= TURNS_TO_MOVE) {
         dest.progress = 0;
         dest.path.remove(0);
@@ -146,9 +147,9 @@ public final class DestinationSystem extends EntitySystem {
   private static final Set<Terrain> CANNOT_ENTER = EnumSet
       .of(Terrain.SHALLOW_WATER, Terrain.DEEP_WATER, Terrain.ARCTIC);
 
-  private boolean canMoveTo(Entity e, MapPosition next) {
+  private boolean canMoveTo(Entity e, Destination dest, MapPosition next) {
     Terrain terrain = map.getTerrainAt(next);
-    if (terrain.moveBlock() || CANNOT_ENTER.contains(terrain) || map.hasEntity(next))
+    if (terrain.moveBlock() || dest.forbiddenTiles.contains(terrain) || map.hasEntity(next))
       return false;
 
     if (armies.has(e))
@@ -159,13 +160,14 @@ public final class DestinationSystem extends EntitySystem {
 
   /** Return the possible move target tiles for the source. */
   public Collection<MapPosition> getTargetTiles(Entity e) {
+    Destination dest = destinations.get(e);
     Entity empire = armies.has(e) ? armies.get(e).source : e;
     Set<MapPosition> set = new HashSet<>();
     InfluenceSource source = sources.get(empire);
     Diplomacy treaties = relations.get(empire);
     for (MapPosition pos : source.influencedTiles) {
       for (MapPosition neighbor : map.getNeighbors(pos)) {
-        if (!CANNOT_ENTER.contains(map.getTerrainAt(neighbor))) {
+        if (!dest.forbiddenTiles.contains(map.getTerrainAt(neighbor))) {
           Influence inf = map.getInfluenceAt(neighbor);
           if (!inf.hasMainInfluence())
             set.add(neighbor);
@@ -180,8 +182,8 @@ public final class DestinationSystem extends EntitySystem {
   public void computePath(Entity e, MapPosition target) {
     Destination dest = destinations.get(e);
     dest.target = target;
-    dest.path = astar.aStarSearch(positions.get(e), target,
-        p -> !CANNOT_ENTER.contains(map.getTerrainAt(p)) && map.getEntityAt(p) == null);
+    dest.path = astar.aStarSearch(positions.get(e), target,//
+        p -> !dest.forbiddenTiles.contains(map.getTerrainAt(p)) && map.getEntityAt(p) == null);
     dest.progress = 0;
   }
 
