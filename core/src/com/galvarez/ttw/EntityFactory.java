@@ -64,6 +64,9 @@ public class EntityFactory {
 
     EntityEdit edit = e.edit();
 
+    ArmyCommand command = new ArmyCommand();
+    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(command).add(new Score());
+
     Sprite sprite = new Sprite();
     sprite.name = "cylinderwide";
     sprite.rotation = 0f;
@@ -73,13 +76,10 @@ public class EntityFactory {
     edit.add(sprite);
 
     InfluenceSource source = new InfluenceSource();
-    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination());
+    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination(command.forbiddenTiles));
 
     edit.add(new Name(name)).add(new Description("Tribe of " + name))
         .add(new TextBox(() -> name + ": " + source.power));
-
-    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(new ArmyCommand())
-        .add(new Score());
 
     if (empire.isComputerControlled())
       edit.add(new AIControlled());
@@ -94,7 +94,8 @@ public class EntityFactory {
 
     edit.add(new Counter(Colors.contrast(empire.color), empire.color, militaryPower));
 
-    edit.add(pos).add(new Name("Army of " + name)).add(new Description("Army of " + name)).add(new Destination())
+    edit.add(pos).add(new Name("Army of " + name)).add(new Description("Army of " + name))
+        .add(new Destination(source.getComponent(ArmyCommand.class).forbiddenTiles))
         .add(new Army(source, militaryPower)).add(empire);
 
     if (empire.isComputerControlled())

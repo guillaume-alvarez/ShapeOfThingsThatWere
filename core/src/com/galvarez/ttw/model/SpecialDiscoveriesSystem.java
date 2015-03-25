@@ -3,6 +3,7 @@ package com.galvarez.ttw.model;
 import static java.util.Arrays.asList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
+import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -50,6 +52,8 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private ComponentMapper<Destination> destinations;
 
+  private ComponentMapper<ArmyCommand> commanders;
+
   private NotificationsSystem notifications;
 
   private interface Special {
@@ -85,17 +89,18 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
     effects.put(RAFT, new Special() {
       @Override
       public void apply(Entity empire, Discovery d, Discoveries discoveries) {
-        if (sources.has(empire))
-          for (Entity army : sources.get(empire).secondarySources)
-            destinations.get(army).forbiddenTiles.add(Terrain.SHALLOW_WATER);
+        for (Entity army : sources.get(empire).secondarySources)
+          destinations.get(army).forbiddenTiles.add(Terrain.SHALLOW_WATER);
+        commanders.get(empire).forbiddenTiles.add(Terrain.SHALLOW_WATER);
       }
     });
     effects.put(BOAT, new Special() {
       @Override
       public void apply(Entity empire, Discovery d, Discoveries discoveries) {
-        if (sources.has(empire))
-          for (Entity army : sources.get(empire).secondarySources)
-            destinations.get(army).forbiddenTiles.addAll(asList(Terrain.DEEP_WATER, Terrain.SHALLOW_WATER));
+        List<Terrain> list = asList(Terrain.DEEP_WATER, Terrain.SHALLOW_WATER);
+        for (Entity army : sources.get(empire).secondarySources)
+          destinations.get(army).forbiddenTiles.addAll(list);
+        commanders.get(empire).forbiddenTiles.addAll(list);
       }
     });
   }

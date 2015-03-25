@@ -15,7 +15,7 @@ import com.galvarez.ttw.model.map.Terrain;
  */
 public final class Destination extends Component {
 
-  public Set<Terrain> forbiddenTiles = EnumSet.of(Terrain.SHALLOW_WATER, Terrain.DEEP_WATER, Terrain.ARCTIC);
+  public final Set<Terrain> forbiddenTiles;
 
   public MapPosition target;
 
@@ -24,7 +24,7 @@ public final class Destination extends Component {
   /** Turns spent moving to next tile. */
   public int progress;
 
-  public Destination() {
+  public Destination(Set<Terrain> forbiddenTiles) {
+    this.forbiddenTiles = EnumSet.copyOf(forbiddenTiles);
   }
-
 }
