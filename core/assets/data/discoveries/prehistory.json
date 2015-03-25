@@ -399,4 +399,9 @@
   previous: [[Shamanism, Crop], [Beliefs, Family]],
   effects: {growth: 1, stability: 1}
 },
+{
+  name: Poison,
+  previous: [[Desert, Death], [Desert, Animal], [Forest, Death]],
+  effects: {growth: -1, stability: -1, militaryPower: 1}
+},
 ]
