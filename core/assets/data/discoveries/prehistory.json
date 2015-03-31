@@ -404,4 +404,15 @@
   previous: [[Desert, Death], [Desert, Animal], [Forest, Death]],
   effects: {growth: -1, stability: -1, militaryPower: 1}
 },
+{
+  name: Barter,
+  previous: [[FOOD, MATERIAL], [FOOD, METAL], [FOOD, LUXURY], [FOOD, WEAPON], [FOOD, MOVE],
+             [MATERIAL, METAL], [MATERIAL, LUXURY], [MATERIAL, WEAPON], [MATERIAL, MOVE],
+             [METAL, LUXURY], [METAL, WEAPON], [METAL, MOVE],
+             [LUXURY, WEAPON], [LUXURY, MOVE],
+             [WEAPON, MOVE],
+  			],
+  terrains: [GRASSLAND, HILLS, FOREST, PLAIN, SHALLOW_WATER],
+  effects: {growth: 1, stability: 1}
+},
 ]
