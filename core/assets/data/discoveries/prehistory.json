@@ -136,6 +136,18 @@
   effects: {growth: 2, FOREST: -1, HILLS: 1, MOUNTAIN: 1, DESERT: -1}
 },
 {
+  name: Milk,
+  previous: [[Breeding, Horse], [Breeding, Goat], [Breeding, Ox], [Breeding, Sheep]],
+  groups: [FOOD],
+  effects: {growth: 1}
+},
+{
+  name: Cheese,
+  previous: [[Milk, Pottery], [Milk, Textile]],
+  groups: [FOOD],
+  effects: {growth: 1}
+},
+{
   name: Wool,
   previous: [[Sheep, Textile]],
   effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 2}
