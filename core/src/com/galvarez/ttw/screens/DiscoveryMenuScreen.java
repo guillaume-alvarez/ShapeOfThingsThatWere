@@ -82,7 +82,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     discoveryChoices.clear();
     if (empire.next != null) {
       discoveryChoices.addLabel("Progress toward new discovery from " + previousString(empire.next) + ": "
-          + empire.next.progress + "%");
+          + empire.next.progress + "% (+" + empire.progressPerTurn + "%/turn)");
     } else {
       Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(entity, empire);
       if (possible.isEmpty()) {
