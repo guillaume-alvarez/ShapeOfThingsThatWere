@@ -122,7 +122,7 @@ public final class BuildingsSystem extends EntitySystem {
         if (!hasTerrain(source, terrain))
           return false;
       } else if ("power".equals(cond.getKey())) {
-        return source.power >= ((Number) cond.getValue()).intValue();
+        return source.power() >= ((Number) cond.getValue()).intValue();
       } else
         throw new IllegalStateException("Unknown condition " + cond);
     }

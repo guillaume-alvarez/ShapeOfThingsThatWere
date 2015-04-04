@@ -116,10 +116,10 @@ public final class RevoltSystem extends EntitySystem {
         updateEmpireAfterRevolt(empire, instability, source);
 
         log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
-            empire.getComponent(Name.class), instability, source.power);
+            empire.getComponent(Name.class), instability, source.power());
         if (!ai.has(empire))
           notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
-              "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power);
+              "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power());
       }
     }
   }
@@ -127,7 +127,7 @@ public final class RevoltSystem extends EntitySystem {
   private void updateEmpireAfterRevolt(Entity empire, int instability, InfluenceSource source) {
     // decrease power by instability to avoid popping revolts in loop
     policies.get(empire).stability += instability;
-    source.power = max(max(1, source.power / 2), source.power - instability / 2);
+    source.setPower(max(max(1, source.power() / 2), source.power() - instability / 2));
   }
 
   private boolean isValidRevoltTile(Entity empire, MapPosition pos, int instability) {
@@ -163,9 +163,9 @@ public final class RevoltSystem extends EntitySystem {
 
     // get starting power from generating instability
     // ensure it has enough power to control its own tile and resist a bit
-    int sourcePower = sources.get(empire).power;
-    sources.get(revoltee).power = max(min(sourcePower, instability + sourcePower / 2), inf.getMaxInfluence() + 1);
-    inf.setInfluence(revoltee, sources.get(revoltee).power);
+    int sourcePower = sources.get(empire).power();
+    sources.get(revoltee).setPower(max(min(sourcePower, instability + sourcePower / 2), inf.getMaxInfluence() + 1));
+    inf.setInfluence(revoltee, sources.get(revoltee).power());
 
     // do not forget neighboring tiles
     for (MapPosition n : map.getNeighbors(inf.position))

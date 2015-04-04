@@ -79,7 +79,7 @@ public class EntityFactory {
     edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination(command.forbiddenTiles));
 
     edit.add(new Name(name)).add(new Description("Tribe of " + name))
-        .add(new TextBox(() -> name + ": " + source.power));
+        .add(new TextBox(() -> name + ": " + source.power()));
 
     if (empire.isComputerControlled())
       edit.add(new AIControlled());

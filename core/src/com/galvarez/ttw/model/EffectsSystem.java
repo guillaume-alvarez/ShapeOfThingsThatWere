@@ -179,7 +179,7 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public String toString(Number value) {
       int i = value.intValue();
-      return (i > 0 ? "growth: +" : "growth: ") + i + "%/turn";
+      return (i > 0 ? "growth: +" : "growth: ") + (i / 10f) + "%/turn";
     }
   }
 

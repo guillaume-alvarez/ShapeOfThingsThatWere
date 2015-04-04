@@ -100,7 +100,7 @@ public final class InfluenceSystem extends EntitySystem {
   protected void inserted(Entity e) {
     super.inserted(e);
     InfluenceSource source = sources.get(e);
-    if (source.power > 0) {
+    if (source.power() > 0) {
       MapPosition pos = positions.get(e);
 
       // first influence own tile
@@ -172,9 +172,9 @@ public final class InfluenceSystem extends EntitySystem {
       if (empire != influencer && loser.getRelationWith(influencer) != State.TRIBUTE) {
         log.info("{} conquered by {}, will now be tributary to its conqueror.", empire.getComponent(Description.class),
             influencer.getComponent(Description.class));
-        source.power--;
-        sources.get(influencer).power++;
-        if (source.power <= 0) {
+        source.addToPower(-1);
+        sources.get(influencer).addToPower(1);
+        if (source.power() <= 0) {
           log.info("{} conquered by {}, was destroyed.", empire.getComponent(Description.class),
               influencer.getComponent(Description.class));
           delete(empire);
@@ -222,7 +222,7 @@ public final class InfluenceSystem extends EntitySystem {
    */
   private void addInfluenceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
-    for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power)) {
+    for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power())) {
       Influence tile = map.getInfluenceAt(entry.key);
       int target = canInfluence(e, entry.key) ? entry.value
       // start losing influence when no neighboring tile
@@ -361,20 +361,20 @@ public final class InfluenceSystem extends EntitySystem {
   private void accumulatePower(Entity empire) {
     InfluenceSource source = sources.get(empire);
 
-    int increase = source.growth * source.power / 100;
+    int increase = source.growth * source.power();
     if (increase > 0) {
       Diplomacy diplomacy = relations.get(empire);
       List<Entity> tributes = diplomacy.getEmpires(State.TRIBUTE);
       int remains = increase;
       for (Entity other : tributes) {
         int tribute = min(remains, increase / tributes.size());
-        sources.get(other).power += tribute;
+        sources.get(other).addToPower(tribute / 1000f);
         remains -= tribute;
       }
       increase = remains;
     }
 
-    source.power += increase;
+    source.addToPower(increase / 1000f);
   }
 
 }

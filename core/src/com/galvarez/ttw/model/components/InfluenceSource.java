@@ -15,12 +15,12 @@ import com.galvarez.ttw.model.map.Terrain;
 
 public final class InfluenceSource extends Component {
 
-  public int power = InfluenceSystem.INITIAL_POWER;
+  private float power = InfluenceSystem.INITIAL_POWER;
+
+  /** In per mille. */
+  public int growth;
 
   public final Set<MapPosition> influencedTiles = new HashSet<>();
-
-  /** In percents. */
-  public int growth;
 
   public final List<Entity> secondarySources = new ArrayList<>();
 
@@ -35,6 +35,18 @@ public final class InfluenceSource extends Component {
         terrainBonus.put(t, Integer.valueOf(0));
     }
 
+  }
+
+  public int power() {
+    return (int) power;
+  }
+
+  public void addToPower(float f) {
+    power += f;
+  }
+
+  public void setPower(int power) {
+    this.power = power;
   }
 
 }
