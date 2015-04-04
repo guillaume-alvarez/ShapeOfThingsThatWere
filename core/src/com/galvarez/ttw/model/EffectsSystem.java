@@ -70,10 +70,10 @@ public final class EffectsSystem extends VoidEntitySystem {
       Policies p = policies.get(empire);
       if (revert) {
         p.stabilityGrowth -= value.intValue();
-        p.stabilityMax -= 10 * value.intValue();
+        p.stabilityMax -= value.intValue();
       } else {
         p.stabilityGrowth += value.intValue();
-        p.stabilityMax += 10 * value.intValue();
+        p.stabilityMax += value.intValue();
       }
     }
 
@@ -179,7 +179,7 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public String toString(Number value) {
       int i = value.intValue();
-      return (i > 0 ? "growth: +" : "growth: ") + i;
+      return (i > 0 ? "growth: +" : "growth: ") + i + "%/turn";
     }
   }
 
