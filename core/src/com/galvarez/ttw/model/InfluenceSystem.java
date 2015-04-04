@@ -361,35 +361,20 @@ public final class InfluenceSystem extends EntitySystem {
   private void accumulatePower(Entity empire) {
     InfluenceSource source = sources.get(empire);
 
-    int increase = source.growth + source.influencedTiles.size();
+    int increase = source.growth * source.power / 100;
     if (increase > 0) {
       Diplomacy diplomacy = relations.get(empire);
       List<Entity> tributes = diplomacy.getEmpires(State.TRIBUTE);
       int remains = increase;
       for (Entity other : tributes) {
         int tribute = min(remains, increase / tributes.size());
-        sources.get(other).powerAdvancement += tribute;
+        sources.get(other).power += tribute;
         remains -= tribute;
       }
       increase = remains;
     }
 
-    source.powerAdvancement += increase;
-    if (source.powerAdvancement < 0) {
-      source.power--;
-      source.powerAdvancement = getRequiredPowerAdvancement(source) + source.powerAdvancement;
-    } else {
-      int required = getRequiredPowerAdvancement(source);
-      if (source.powerAdvancement >= required) {
-        source.powerAdvancement -= required;
-        source.power++;
-      }
-    }
-  }
-
-  public int getRequiredPowerAdvancement(InfluenceSource source) {
-    // TODO the base power should depend on the empire
-    return source.power + 1;
+    source.power += increase;
   }
 
 }

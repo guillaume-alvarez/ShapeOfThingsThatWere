@@ -19,9 +19,8 @@ public final class InfluenceSource extends Component {
 
   public final Set<MapPosition> influencedTiles = new HashSet<>();
 
+  /** In percents. */
   public int growth;
-
-  public int powerAdvancement = 0;
 
   public final List<Entity> secondarySources = new ArrayList<>();
 

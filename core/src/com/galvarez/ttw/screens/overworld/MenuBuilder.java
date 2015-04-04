@@ -185,11 +185,8 @@ public class MenuBuilder {
     if (e != null) {
       addDescription(e);
       InfluenceSource infSource = e.getComponent(InfluenceSource.class);
-      if (infSource != null) {
-        int percent = 100 * infSource.powerAdvancement
-            / world.getSystem(InfluenceSystem.class).getRequiredPowerAdvancement(infSource);
-        selectionMenu.addLabel("Power: " + infSource.power + " (+" + percent + "%)");
-      }
+      if (infSource != null)
+        selectionMenu.addLabel("Power: " + infSource.power + " (+" + infSource.growth + "%/turn)");
     }
 
     Entity source = influence.getMainInfluenceSource(world);
