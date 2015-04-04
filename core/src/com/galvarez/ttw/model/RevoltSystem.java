@@ -43,8 +43,6 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 @Wire
 public final class RevoltSystem extends EntitySystem {
 
-  public static final int INSTABILITY_PER_TILE = 5;
-
   private static final Logger log = LoggerFactory.getLogger(RevoltSystem.class);
 
   private ComponentMapper<Empire> empires;
@@ -88,11 +86,12 @@ public final class RevoltSystem extends EntitySystem {
       checkRevolt(empire);
   }
 
-  public int getInstability(Entity empire) {
+  public int getInstabilityPercent(Entity empire) {
     InfluenceSource source = sources.get(empire);
     Policies empirePolicies = policies.get(empire);
-    return source.influencedTiles.size() * INSTABILITY_PER_TILE
-        - (empirePolicies.stability + army.get(empire).militaryPower);
+    int totalStability = empirePolicies.stability + army.get(empire).militaryPower;
+    int missingStability = source.influencedTiles.size() - totalStability;
+    return (int) (((float) missingStability / (float) totalStability) * 100f);
   }
 
   /**
@@ -100,7 +99,7 @@ public final class RevoltSystem extends EntitySystem {
    * is the higher chance it will revolt.
    */
   private void checkRevolt(Entity empire) {
-    int instability = getInstability(empire);
+    int instability = getInstabilityPercent(empire);
     if (instability > 0 && rand.nextInt(100) < instability) {
       InfluenceSource source = sources.get(empire);
       // revolt happens, select the tile!
