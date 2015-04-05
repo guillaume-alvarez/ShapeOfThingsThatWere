@@ -83,6 +83,8 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     if (empire.next != null) {
       discoveryChoices.addLabel("Progress toward new discovery from " + previousString(empire.next) + ": "
           + empire.next.progress + "% (+" + empire.progressPerTurn + "%/turn)");
+      discoveryChoices.addLabel(" ");
+      discoveryChoices.addButton("Change discovery (progress will be reset)!", this::changeResearch);
     } else {
       Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(entity, empire);
       if (possible.isEmpty()) {
@@ -128,5 +130,10 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       sb.append(previous.name).append(", ");
     sb.setLength(sb.length() - 2);
     return sb.toString();
+  }
+
+  private void changeResearch() {
+    empire.next = null;
+    initMenu();
   }
 }
