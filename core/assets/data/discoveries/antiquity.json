@@ -218,5 +218,10 @@
   previous: [[River, Art], [Art, Wind]],
   groups: [ART],
   effects: {stability: 1}
+},
+{
+  name: School,
+  previous: [[Village, Art], [Village, Writing]],
+  effects: {discovery: 1}
 }
 ]
