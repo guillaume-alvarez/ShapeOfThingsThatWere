@@ -1,5 +1,6 @@
 package com.galvarez.ttw.screens;
 
+import static java.lang.Math.min;
 import static java.lang.String.join;
 
 import java.util.HashMap;
@@ -80,14 +81,13 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     stabilityMenu.clear();
-    int stability = empire.getComponent(Policies.class).stability;
     InfluenceSource source = empire.getComponent(InfluenceSource.class);
     ArmyCommand army = empire.getComponent(ArmyCommand.class);
     stabilityMenu.addTable( //
-        new Object[] { "Empire stability is", stability }, //
+        new Object[] { "Empire stability is", stabilityEvolution() }, //
         new Object[] { " + military power ", army.militaryPower }, //
-        new Object[] { " - source extension ", source.influencedTiles.size() }, //
-        new Object[] { "=> current instability is ", revolts.getInstabilityPercent(empire) + "%" });
+        new Object[] { " - source extension ", source.influencedTiles.size() + " (influenced tiles)" }, //
+        new Object[] { "=> current instability risk is ", revolts.getInstabilityPercent(empire) + "%" });
     stabilityMenu.addToStage(stage, 30, topMenu.getY() - 30, false);
 
     policiesMenu.clear();
@@ -112,5 +112,21 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
       }
     }
     policiesMenu.addToStage(stage, 30, stabilityMenu.getY() - 30, false);
+  }
+
+  private String stabilityEvolution() {
+    final int max = policies.stabilityMax;
+    final int stability = policies.stability;
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(stability);
+
+    if (stability < max) {
+      sb.append(" (+").append(min(policies.stabilityGrowth, max - stability)).append(" per turn)");
+    } else if (stability > max) {
+      sb.append(" (-1 per turn)");
+    }
+
+    return sb.toString();
   }
 }
