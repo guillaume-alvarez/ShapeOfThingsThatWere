@@ -84,9 +84,9 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     InfluenceSource source = empire.getComponent(InfluenceSource.class);
     ArmyCommand army = empire.getComponent(ArmyCommand.class);
     stabilityMenu.addTable( //
-        new Object[] { "Empire stability is", stabilityEvolution() }, //
-        new Object[] { " + military power ", army.militaryPower }, //
-        new Object[] { " - source extension ", source.influencedTiles.size() + " (influenced tiles)" }, //
+        new Object[] { "Empire stability is", stabilityText(policies) }, //
+        new Object[] { " + military power ", militaryText(army) }, //
+        new Object[] { " - source extension ", extensionText(source) }, //
         new Object[] { "=> current instability risk is ", revolts.getInstabilityPercent(empire) + "%" });
     stabilityMenu.addToStage(stage, 30, topMenu.getY() - 30, false);
 
@@ -114,7 +114,19 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     policiesMenu.addToStage(stage, 30, stabilityMenu.getY() - 30, false);
   }
 
-  private String stabilityEvolution() {
+  private static String militaryText(ArmyCommand army) {
+    int power = army.militaryPower;
+    if (power >= 0)
+      return "" + power;
+    else
+      return power + " (count only if positive)";
+  }
+
+  private static String extensionText(InfluenceSource source) {
+    return source.influencedTiles.size() + " (influenced tiles)";
+  }
+
+  private static String stabilityText(Policies policies) {
     final int max = policies.stabilityMax;
     final int stability = policies.stability;
 

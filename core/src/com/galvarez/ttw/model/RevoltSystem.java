@@ -89,7 +89,7 @@ public final class RevoltSystem extends EntitySystem {
   public int getInstabilityPercent(Entity empire) {
     InfluenceSource source = sources.get(empire);
     Policies empirePolicies = policies.get(empire);
-    int totalStability = empirePolicies.stability + army.get(empire).militaryPower;
+    int totalStability = empirePolicies.stability + max(0, army.get(empire).militaryPower);
     int missingStability = source.influencedTiles.size() - totalStability;
     return (int) (((float) missingStability / (float) totalStability) * 100f);
   }
