@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.ScoreSystem.Item;
+import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -23,7 +24,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  */
 public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen> {
 
-  private final FramedMenu topMenu, ladderMenu;
+  private final FramedMenu topMenu, victoryMenu, ladderMenu;
 
   private final ScoreSystem scoreSystem;
 
@@ -33,6 +34,7 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     this.scoreSystem = scoreSystem;
 
     topMenu = new FramedMenu(skin, 800, 600);
+    victoryMenu = new FramedMenu(skin, 800, 600);
     ladderMenu = new FramedMenu(skin, 800, 600);
   }
 
@@ -41,6 +43,16 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     topMenu.clear();
     topMenu.addButton("Resume game", this::resumeGame);
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
+
+    victoryMenu.clear();
+    victoryMenu.addLabel("Victory conditions:");
+    Score score = gameScreen.player.getComponent(Score.class);
+    victoryMenu.addLabel(" > score at year 0: " + score.totalScore + " (+" + score.lastTurnPoints + " this turn)");
+    victoryMenu.addLabel(" > overlord to all empires: " + score.nbControlled + " out of " + score.nbControlledMax
+        + " empires");
+    victoryMenu.addLabel(" > discovered everything: " + score.nbDiscoveries + " out of " + score.nbDiscoveriesMax
+        + " discoveries.");
+    victoryMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
 
     ladderMenu.clear();
     ladderMenu.nbColumns(3).addLabel(
@@ -60,7 +72,7 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     style.font.setMarkupEnabled(true);
     ladderMenu.addTable(style, ladder.toArray(new Object[0][]));
 
-    ladderMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
+    ladderMenu.addToStage(stage, 30, victoryMenu.getY() - 30, true);
   }
 
   private static final int KILO = 1000;
