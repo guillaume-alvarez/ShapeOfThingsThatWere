@@ -107,8 +107,10 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
           items.put(NONE.discovery, NONE);
           selected = NONE;
         }
-        policiesMenu.addSelectBox("  ", selected, items.values().toArray(new Item[items.size()]),
-            i -> policiesSystem.applyPolicy(empire, choice, i != NONE ? i.discovery : null));
+        policiesMenu.addSelectBox("  ", selected, items.values().toArray(new Item[items.size()]), i -> {
+          policiesSystem.applyPolicy(empire, choice, i != NONE ? i.discovery : null);
+          initMenu();
+        });
       }
     }
     policiesMenu.addToStage(stage, 30, stabilityMenu.getY() - 30, false);
