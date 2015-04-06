@@ -169,7 +169,7 @@ public final class RevoltSystem extends EntitySystem {
 
     // do not forget neighboring tiles
     for (MapPosition n : map.getNeighbors(inf.position))
-      map.getInfluenceAt(n).setInfluence(revoltee, instability);
+      map.getInfluenceAt(n).setInfluence(revoltee, min(sourcePower, instability + sourcePower / 2));
 
     // add all discoveries from original empire
     discoveries.copyDiscoveries(empire, revoltee);
