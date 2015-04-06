@@ -51,7 +51,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
       Culture culture = empires.get(e).culture;
       Entry<Faction, Research> prefered = null;
       float max = Float.NEGATIVE_INFINITY;
-      for (Entry<Faction, Research> possible : discoverySystem.possibleDiscoveries(e, d).entrySet()) {
+      for (Entry<Faction, Research> possible : d.nextPossible.entrySet()) {
         Faction faction = possible.getKey();
         float score = culture.ai.get(faction) * possible.getValue().target.factions.get(faction, 1);
         if (score > max) {

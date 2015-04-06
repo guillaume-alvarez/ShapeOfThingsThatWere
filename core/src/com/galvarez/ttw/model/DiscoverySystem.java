@@ -157,17 +157,20 @@ public final class DiscoverySystem extends EntitySystem {
   @Override
   protected void inserted(Entity e) {
     super.inserted(e);
-    if (e == screen.player) {
-      Discoveries d = empires.get(e);
+    Discoveries d = empires.get(e);
+    d.nextPossible = possibleDiscoveries(e, d);
+
+    if (e == screen.player)
       notifications.addNotification(screen::discoveryMenu, () -> d.next != null, Type.DISCOVERY,
           "No research selected!");
-    }
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
+      if (discovery.nextPossible == null)
+        discovery.nextPossible = possibleDiscoveries(entity, discovery);
       if (discovery.next != null) {
         if (progressNext(discovery, influences.get(entity)))
           discoverNext(entity, discovery);
@@ -192,9 +195,13 @@ public final class DiscoverySystem extends EntitySystem {
     Research next = discovery.next;
     Discovery target = next.target;
     log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
+    discovery.done.add(target);
+    discovery.next = null;
+
+    discovery.nextPossible = possibleDiscoveries(entity, discovery);
     if (!ai.has(entity)) {
-      Condition condition = !possibleDiscoveries(entity, discovery).isEmpty() ? (() -> discovery.next != null
-          || possibleDiscoveries(entity, discovery).isEmpty()) : null;
+      Condition condition = !discovery.nextPossible.isEmpty() ? (() -> discovery.next != null
+          || discovery.nextPossible.isEmpty()) : null;
       notifications.addNotification(screen::discoveryMenu, condition, Type.DISCOVERY, "Discovered %s: %s", target,
           target.effects.isEmpty() ? "No effect." : join(", ", effectsStrings(target)));
       Set<Policy> policies = PoliciesSystem.getPolicies(target);
@@ -204,8 +211,6 @@ public final class DiscoverySystem extends EntitySystem {
               .addNotification(screen::policiesMenu, null, Type.DISCOVERY, "New %s policy: %s", policy, target);
       }
     }
-    discovery.done.add(target);
-    discovery.next = null;
 
     // Once an empire made a discovery, none other can research it. Those
     // already researching it can continue. It makes sure starting discoveries
@@ -233,7 +238,7 @@ public final class DiscoverySystem extends EntitySystem {
    * Compute the possible discoveries for the empire, associated to the faction
    * that recommends them.
    */
-  public Map<Faction, Research> possibleDiscoveries(Entity entity, Discoveries empire) {
+  private Map<Faction, Research> possibleDiscoveries(Entity entity, Discoveries empire) {
     // collect current state
     Set<String> done = new HashSet<>();
     Map<String, List<String>> groups = new HashMap<>();

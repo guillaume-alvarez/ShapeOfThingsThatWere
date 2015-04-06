@@ -3,7 +3,6 @@ package com.galvarez.ttw.screens;
 import static java.lang.Math.max;
 import static java.lang.String.format;
 
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.artemis.Entity;
@@ -86,12 +85,11 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
       discoveryChoices.addLabel(" ");
       discoveryChoices.addButton("Change discovery (progress will be reset)!", this::changeResearch);
     } else {
-      Map<Faction, Research> possible = discoverySystem.possibleDiscoveries(entity, empire);
-      if (possible.isEmpty()) {
+      if (empire.nextPossible.isEmpty()) {
         discoveryChoices.addLabel("No discoveries to combine!");
       } else {
         discoveryChoices.addLabel("Which faction do you choose to make new discoveries?");
-        for (Entry<Faction, Research> next : possible.entrySet())
+        for (Entry<Faction, Research> next : empire.nextPossible.entrySet())
           discoveryChoices.addButton(
               action(next.getKey()),
               previousString(next.getValue()) + " (~"
