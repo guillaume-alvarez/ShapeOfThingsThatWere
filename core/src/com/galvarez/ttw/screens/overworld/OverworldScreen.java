@@ -163,7 +163,7 @@ public final class OverworldScreen extends AbstractScreen {
     revoltSystem = world.setSystem(new RevoltSystem(map, settings, this), true);
     armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
-    scoreSystem = world.setSystem(new ScoreSystem(settings), true);
+    scoreSystem = world.setSystem(new ScoreSystem(settings, this), true);
     aiDestination = world.setSystem(new AIDestinationSystem(map, this), true);
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
@@ -207,7 +207,7 @@ public final class OverworldScreen extends AbstractScreen {
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
     policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem,
         revoltSystem);
-    scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem);
+    scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem, settings);
     armiesScreen = new ArmiesMenuScreen(game, world, batch, this, player, armiesSystem);
   }
 

@@ -24,6 +24,8 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
 
   protected final Skin skin;
 
+  protected boolean canEscape = true;
+
   public AbstractPausedScreen(ThingsThatWereGame game, World world, SpriteBatch batch, Screen gameScreen) {
     super(game, world, batch);
     this.gameScreen = gameScreen;
@@ -47,7 +49,7 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
     InputAdapter escape = new InputAdapter() {
       @Override
       public boolean keyDown(int keycode) {
-        if (keycode == Keys.ESCAPE) {
+        if (keycode == Keys.ESCAPE && canEscape) {
           resumeGame();
           return true;
         } else

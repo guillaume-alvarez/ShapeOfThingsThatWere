@@ -12,6 +12,7 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.ScoreSystem.Item;
 import com.galvarez.ttw.model.components.Score;
+import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -28,10 +29,13 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
   private final ScoreSystem scoreSystem;
 
+  private final SessionSettings settings;
+
   public ScoresMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      ScoreSystem scoreSystem) {
+      ScoreSystem scoreSystem, SessionSettings settings) {
     super(game, world, batch, gameScreen);
     this.scoreSystem = scoreSystem;
+    this.settings = settings;
 
     topMenu = new FramedMenu(skin, 800, 600);
     victoryMenu = new FramedMenu(skin, 800, 600);
@@ -40,18 +44,36 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
   @Override
   protected void initMenu() {
+    Item winner = scoreSystem.getWinner();
+
     topMenu.clear();
-    topMenu.addButton("Resume game", this::resumeGame);
+    if (winner == null) {
+      topMenu.addButton("Resume game", this::resumeGame);
+    } else {
+      // cannot just resume the game
+      canEscape = false;
+      topMenu.addButton("Return to main menu", () -> game.returnToMainMenu(settings));
+      topMenu.addButton("Exit game", game::exit);
+    }
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);
 
     victoryMenu.clear();
-    victoryMenu.addLabel("Victory conditions:");
-    Score score = gameScreen.player.getComponent(Score.class);
-    victoryMenu.addLabel(" > score at year 0: " + score.totalScore + " (+" + score.lastTurnPoints + " this turn)");
-    victoryMenu.addLabel(" > overlord to all empires: " + score.nbControlled + " out of " + score.nbControlledMax
-        + " empires");
-    victoryMenu.addLabel(" > discovered everything: " + score.nbDiscoveries + " out of " + score.nbDiscoveriesMax
-        + " discoveries.");
+    if (winner == null) {
+      victoryMenu.addLabel("Victory conditions:");
+      Score score = gameScreen.player.getComponent(Score.class);
+      victoryMenu.addLabel(" > score at year 0: " + score.totalScore + " (+" + score.lastTurnPoints + " this turn)");
+      victoryMenu.addLabel(" > overlord to all empires: " + score.nbControlled + " out of " + score.nbControlledMax
+          + " empires");
+      victoryMenu.addLabel(" > discovered everything: " + score.nbDiscoveries + " out of " + score.nbDiscoveriesMax
+          + " discoveries.");
+    } else {
+      victoryMenu.addLabel("VICTORY FOR " + winner.empire.getComponent(Description.class));
+      victoryMenu.addLabel(" > score at year " + gameScreen.getCurrentYear() + ": " + winner.score.totalScore);
+      victoryMenu.addLabel(" > controlled empires: " + winner.score.nbControlled + " out of "
+          + winner.score.nbControlledMax + " empires");
+      victoryMenu.addLabel(" > discoveries: " + winner.score.nbDiscoveries + " out of " + winner.score.nbDiscoveriesMax
+          + " discoveries.");
+    }
     victoryMenu.addToStage(stage, 30, topMenu.getY() - 30, true);
 
     ladderMenu.clear();

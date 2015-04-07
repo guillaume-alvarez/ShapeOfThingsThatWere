@@ -22,6 +22,7 @@ import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.model.data.SessionSettings;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * For every empire, compute score every turn.
@@ -46,13 +47,18 @@ public final class ScoreSystem extends EntitySystem {
 
   private ComponentMapper<Discoveries> discoveries;
 
+  private Item winner;
+
   private final List<Item> list = new ArrayList<>();
 
   private final int nbDiscoveries;
 
+  private final OverworldScreen screen;
+
   @SuppressWarnings("unchecked")
-  public ScoreSystem(SessionSettings s) {
+  public ScoreSystem(SessionSettings s, OverworldScreen screen) {
     super(Aspect.getAspectForAll(Score.class, InfluenceSource.class));
+    this.screen = screen;
 
     nbDiscoveries = s.getDiscoveries().size();
   }
@@ -90,6 +96,7 @@ public final class ScoreSystem extends EntitySystem {
     }
     int nbControlledMax = entities.size();
 
+    // compute current score (may modify other entities' scores)
     for (Entity empire : entities) {
       InfluenceSource source = sources.get(empire);
       add(empire, source.influencedTiles.size(), 0);
@@ -99,12 +106,26 @@ public final class ScoreSystem extends EntitySystem {
       score.nbControlledMax = nbControlledMax;
     }
 
+    // now score is stable, sort by rank and search for winners
     Collections.sort(list, Comparator.comparingInt((Item i) -> i.score.totalScore).reversed());
-    for (int r = 0; r < list.size(); r++)
-      list.get(r).score.rank = r + 1;
+    for (int r = 0; r < list.size(); r++) {
+      Item i = list.get(r);
+      i.score.rank = r + 1;
+      if (winner == null && hasWon(i.score))
+        winner = i;
+    }
+
+    if (winner != null)
+      screen.scoresMenu();
   }
 
-  /** Recursive method to add score to all. */
+  private static boolean hasWon(Score score) {
+    // also test "greater" in case other empires were destroyed
+    // it should not really happen but it does not cost anything
+    return score.nbControlled >= score.nbControlledMax || score.nbDiscoveries >= score.nbDiscoveriesMax;
+  }
+
+  /** Recursive method to add score to all overlords and partners. */
   private void add(Entity empire, int delta, int nbControlled) {
     if (delta > 0
     // do not forget an empire can be deleted
@@ -138,6 +159,11 @@ public final class ScoreSystem extends EntitySystem {
       this.score = score;
     }
 
+  }
+
+  /** Get the winner for current game. <code>null</code> if nobody has won yet. */
+  public Item getWinner() {
+    return winner;
   }
 
   public List<Item> getScores() {
