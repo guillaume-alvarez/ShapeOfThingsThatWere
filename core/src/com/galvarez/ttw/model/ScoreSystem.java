@@ -92,7 +92,8 @@ public final class ScoreSystem extends EntitySystem {
     for (Entity empire : entities) {
       Score score = scores.get(empire);
       score.lastTurnPoints = 0;
-      score.nbControlled = 0;
+      // every empire controls itself
+      score.nbControlled = 1;
     }
     int nbControlledMax = entities.size();
 
