@@ -167,10 +167,9 @@ public class MenuBuilder {
     if (instability <= 0)
       empireMenu.addButton("Policies (instability " + instability + "%)", screen::policiesMenu);
     else {
-      LabelStyle style = empireMenu.getSkin().get("colored", LabelStyle.class);
-      style.font.setMarkupEnabled(true);
-      empireMenu.addButton(style, "[BLACK]Policies (instability [RED]" + instability + "%[])", null,
-          screen::policiesMenu, true);
+      empireMenu.addButton(empireMenu.getSkin().get("colored", LabelStyle.class), //
+          "[BLACK]Policies (instability [RED]" + instability + "%[])", //
+          null, screen::policiesMenu, true);
     }
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);

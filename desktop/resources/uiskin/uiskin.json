@@ -1,8 +1,6 @@
 {
 	com.badlogic.gdx.graphics.g2d.BitmapFont: {
 		default-font: { file: irisUPC.fnt },
-		// not sure why but setting markupEnabled does not work here
-		// see https://github.com/libgdx/libgdx/issues/2848
 		colored-font: { file: irisUPC.fnt, markupEnabled: true },
 	},
 	com.badlogic.gdx.graphics.Color: {
@@ -23,6 +21,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		default: { font: default-font, fontColor: black },
+		colored: { font: colored-font, fontColor: white },
 		colored: { font: colored-font, fontColor: white },
 		inactive: { font: default-font, fontColor: gray }
 	},

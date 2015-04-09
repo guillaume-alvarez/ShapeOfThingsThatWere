@@ -198,7 +198,6 @@ public class FramedMenu {
   /** Adds a label followed by a sprite to the menu. */
   public Label addLabelSprite(String label, TextureRegion region, Color color) {
     LabelStyle style = skin.get(LabelStyle.class);
-    style.font.setMarkupEnabled(true);
     Label l = new Label(label, style);
     table.add(l).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
 
@@ -245,9 +244,7 @@ public class FramedMenu {
    * https://github.com/libgdx/libgdx/wiki/Color-Markup-Language.
    */
   public Label addColoredLabel(String label) {
-    LabelStyle style = skin.get("colored", LabelStyle.class);
-    style.font.setMarkupEnabled(true);
-    Label l = new Label(label, style);
+    Label l = new Label(label, skin.get("colored", LabelStyle.class));
     l.setWrap(true);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());

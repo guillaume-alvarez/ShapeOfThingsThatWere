@@ -90,9 +90,7 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
           "[BLACK]" + shorten(i.score.totalScore) + " (+" + i.score.lastTurnPoints + ")",
           "[BLACK]" + i.score.nbDiscoveries + "/" + i.score.nbDiscoveriesMax,
           "[BLACK]" + i.score.nbControlled + "/" + i.score.nbControlledMax, });
-    LabelStyle style = ladderMenu.getSkin().get("colored", LabelStyle.class);
-    style.font.setMarkupEnabled(true);
-    ladderMenu.addTable(style, ladder.toArray(new Object[0][]));
+    ladderMenu.addTable(ladderMenu.getSkin().get("colored", LabelStyle.class), ladder.toArray(new Object[0][]));
 
     ladderMenu.addToStage(stage, 30, victoryMenu.getY() - 30, true);
   }
