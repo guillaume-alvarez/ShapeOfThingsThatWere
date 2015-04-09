@@ -16,9 +16,9 @@ allprojects {
         appName = 'ShapeOfThingsThatWere'
         gdxVersion = '1.5.5'
         artemisVersion = '0.7.1'
-        slf4jVersion = '1.7.7'
-        log4jBindingsVersion = '2.0.2'
-        log4jCoreVersion = '2.0.2'
+        slf4jVersion = '1.7.12'
+        log4jBindingsVersion = '2.2'
+        log4jCoreVersion = '2.2'
     }
 
     repositories {
