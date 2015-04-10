@@ -17,7 +17,6 @@ import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -31,8 +30,6 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<MapPosition> positions;
-
-  private ComponentMapper<InfluenceSource> sources;
 
   private DiplomaticSystem diplomaticSystem;
 
