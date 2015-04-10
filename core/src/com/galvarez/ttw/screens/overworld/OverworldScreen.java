@@ -41,6 +41,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
 import com.galvarez.ttw.rendering.CounterRenderSystem;
 import com.galvarez.ttw.rendering.DestinationRenderSystem;
+import com.galvarez.ttw.rendering.DiplomacyRenderSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
@@ -68,6 +69,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final CounterRenderSystem counterRenderSystem;
 
+  private final DiplomacyRenderSystem diplomacyRenderSystem;
+  
   private final InfluenceRenderSystem influenceRenderSystem;
 
   private final TextBoxRenderSystem textBoxRenderSystem;
@@ -168,6 +171,7 @@ public final class OverworldScreen extends AbstractScreen {
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, map), true);
+    diplomacyRenderSystem = world.setSystem(new DiplomacyRenderSystem(camera, batch), true);
     textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(camera, batch), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
     spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
@@ -185,6 +189,7 @@ public final class OverworldScreen extends AbstractScreen {
     armiesSystem.process();
     destinationSystem.process();
     scoreSystem.process();
+    diplomacyRenderSystem.preprocess();
     influenceRenderSystem.preprocess();
     textBoxRenderSystem.preprocess();
     notificationsSystem.process();
@@ -231,6 +236,7 @@ public final class OverworldScreen extends AbstractScreen {
     }
 
     mapRenderer.render();
+    diplomacyRenderSystem.process();
     influenceRenderSystem.process();
     destinationRenderSystem.process();
     counterRenderSystem.process();
@@ -342,6 +348,7 @@ public final class OverworldScreen extends AbstractScreen {
     world.setDelta(0);
     world.process();
 
+    diplomacyRenderSystem.preprocess();
     influenceRenderSystem.preprocess();
     textBoxRenderSystem.preprocess();
     notificationsSystem.process();
