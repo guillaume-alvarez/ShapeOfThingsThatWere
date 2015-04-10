@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,14 +94,15 @@ public final class ScoreSystem extends EntitySystem {
       Score score = scores.get(empire);
       score.lastTurnPoints = 0;
       // every empire controls itself
-      score.nbControlled = 1;
+      score.controlledEmpires.clear();
+      score.controlledEmpires.add(empire);
     }
     int nbControlledMax = entities.size();
 
     // compute current score (may modify other entities' scores)
     for (Entity empire : entities) {
       InfluenceSource source = sources.get(empire);
-      add(empire, source.influencedTiles.size(), 0);
+      add(empire, source.influencedTiles.size(), Collections.emptySet());
 
       Score score = scores.get(empire);
       score.nbDiscoveries = discoveries.get(empire).done.size();
@@ -123,11 +125,11 @@ public final class ScoreSystem extends EntitySystem {
   private static boolean hasWon(Score score) {
     // also test "greater" in case other empires were destroyed
     // it should not really happen but it does not cost anything
-    return score.nbControlled >= score.nbControlledMax || score.nbDiscoveries >= score.nbDiscoveriesMax;
+    return score.controlledEmpires.size() >= score.nbControlledMax || score.nbDiscoveries >= score.nbDiscoveriesMax;
   }
 
   /** Recursive method to add score to all overlords and partners. */
-  private void add(Entity empire, int delta, int nbControlled) {
+  private void add(Entity empire, int delta, Set<Entity> controlledEmpires) {
     if (delta > 0
     // do not forget an empire can be deleted
         && scores.has(empire)) {
@@ -136,17 +138,22 @@ public final class ScoreSystem extends EntitySystem {
       Score score = scores.get(empire);
       score.lastTurnPoints += delta;
       score.totalScore += delta;
-      score.nbControlled += nbControlled;
+      score.controlledEmpires.addAll(controlledEmpires);
 
       // add to overlords and allies
       for (Entry<Entity, State> e : diplomacy.relations.entrySet()) {
-        if (e.getValue() == State.TREATY)
-          add(e.getKey(), delta / 4, 0);
+        // we have a treaty with all vassals/tributary states
+        if (e.getValue() == State.TREATY && !isTributaryTo(e.getKey(), empire))
+          add(e.getKey(), delta / 4, Collections.emptySet());
         else if (e.getValue() == State.TRIBUTE)
           // overlord controls me and my vassals
-          add(e.getKey(), delta / 2, score.nbControlled + 1);
+          add(e.getKey(), delta / 2, score.controlledEmpires);
       }
     }
+  }
+
+  private boolean isTributaryTo(Entity vassal, Entity lord) {
+    return relations.get(vassal).getRelationWith(lord) == State.TRIBUTE;
   }
 
   public final class Item {

@@ -62,14 +62,14 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
       victoryMenu.addLabel("Victory conditions:");
       Score score = gameScreen.player.getComponent(Score.class);
       victoryMenu.addLabel(" > score at year 0: " + score.totalScore + " (+" + score.lastTurnPoints + " this turn)");
-      victoryMenu.addLabel(" > overlord to all empires: " + score.nbControlled + " out of " + score.nbControlledMax
-          + " empires");
+      victoryMenu.addLabel(" > overlord to all empires: " + score.controlledEmpires.size() + " out of "
+          + score.nbControlledMax + " empires");
       victoryMenu.addLabel(" > discovered everything: " + score.nbDiscoveries + " out of " + score.nbDiscoveriesMax
           + " discoveries.");
     } else {
       victoryMenu.addLabel("VICTORY FOR " + winner.empire.getComponent(Description.class));
       victoryMenu.addLabel(" > score at year " + gameScreen.getCurrentYear() + ": " + winner.score.totalScore);
-      victoryMenu.addLabel(" > controlled empires: " + winner.score.nbControlled + " out of "
+      victoryMenu.addLabel(" > controlled empires: " + winner.score.controlledEmpires.size() + " out of "
           + winner.score.nbControlledMax + " empires");
       victoryMenu.addLabel(" > discoveries: " + winner.score.nbDiscoveries + " out of " + winner.score.nbDiscoveriesMax
           + " discoveries.");
@@ -89,7 +89,7 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
       ladder.add(new Object[] { "[BLACK]" + rank++, markup(i.empire) + i.empire.getComponent(Description.class).desc,
           "[BLACK]" + shorten(i.score.totalScore) + " (+" + i.score.lastTurnPoints + ")",
           "[BLACK]" + i.score.nbDiscoveries + "/" + i.score.nbDiscoveriesMax,
-          "[BLACK]" + i.score.nbControlled + "/" + i.score.nbControlledMax, });
+          "[BLACK]" + i.score.controlledEmpires.size() + "/" + i.score.nbControlledMax, });
     ladderMenu.addTable(ladderMenu.getSkin().get("colored", LabelStyle.class), ladder.toArray(new Object[0][]));
 
     ladderMenu.addToStage(stage, 30, victoryMenu.getY() - 30, true);
