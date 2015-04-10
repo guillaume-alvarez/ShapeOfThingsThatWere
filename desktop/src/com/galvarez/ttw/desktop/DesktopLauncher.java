@@ -19,6 +19,9 @@ public class DesktopLauncher {
     cfg.title = "The Shape of Things that Were";
     cfg.vSyncEnabled = true;
     cfg.resizable = true;
+    // no audio implemented yet
+    // for some unknown reason OpenAL init is very long (a few minutes) on some machines
+    LwjglApplicationConfiguration.disableAudio = true;
     new LwjglApplication(new ThingsThatWereGame(WIDTH, HEIGHT), cfg);
   }
 }
