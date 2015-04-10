@@ -70,7 +70,7 @@ public final class OverworldScreen extends AbstractScreen {
   private final CounterRenderSystem counterRenderSystem;
 
   private final DiplomacyRenderSystem diplomacyRenderSystem;
-  
+
   private final InfluenceRenderSystem influenceRenderSystem;
 
   private final TextBoxRenderSystem textBoxRenderSystem;
@@ -212,7 +212,7 @@ public final class OverworldScreen extends AbstractScreen {
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
     policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem,
         revoltSystem);
-    scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem, settings);
+    scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem);
     armiesScreen = new ArmiesMenuScreen(game, world, batch, this, player, armiesSystem);
   }
 

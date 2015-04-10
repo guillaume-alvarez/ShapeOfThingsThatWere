@@ -12,7 +12,6 @@ import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.ScoreSystem.Item;
 import com.galvarez.ttw.model.components.Score;
-import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -29,13 +28,10 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
   private final ScoreSystem scoreSystem;
 
-  private final SessionSettings settings;
-
   public ScoresMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
-      ScoreSystem scoreSystem, SessionSettings settings) {
+      ScoreSystem scoreSystem) {
     super(game, world, batch, gameScreen);
     this.scoreSystem = scoreSystem;
-    this.settings = settings;
 
     topMenu = new FramedMenu(skin, 800, 600);
     victoryMenu = new FramedMenu(skin, 800, 600);
