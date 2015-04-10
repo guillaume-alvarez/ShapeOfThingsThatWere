@@ -78,7 +78,8 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
 
     ladderMenu.clear();
     ladderMenu.nbColumns(3).addLabel(
-        "One point per influenced tile, \n\thalf the score from tributary, \n\ta quarter of the score from allies.");
+        "One point per influenced tile" + "\n\t + half the score from tributary empires"
+            + "\n\t + a quarter of the score from allied empires");
     ladderMenu.addLabel(" --- ");
 
     int rank = 1;
