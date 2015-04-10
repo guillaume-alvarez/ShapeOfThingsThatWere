@@ -52,7 +52,7 @@ public final class ScoresMenuScreen extends AbstractPausedScreen<OverworldScreen
     } else {
       // cannot just resume the game
       canEscape = false;
-      topMenu.addButton("Return to main menu", () -> game.returnToMainMenu(settings));
+      topMenu.addButton("Return to main menu", game::returnToMainMenu);
       topMenu.addButton("Exit game", game::exit);
     }
     topMenu.addToStage(stage, 30, stage.getHeight() - 30, false);

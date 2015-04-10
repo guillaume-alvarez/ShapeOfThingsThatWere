@@ -26,6 +26,8 @@ public class ThingsThatWereGame extends Game {
 
   private MainMenuScreen menuScreen;
 
+  private SessionSettings settings;
+
   public ThingsThatWereGame(int width, int height) {
     /*
      * FIXME If height is greater that real screen height then the menu is
@@ -40,23 +42,12 @@ public class ThingsThatWereGame extends Game {
 
   @Override
   public void create() {
-    create(new SessionSettings());
+    settings = new SessionSettings();
+
+    startGame();
   }
 
-  /** Quit current game and goes back to main menu. */
-  public void returnToMainMenu(SessionSettings settings) {
-    if (getScreen() instanceof OverworldScreen)
-      getScreen().dispose();
-
-    // simply dispose everything and create anew!
-    world.dispose();
-    batch.dispose();
-    customScreen.dispose();
-    menuScreen.dispose();
-    create(new SessionSettings(settings));
-  }
-
-  private void create(SessionSettings settings) {
+  private void startGame() {
     world = new World();
     batch = new SpriteBatch();
 
@@ -66,14 +57,31 @@ public class ThingsThatWereGame extends Game {
     world.setSystem(new ColorAnimationSystem());
     world.initialize();
 
+    // this screen can modify the settings instance
     customScreen = new CustomizeGameMenuScreen(this, world, batch, settings);
     menuScreen = new MainMenuScreen(this, world, batch, customScreen);
     setScreen(menuScreen);
   }
 
+  /** Quit current game and goes back to main menu. */
+  public void returnToMainMenu() {
+    if (getScreen() instanceof OverworldScreen)
+      getScreen().dispose();
+
+    // simply dispose everything and create anew!
+    world.dispose();
+    batch.dispose();
+    customScreen.dispose();
+    menuScreen.dispose();
+    startGame();
+  }
+
   /** Start a game. */
-  public void startGame(SessionSettings settings) {
-    setScreen(new OverworldScreen(this, batch, world, settings));
+  public void startGame(boolean resetSettings) {
+    setScreen(new OverworldScreen(this, batch, world,
+    // copy settings because we want to keep for next game only the ones that
+    // were customized in dedicated screen
+        resetSettings ? new SessionSettings() : new SessionSettings(settings)));
   }
 
   @Override

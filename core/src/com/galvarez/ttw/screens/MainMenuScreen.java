@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.ThingsThatWereGame;
-import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 
 /**
@@ -37,7 +36,7 @@ public final class MainMenuScreen extends AbstractScreen {
 
   private void initMenu() {
     menu.clear();
-    menu.addButton("Start new game (default parameters)", () -> game.startGame(new SessionSettings()));
+    menu.addButton("Start new game (default parameters)", () -> game.startGame(true));
     menu.addButton("Start new game (custom parameters)", () -> game.setScreen(customGame));
     menu.addToStage(stage, 30, stage.getHeight() - 30, false);
   }

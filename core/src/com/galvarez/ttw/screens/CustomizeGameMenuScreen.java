@@ -67,7 +67,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
   }
 
   private Texture createSquare() {
-    // A Pixmap is basically a raw image in memory as repesented by pixels
+    // A Pixmap is basically a raw image in memory as represented by pixels
     // We create one 16 wide, 16 height using 8 bytes for Red, Green, Blue and
     // Alpha channels
     Pixmap pixmap = new Pixmap(16, 16, Pixmap.Format.RGBA8888);
@@ -109,7 +109,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
         s -> settings.startWithDiplomacy.set(s));
     actions.addButton("Add new empire", "", this::createNewEmpire,
         settings.empires.size() < SessionSettings.COLORS.size());
-    actions.addButton("Start new game", () -> game.startGame(settings));
+    actions.addButton("Start new game", () -> game.startGame(false));
     actions.addToStage(stage, 30, empires.getY() - 30, false);
   }
 

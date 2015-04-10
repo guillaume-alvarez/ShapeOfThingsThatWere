@@ -32,7 +32,7 @@ public final class PauseMenuScreen extends AbstractPausedScreen<AbstractScreen> 
   protected void initMenu() {
     menu.clear();
     menu.addButton("Resume game", this::resumeGame);
-    menu.addButton("Return to main menu", () -> game.returnToMainMenu(settings));
+    menu.addButton("Return to main menu", game::returnToMainMenu);
     menu.addButton("Exit game", game::exit);
     menu.addToStage(stage, 30, stage.getHeight() - 30, false);
   }
