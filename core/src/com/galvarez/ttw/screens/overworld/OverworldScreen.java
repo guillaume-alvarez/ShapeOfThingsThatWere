@@ -20,9 +20,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
-import com.galvarez.ttw.model.AIDestinationSystem;
+import com.galvarez.ttw.model.AIArmyCommandSystem;
+import com.galvarez.ttw.model.AIArmyMovementSystem;
 import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
+import com.galvarez.ttw.model.AISourceDestinationSystem;
 import com.galvarez.ttw.model.ArmiesSystem;
 import com.galvarez.ttw.model.BuildingsSystem;
 import com.galvarez.ttw.model.DestinationSystem;
@@ -99,11 +101,15 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final ScoreSystem scoreSystem;
 
-  private final AIDestinationSystem aiDestination;
+  private final AISourceDestinationSystem aiDestination;
 
   private final AIDiscoverySystem aiDiscovery;
 
   private final AIDiplomaticSystem aiDiplomacy;
+
+  private final AIArmyCommandSystem aiCommand;
+
+  private final AIArmyMovementSystem aiArmies;
 
   final MapRenderer mapRenderer;
 
@@ -167,9 +173,11 @@ public final class OverworldScreen extends AbstractScreen {
     armiesSystem = world.setSystem(new ArmiesSystem(map, this), true);
     destinationSystem = world.setSystem(new DestinationSystem(map, this), true);
     scoreSystem = world.setSystem(new ScoreSystem(settings, this), true);
-    aiDestination = world.setSystem(new AIDestinationSystem(map, this), true);
+    aiDestination = world.setSystem(new AISourceDestinationSystem(map, this), true);
     aiDiscovery = world.setSystem(new AIDiscoverySystem(), true);
     aiDiplomacy = world.setSystem(new AIDiplomaticSystem(map), true);
+    aiCommand = world.setSystem(new AIArmyCommandSystem(map, this), true);
+    aiArmies = world.setSystem(new AIArmyMovementSystem(map, this), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, map), true);
     diplomacyRenderSystem = world.setSystem(new DiplomacyRenderSystem(camera, batch), true);
     textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(camera, batch), true);
@@ -332,9 +340,14 @@ public final class OverworldScreen extends AbstractScreen {
     stage.setKeyboardFocus(null);
     stage.setScrollFocus(null);
 
+    // compute AI before 'really' processing turn
     aiDestination.process();
     aiDiscovery.process();
     aiDiplomacy.process();
+    aiCommand.process();
+    // make sure armies created by command are assigned a destination
+    aiArmies.process();
+
     discoverySystem.process();
     buildingsSystem.process();
     policiesSystem.process();

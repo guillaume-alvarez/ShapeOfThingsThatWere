@@ -94,7 +94,7 @@ public class EntityFactory {
 
     edit.add(new Counter(Colors.contrast(empire.color), empire.color, militaryPower));
 
-    edit.add(pos).add(new Name("Army of " + name)).add(new Description("Army of " + name))
+    edit.add(pos).add(new Name(name)).add(new Description(name))
         .add(new Destination(source.getComponent(ArmyCommand.class).forbiddenTiles))
         .add(new Army(source, militaryPower)).add(empire);
 

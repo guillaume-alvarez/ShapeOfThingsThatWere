@@ -19,9 +19,9 @@ import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 @Wire
-public final class AIDestinationSystem extends EntityProcessingSystem {
+public final class AISourceDestinationSystem extends EntityProcessingSystem {
 
-  private static final Logger log = LoggerFactory.getLogger(AIDestinationSystem.class);
+  private static final Logger log = LoggerFactory.getLogger(AISourceDestinationSystem.class);
 
   private final GameMap map;
 
@@ -36,7 +36,7 @@ public final class AIDestinationSystem extends EntityProcessingSystem {
   private final OverworldScreen screen;
 
   @SuppressWarnings("unchecked")
-  public AIDestinationSystem(GameMap gameMap, OverworldScreen screen) {
+  public AISourceDestinationSystem(GameMap gameMap, OverworldScreen screen) {
     super(Aspect.getAspectForAll(AIControlled.class, Destination.class, InfluenceSource.class));
     this.map = gameMap;
     this.screen = screen;

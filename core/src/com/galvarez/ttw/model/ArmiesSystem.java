@@ -24,6 +24,7 @@ import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+import com.galvarez.ttw.utils.RomanNumbers;
 
 /**
  * Moves the entities being armies across the map.
@@ -120,9 +121,10 @@ public final class ArmiesSystem extends EntitySystem {
   public Entity createNewArmy(Entity empire, int power) {
     MapPosition pos = emptyPositionNextTo(empire);
     if (pos != null) {
-      Entity army = EntityFactory.createArmy(world, pos, names.get(empire).name, empires.get(empire), empire, power);
+      ArmyCommand command = commands.get(empire);
+      Entity army = EntityFactory.createArmy(world, pos, armyName(command, empire), empires.get(empire), empire, power);
       sources.get(empire).secondarySources.add(army);
-      commands.get(empire).usedPower += power;
+      command.usedPower += power;
       map.setEntity(army, pos);
       return army;
     } else {
@@ -130,6 +132,11 @@ public final class ArmiesSystem extends EntitySystem {
           descriptions.get(empire));
       return null;
     }
+  }
+
+  private String armyName(ArmyCommand command, Entity empire) {
+    int nb = ++command.counter;
+    return "Army of " + names.get(empire).name + " " + RomanNumbers.toRoman(nb);
   }
 
   private MapPosition emptyPositionNextTo(Entity empire) {

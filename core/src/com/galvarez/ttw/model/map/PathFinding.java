@@ -99,7 +99,7 @@ public class PathFinding {
       path.add(current);
       current = cameFrom.get(current);
       if (current == null) {
-        log.warn("Cannot compute path from {} to {}.", start, goal);
+        log.debug("Cannot compute path from {} to {}.", start, goal);
         return null;
       }
     }

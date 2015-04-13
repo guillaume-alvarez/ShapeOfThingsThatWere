@@ -2,6 +2,7 @@ package com.galvarez.ttw.model;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -174,12 +175,22 @@ public final class DestinationSystem extends EntitySystem {
     return set;
   }
 
-  public void computePath(Entity e, MapPosition target) {
+  /**
+   * Compute the path for the entity to the target. Returns <code>null</code> if
+   * no path can be found.
+   */
+  public List<MapPosition> computePath(Entity e, MapPosition target) {
     Destination dest = destinations.get(e);
-    dest.target = target;
-    dest.path = astar.aStarSearch(positions.get(e), target,//
+    List<MapPosition> path = astar.aStarSearch(positions.get(e), target,//
         p -> !dest.forbiddenTiles.contains(map.getTerrainAt(p)) && map.getEntityAt(p) == null);
+
+    if (path == null)
+      return null;
+
+    dest.target = target;
+    dest.path = path;
     dest.progress = 0;
+    return path;
   }
 
 }
