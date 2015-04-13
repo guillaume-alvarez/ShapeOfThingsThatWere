@@ -1,6 +1,5 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
-import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;

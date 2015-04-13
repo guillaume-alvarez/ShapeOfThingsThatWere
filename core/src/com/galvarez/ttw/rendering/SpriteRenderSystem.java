@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
-import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.components.SpriteAnimation;
 import com.galvarez.ttw.utils.FloatPair;
@@ -30,8 +29,6 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
   private ComponentMapper<Sprite> sprites;
 
   private ComponentMapper<SpriteAnimation> animations;
-
-  private ComponentMapper<Name> names;
 
   private final TextureAtlas atlas;
 

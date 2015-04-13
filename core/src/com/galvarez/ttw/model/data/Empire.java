@@ -3,9 +3,6 @@ package com.galvarez.ttw.model.data;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.galvarez.ttw.utils.Colors;
@@ -18,8 +15,6 @@ import com.galvarez.ttw.utils.Colors;
  * @author Guillaume Alvarez
  */
 public final class Empire extends Component {
-
-  private static final Logger log = LoggerFactory.getLogger(Empire.class);
 
   private static final AtomicInteger COUNTER = new AtomicInteger(0);
 

@@ -1,8 +1,6 @@
 package com.galvarez.ttw.model;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -143,9 +141,6 @@ public final class DestinationSystem extends EntitySystem {
       dest.progress = 0;
     }
   }
-
-  private static final Set<Terrain> CANNOT_ENTER = EnumSet
-      .of(Terrain.SHALLOW_WATER, Terrain.DEEP_WATER, Terrain.ARCTIC);
 
   private boolean canMoveTo(Entity e, Destination dest, MapPosition next) {
     Terrain terrain = map.getTerrainAt(next);

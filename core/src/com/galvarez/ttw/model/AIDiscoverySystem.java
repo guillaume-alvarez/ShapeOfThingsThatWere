@@ -32,8 +32,6 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
 
   private ComponentMapper<Empire> empires;
 
-  private DiscoverySystem discoverySystem;
-
   @SuppressWarnings("unchecked")
   public AIDiscoverySystem() {
     super(Aspect.getAspectForAll(AIControlled.class, Discoveries.class, Empire.class));

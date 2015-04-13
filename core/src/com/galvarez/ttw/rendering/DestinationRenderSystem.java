@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.galvarez.ttw.model.components.Destination;
-import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
@@ -23,8 +22,6 @@ import com.galvarez.ttw.utils.FloatPair;
 
 @Wire
 public final class DestinationRenderSystem extends EntitySystem {
-
-  private ComponentMapper<InfluenceSource> sources;
 
   private ComponentMapper<Empire> empires;
 

@@ -24,9 +24,6 @@ import static com.badlogic.gdx.graphics.g2d.Batch.Y4;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
@@ -39,7 +36,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
-import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -53,8 +49,6 @@ import com.galvarez.ttw.utils.FloatPair;
  */
 @Wire
 public final class DiplomacyRenderSystem extends AbstractRendererSystem {
-
-  private static final Logger log = LoggerFactory.getLogger(InfluenceSystem.class);
 
   /** Arrow height in pixels at standard zoom. */
   private static final int ARROW_HEIGHT = 4;
