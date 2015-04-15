@@ -62,6 +62,8 @@ public final class AIArmyMovementSystem extends EntityProcessingSystem {
       return;
 
     AIControlled ai = intelligences.get(e);
+    // no need to also check if destination is still influenced by army
+    // controller: worst case is it is recreated at capital
     if (dest.target == null) {
       setNewTarget(e, ai);
     } else {
