@@ -4,9 +4,9 @@ import java.util.Properties;
 
 public class HexMapCombinedGenerator implements MapGenerator {
 
-  public static float deepWaterThreshold = 0.5f;
+  public static float deepWaterThreshold = 0.45f;
 
-  public static float shallowWaterThreshold = 0.55f;
+  public static float shallowWaterThreshold = 0.50f;
 
   public static float lowGroundsTreshold = 0.65f;
 
@@ -54,6 +54,8 @@ public class HexMapCombinedGenerator implements MapGenerator {
             returnMap[row][col] = Terrain.DESERT;
           } else if (heat > coldThreshold && wet > wetThreshold) {
             returnMap[row][col] = Terrain.GRASSLAND;
+          } else if (wet > wetThreshold) {
+            returnMap[row][col] = Terrain.FOREST;
           } else {
             returnMap[row][col] = Terrain.PLAIN;
           }
