@@ -83,6 +83,16 @@ public class MidpointDisplacement {
     }
 
     // Normalize the map
+    normalize(map);
+
+    return map;
+  }
+
+  /**
+   * Modify the map values to have only values between 0.0 and 1.0 while keeping
+   * the proportion between the different values.
+   */
+  public static void normalize(float[][] map) {
     float max = Float.MIN_VALUE;
     float min = Float.MAX_VALUE;
     for (float[] row : map) {
@@ -98,7 +108,5 @@ public class MidpointDisplacement {
         map[x][y] = (map[x][y] - min) / (max - min);
       }
     }
-
-    return map;
   }
 }

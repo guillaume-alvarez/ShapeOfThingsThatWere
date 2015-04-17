@@ -45,7 +45,7 @@ public final class SessionSettings implements Cloneable {
 
   public SessionSettings() {
     // init map parameters
-    mapType = new EnumValue<>(MapGenerator.Generator.DEFAULT);
+    mapType = new EnumValue<>(MapGenerator.Generator.ISLAND);
     map = mapType.get().algo.getDefaultValues();
 
     // load cultures from data file
@@ -72,7 +72,7 @@ public final class SessionSettings implements Cloneable {
     // copy map creation options
     this.map = new Properties();
     this.map.putAll(settings.map);
-    this.mapType = new EnumValue<>(MapGenerator.Generator.DEFAULT);
+    this.mapType = new EnumValue<>(MapGenerator.Generator.ISLAND);
     this.mapType.set(settings.mapType.get());
     this.startWithDiplomacy.set(settings.startWithDiplomacy.get());
 

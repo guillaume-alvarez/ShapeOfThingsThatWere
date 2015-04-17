@@ -13,7 +13,7 @@ public interface MapGenerator {
 
   enum Generator {
 
-    DEFAULT(new HexMapGenerator()), COMBINED(new HexMapCombinedGenerator());
+    SIMPLE(new HexMapGenerator()), COMBINED(new HexMapCombinedGenerator()), ISLAND(new HexMapIslandGenerator());
 
     public final MapGenerator algo;
 
