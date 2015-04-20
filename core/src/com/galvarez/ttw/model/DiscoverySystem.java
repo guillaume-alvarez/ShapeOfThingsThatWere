@@ -169,7 +169,7 @@ public final class DiscoverySystem extends EntitySystem {
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
-      if (discovery.nextPossible == null)
+      if (discovery.nextPossible == null || discovery.nextPossible.isEmpty())
         discovery.nextPossible = possibleDiscoveries(entity, discovery);
       if (discovery.next != null) {
         if (progressNext(discovery, influences.get(entity)))
