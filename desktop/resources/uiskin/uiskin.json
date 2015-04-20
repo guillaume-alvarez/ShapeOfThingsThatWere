@@ -41,7 +41,8 @@
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		default: {	pressedOffsetX: 1,
 					pressedOffsetY: -1,
-					down: scrollBar}
+					down: scrollBar,
+					up: frame }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		default: {	titleFont: default-font,
