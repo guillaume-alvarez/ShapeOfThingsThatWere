@@ -191,15 +191,15 @@ public final class DiscoverySystem extends EntitySystem {
     return discovery.next.progress >= DISCOVERY_THRESHOLD;
   }
 
-  private void discoverNext(Entity entity, Discoveries discovery) {
+  private void discoverNext(Entity empire, Discoveries discovery) {
     Research next = discovery.next;
     Discovery target = next.target;
-    log.info("{} discovered {} from {}.", entity.getComponent(Name.class), target, next.previous);
+    log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, next.previous);
     discovery.done.add(target);
     discovery.next = null;
 
-    discovery.nextPossible = possibleDiscoveries(entity, discovery);
-    if (!ai.has(entity)) {
+    discovery.nextPossible = possibleDiscoveries(empire, discovery);
+    if (!ai.has(empire)) {
       Condition condition = !discovery.nextPossible.isEmpty() ? (() -> discovery.next != null
           || discovery.nextPossible.isEmpty()) : null;
       notifications.addNotification(screen::discoveryMenu, condition, Type.DISCOVERY, "Discovered %s: %s", target,
@@ -220,30 +220,30 @@ public final class DiscoverySystem extends EntitySystem {
 
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
-      effects.apply(discovery.last.target.effects, entity, true);
+      effects.apply(discovery.last.target.effects, empire, true);
     discovery.last = next;
 
     // apply new discovery
-    effects.apply(target.effects, entity, false);
+    effects.apply(target.effects, empire, false);
     // ... and bonus time until next discovery!
-    effects.apply(target.effects, entity, false);
+    effects.apply(target.effects, empire, false);
 
     // may be some 'special discovery'
-    special.apply(entity, target, discovery);
+    special.apply(empire, target, discovery);
 
-    MapPosition pos = entity.getComponent(MapPosition.class);
-    EntityFactory.createFadingTileLabel(world, target.name, entity.getComponent(Empire.class).color, pos.x, pos.y, 3f);
+    MapPosition pos = empire.getComponent(MapPosition.class);
+    EntityFactory.createFadingTileLabel(world, target.name, empire.getComponent(Empire.class).color, pos.x, pos.y, 3f);
   }
 
   /**
    * Compute the possible discoveries for the empire, associated to the faction
    * that recommends them.
    */
-  private Map<Faction, Research> possibleDiscoveries(Entity entity, Discoveries empire) {
+  private Map<Faction, Research> possibleDiscoveries(Entity empire, Discoveries labs) {
     // collect current state
     Set<String> done = new HashSet<>();
     Map<String, List<String>> groups = new HashMap<>();
-    for (Discovery d : empire.done) {
+    for (Discovery d : labs.done) {
       done.add(d.name);
       done.addAll(d.groups);
       for (String g : d.groups) {
@@ -256,13 +256,13 @@ public final class DiscoverySystem extends EntitySystem {
 
     Set<Discovery> toDiscover = new HashSet<>(this.toDiscover.values());
     // add discoveries already made by neighboring empires
-    for (Entity neighbor : getNeighbors(entity))
+    for (Entity neighbor : getNeighbors(empire))
       for (Discovery d : empires.get(neighbor).done)
         if (!done.contains(d.name))
           toDiscover.add(d);
 
     // select new possible discoveries
-    List<Research> possible = toDiscover.stream().filter(d -> !done.contains(d.name) && hasTerrain(entity, d.terrains))
+    List<Research> possible = toDiscover.stream().filter(d -> !done.contains(d.name) && hasTerrain(empire, d.terrains))
         .map(d -> toResearch(d, done, groups)).filter(Objects::nonNull).collect(toList());
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
@@ -286,7 +286,7 @@ public final class DiscoverySystem extends EntitySystem {
       if (selected != null)
         res.put(f, selected);
       else
-        log.info("Found no {} research among {} for {}", f, possible, entity.getComponent(Description.class));
+        log.info("Found no {} research among {} for {}", f, possible, empire.getComponent(Description.class));
     }
     return res;
   }
