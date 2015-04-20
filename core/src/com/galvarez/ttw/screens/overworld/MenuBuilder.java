@@ -185,7 +185,7 @@ public class MenuBuilder {
       addDescription(e);
       InfluenceSource infSource = e.getComponent(InfluenceSource.class);
       if (infSource != null)
-        selectionMenu.addLabel("Power: " + infSource.power() + " (+" + (infSource.growth / 10f) + "%/turn)");
+        selectionMenu.addLabel("Power: " + infSource.power() + " (" + number(infSource.growth / 10f) + "%/turn)");
     }
 
     Entity source = influence.getMainInfluenceSource(world);
@@ -197,6 +197,14 @@ public class MenuBuilder {
     selectionMenu.addToStage(stage, MENU_PADDING, empireMenu.getY() - MENU_PADDING, true);
   }
 
+  private static String number(int i) {
+    return i >= 0 ? "+" + Integer.toString(i) : Integer.toString(i);
+  }
+
+  private static String number(float f) {
+    return f >= 0 ? "+" + Float.toString(f) : Float.toString(f);
+  }
+
   private Influence addInfluences(MapPosition tile) {
     Influence influence = map.getInfluenceAt(tile);
     int mainSource = influence.getMainInfluenceSource();
@@ -205,12 +213,8 @@ public class MenuBuilder {
       Entity source = world.getEntity(e.key);
       Empire empire = source.getComponent(Empire.class);
       sb.append("\n ").append(markup(empire.color)).append(source.getComponent(Name.class).name).append("[]: ")
-          .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%');
-      int delta = influence.getDelta(source);
-      if (delta > 0)
-        sb.append(" +").append(100 * delta / InfluenceSystem.INITIAL_POWER).append('%');
-      else if (delta < 0)
-        sb.append(' ').append(100 * delta / InfluenceSystem.INITIAL_POWER).append('%');
+          .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%').append(' ')
+          .append(number(100 * influence.getDelta(source) / InfluenceSystem.INITIAL_POWER)).append('%');
       // ignore == 0
       if (e.key == mainSource)
         sb.append(" (main)");
