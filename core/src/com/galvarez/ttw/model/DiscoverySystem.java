@@ -358,7 +358,7 @@ public final class DiscoverySystem extends EntitySystem {
     Discoveries toD = empires.get(to);
     for (Discovery d : fromD.done)
       if (toD.done.add(d)) {
-        effects.apply(d.effects, to, true);
+        effects.apply(d.effects, to, false);
         special.apply(to, d, toD);
       }
   }
