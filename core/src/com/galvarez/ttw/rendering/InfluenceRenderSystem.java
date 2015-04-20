@@ -1,5 +1,7 @@
 package com.galvarez.ttw.rendering;
 
+import static java.lang.Math.min;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -109,7 +111,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
           // collect color
           Color c = empire.color;
-          colors.put(inf.position, Color.toFloatBits(c.r, c.g, c.b, inf.getMaxInfluence() / 300f));
+          colors.put(inf.position, Color.toFloatBits(c.r, c.g, c.b, min(0.8f,inf.getMaxInfluence() / 300f)));
         }
       }
     }
