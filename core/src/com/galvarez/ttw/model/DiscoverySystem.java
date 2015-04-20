@@ -215,7 +215,8 @@ public final class DiscoverySystem extends EntitySystem {
     // Once an empire made a discovery, none other can research it. Those
     // already researching it can continue. It makes sure starting discoveries
     // are not found only by a single empire.
-    toDiscover.remove(target.name);
+    if (!target.previous.isEmpty())
+      toDiscover.remove(target.name);
 
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
