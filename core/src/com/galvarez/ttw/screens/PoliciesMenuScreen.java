@@ -138,7 +138,7 @@ public final class PoliciesMenuScreen extends AbstractPausedScreen<OverworldScre
     if (stability < max) {
       sb.append(" (+").append(min(policies.stabilityGrowth, max - stability)).append(" per turn)");
     } else if (stability > max) {
-      sb.append(" (-1 per turn)");
+      sb.append(" (-1 per turn until ").append(max).append(')');
     }
 
     return sb.toString();
