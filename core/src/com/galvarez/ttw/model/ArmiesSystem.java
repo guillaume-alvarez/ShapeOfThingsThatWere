@@ -3,6 +3,9 @@ package com.galvarez.ttw.model;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -18,8 +21,8 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
+import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -33,6 +36,8 @@ import com.galvarez.ttw.utils.RomanNumbers;
  */
 @Wire
 public final class ArmiesSystem extends EntitySystem {
+
+  private static final Logger log = LoggerFactory.getLogger(ArmiesSystem.class);
 
   private ComponentMapper<Counter> counters;
 
@@ -128,8 +133,7 @@ public final class ArmiesSystem extends EntitySystem {
       map.setEntity(army, pos);
       return army;
     } else {
-      notifications.addNotification(null, null, Type.MILITARY, "Cannot create an army near %s, no empty tile.",
-          descriptions.get(empire));
+      log.warn("Cannot create an army near {}, no empty tile.", descriptions.get(empire));
       return null;
     }
   }
