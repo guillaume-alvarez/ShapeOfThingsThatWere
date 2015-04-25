@@ -20,7 +20,7 @@ import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;

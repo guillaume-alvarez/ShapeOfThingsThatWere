@@ -46,6 +46,7 @@ import com.galvarez.ttw.rendering.CounterRenderSystem;
 import com.galvarez.ttw.rendering.DestinationRenderSystem;
 import com.galvarez.ttw.rendering.DiplomacyRenderSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
+import com.galvarez.ttw.rendering.IconsSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.SpriteRenderSystem;
@@ -67,6 +68,8 @@ public final class OverworldScreen extends AbstractScreen {
   private static final Logger log = LoggerFactory.getLogger(OverworldScreen.class);
 
   public final GameMap map;
+
+  private final IconsSystem iconsSystem;
 
   private final SpriteRenderSystem spriteRenderSystem;
 
@@ -164,6 +167,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     map = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
+    iconsSystem = world.setSystem(new IconsSystem(), true);
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
     world.setSystem(new SpecialDiscoveriesSystem(this), true);
@@ -205,6 +209,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyRenderSystem.preprocess();
     influenceRenderSystem.preprocess();
     textBoxRenderSystem.preprocess();
+    iconsSystem.process();
     notificationsSystem.process();
     log.info("The world is initialized");
 

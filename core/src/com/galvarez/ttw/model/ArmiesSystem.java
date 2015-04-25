@@ -19,7 +19,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;

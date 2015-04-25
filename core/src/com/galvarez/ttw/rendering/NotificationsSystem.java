@@ -4,14 +4,11 @@ import static java.lang.String.format;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
@@ -22,29 +19,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 @Wire
 public final class NotificationsSystem extends VoidEntitySystem {
 
-  public enum Type {
-    DISCOVERY, DIPLOMACY, BUILDINGS, REVOLT, FLAG, MILITARY, DISEASE;
-  }
-
   /** Notifications registered for next turn. */
   private final List<Notification> notifications = new ArrayList<>();
 
   /** Notifications for current turn. */
   private final List<Notification> current = new ArrayList<>();
 
-  private final EnumMap<Type, Drawable> icons;
+  private IconsSystem icons;
 
   public NotificationsSystem() {
-    Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
-
-    this.icons = new EnumMap<>(Type.class);
-    icons.put(Type.DISCOVERY, skin.getDrawable("discovery-bulb"));
-    icons.put(Type.DIPLOMACY, skin.getDrawable("diplomacy-handshake"));
-    icons.put(Type.BUILDINGS, skin.getDrawable("buildings-hammer"));
-    icons.put(Type.REVOLT, skin.getDrawable("revolt-clenched-fist"));
-    icons.put(Type.FLAG, skin.getDrawable("finish-flag"));
-    icons.put(Type.MILITARY, skin.getDrawable("military-swords"));
-    icons.put(Type.DISEASE, skin.getDrawable("disease-skull"));
   }
 
   @Override
@@ -63,7 +46,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
     return Collections.unmodifiableList(current);
   }
 
-  public void addNotification(Runnable action, Condition discard, Type type, String msg, Object ... args) {
+  public void addNotification(Runnable action, Condition discard, IconsSystem.Type type, String msg, Object ... args) {
     if (args == null || args.length == 0)
       notifications.add(new Notification(icons.get(type), action, discard, msg));
     else

@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.FadingMessage;
 import com.galvarez.ttw.rendering.components.MutableMapPosition;
 import com.galvarez.ttw.utils.FloatPair;
@@ -21,6 +24,8 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   private ComponentMapper<MutableMapPosition> mmpm;
 
   private ComponentMapper<FadingMessage> fmm;
+
+  private IconsSystem icons;
 
   private final SpriteBatch batch;
 
@@ -38,6 +43,10 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
     font.setUseIntegerPositions(false);
   }
 
+  public void createFadingIcon(Type icon, Color color, MapPosition pos, float duration) {
+    EntityFactory.createFadingTileIcon(world, icons.getTexture(icon), color, pos.x, pos.y, duration);
+  }
+
   @Override
   protected void begin() {
     batch.setProjectionMatrix(camera.combined);
@@ -49,14 +58,13 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   protected void process(Entity e) {
     MutableMapPosition position = mmpm.get(e);
     FadingMessage message = fmm.get(e);
-
     FloatPair drawPosition = MapTools.world2window(position.x, position.y);
-    float posX = drawPosition.x - message.label.length() * font.getSpaceWidth();
-    float posY = drawPosition.y;
 
-    Color color = message.color;
-    font.setColor(color.r, color.g, color.b, 1 - message.currentTime / message.duration);
-    font.draw(batch, message.label, posX, posY);
+    if (message.label != null)
+      drawLabel(drawPosition, message);
+
+    if (message.icon != null)
+      drawIcon(drawPosition, message);
 
     position.x += message.vx * world.getDelta();
     position.y += message.vy * world.getDelta();
@@ -64,6 +72,26 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
 
     if (message.currentTime >= message.duration)
       e.deleteFromWorld();
+  }
+
+  private void drawLabel(FloatPair drawPosition, FadingMessage message) {
+    float posX = drawPosition.x - message.label.length() * font.getSpaceWidth();
+    float posY = drawPosition.y;
+
+    Color color = message.color;
+    font.setColor(color.r, color.g, color.b, 1f - message.currentTime / message.duration);
+    font.draw(batch, message.label, posX, posY);
+  }
+
+  private void drawIcon(FloatPair drawPosition, FadingMessage message) {
+    float posX = drawPosition.x - message.icon.getRegionWidth() / 2;
+    float posY = drawPosition.y;
+
+    Color color = message.color;
+    Color oldColor = batch.getColor();
+    batch.setColor(color.r, color.g, color.b, 1f - message.currentTime / message.duration);
+    batch.draw(message.icon, posX, posY);
+    batch.setColor(oldColor);
   }
 
   @Override

@@ -25,7 +25,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 

@@ -24,7 +24,7 @@ import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;

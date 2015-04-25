@@ -28,8 +28,9 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools.Border;
+import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -53,11 +54,15 @@ public final class RevoltSystem extends EntitySystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
+  private ComponentMapper<MapPosition> positions;
+
   private ComponentMapper<AIControlled> ai;
 
   private DiscoverySystem discoveries;
 
   private NotificationsSystem notifications;
+
+  private FadingMessageRenderSystem fadingSystem;
 
   private final GameMap map;
 
@@ -177,6 +182,7 @@ public final class RevoltSystem extends EntitySystem {
     // notify player
     log.info("{} revolted from {} (instability={})", revoltee.getComponent(Description.class),
         empire.getComponent(Description.class), instability);
+    fadingSystem.createFadingIcon(Type.REVOLT, empires.get(revoltee).color, positions.get(revoltee), 3f);
     if (!ai.has(empire))
       notifications.addNotification(() -> screen.select(revoltee, false), null, Type.REVOLT, "%s revolted from %s!",
           revoltee.getComponent(Description.class), empire.getComponent(Description.class));

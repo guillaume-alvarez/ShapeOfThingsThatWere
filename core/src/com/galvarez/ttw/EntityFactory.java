@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.artemis.EntityEdit;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.galvarez.ttw.ExpiringSystem.Expires;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
@@ -114,6 +115,24 @@ public class EntityFactory {
 
     FadingMessage fading = edit.create(FadingMessage.class);
     fading.label = label;
+    fading.color = color;
+    fading.duration = duration;
+    fading.vx = 0f;
+    fading.vy = 1.3f;
+
+    return e;
+  }
+
+  public static Entity createFadingTileIcon(World world, TextureRegion icon, Color color, float x, float y, float duration) {
+    Entity e = world.createEntity();
+    EntityEdit edit = e.edit();
+
+    MutableMapPosition position = edit.create(MutableMapPosition.class);
+    position.x = x;
+    position.y = y;
+
+    FadingMessage fading = edit.create(FadingMessage.class);
+    fading.icon = icon;
     fading.color = color;
     fading.duration = duration;
     fading.vx = 0f;

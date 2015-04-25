@@ -10,8 +10,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.galvarez.ttw.model.components.InfluenceSource;
+import com.galvarez.ttw.model.data.Empire;
+import com.galvarez.ttw.model.map.MapPosition;
+import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
+import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Type;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -26,7 +29,13 @@ public final class DisasterSystem extends EntitySystem {
 
   private ComponentMapper<InfluenceSource> sources;
 
+  private ComponentMapper<Empire> empires;
+
+  private ComponentMapper<MapPosition> positions;
+
   private NotificationsSystem notifications;
+
+  private FadingMessageRenderSystem fadingSystem;
 
   private final OverworldScreen screen;
 
@@ -82,6 +91,7 @@ public final class DisasterSystem extends EntitySystem {
     InfluenceSource source = sources.get(target);
     source.setPower(source.health / 2);
 
+    fadingSystem.createFadingIcon(Type.DISEASE, empires.get(target).color, positions.get(target), 3f);
     notifications.addNotification(() -> screen.select(target, false), null, Type.DISEASE, "Mortal disease strikes %s!",
         target.getComponent(Description.class));
   }
