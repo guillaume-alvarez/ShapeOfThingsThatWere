@@ -130,7 +130,7 @@ public class HexMapIslandGenerator implements MapGenerator {
       for (int col = 0; col < cols; col++) {
         int distanceFromBorder = min(min(row, col), min(rows - row, cols - col));
         float ratio = (float) distanceFromBorder / radius;
-        heightMap[row][col] *= ratio * (1 + MathUtils.random(0.2f));
+        heightMap[row][col] += ratio * MathUtils.randomTriangular(0.8f, 1.2f);
       }
     }
     MidpointDisplacement.normalize(heightMap);
