@@ -1,54 +1,61 @@
 
 uiskin.png
-size: 358,135
+size: 200,267
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 buildings-hammer
   rotate: false
-  xy: 132, 69
+  xy: 2, 71
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 check-off
   rotate: false
-  xy: 330, 118
+  xy: 134, 52
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 330, 101
+  xy: 134, 35
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 diplomacy-handshake
   rotate: false
-  xy: 198, 69
+  xy: 132, 201
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 discovery-bulb
   rotate: false
-  xy: 264, 69
+  xy: 2, 5
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+disease-skull
+  rotate: false
+  xy: 68, 71
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 finish-flag
   rotate: false
-  xy: 132, 3
+  xy: 68, 5
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 frame
   rotate: false
-  xy: 347, 124
+  xy: 151, 58
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
@@ -56,21 +63,21 @@ frame
   index: -1
 menuTexture
   rotate: false
-  xy: 2, 5
+  xy: 2, 137
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 military-swords
   rotate: false
-  xy: 198, 3
+  xy: 134, 135
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 revolt-clenched-fist
   rotate: false
-  xy: 264, 3
+  xy: 134, 69
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -84,7 +91,7 @@ scrollBar
   index: -1
 scrollKnob
   rotate: false
-  xy: 330, 98
+  xy: 15, 2
   size: 11, 1
   orig: 11, 1
   offset: 0, 0

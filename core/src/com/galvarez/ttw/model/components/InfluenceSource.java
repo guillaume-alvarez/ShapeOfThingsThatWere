@@ -20,6 +20,9 @@ public final class InfluenceSource extends Component {
   /** In per mille. */
   public int growth;
 
+  /** Usually compared to power. */
+  public int health = InfluenceSystem.INITIAL_POWER;
+
   public final Set<MapPosition> influencedTiles = new HashSet<>();
 
   public final List<Entity> secondarySources = new ArrayList<>();

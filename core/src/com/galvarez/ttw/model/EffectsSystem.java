@@ -183,6 +183,30 @@ public final class EffectsSystem extends VoidEntitySystem {
     }
   }
 
+  private final class HealthEffect implements Effect<Number> {
+    @Override
+    public void apply(Number value, Entity empire, boolean revert) {
+      InfluenceSource source = influences.get(empire);
+      if (revert)
+        source.health -= value.intValue();
+      else
+        source.health += value.intValue();
+    }
+
+    @Override
+    public void addFactionsScores(ObjectFloatMap<Faction> scores, Number value) {
+      float delta = value.intValue();
+      scores.getAndIncrement(Faction.ECONOMIC, 0, delta * 2);
+      scores.getAndIncrement(Faction.CULTURAL, 0, delta / 2);
+    }
+
+    @Override
+    public String toString(Number value) {
+      int i = value.intValue();
+      return (i > 0 ? "health: +" : "health: ") + i;
+    }
+  }
+
   private interface Effect<V> {
 
     void apply(V value, Entity empire, boolean revert);
@@ -198,6 +222,7 @@ public final class EffectsSystem extends VoidEntitySystem {
     effects.put("stability", new StabilityEffect());
     effects.put("discovery", new DiscoveryEffect());
     effects.put("growth", new GrowthEffect());
+    effects.put("health", new HealthEffect());
     effects.put("diplomacy", new DiplomacyEffect());
     effects.put("militaryPower", new MilitaryEffect());
 
