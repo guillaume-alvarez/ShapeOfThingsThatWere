@@ -69,5 +69,10 @@
 {
   name: Amphitheatre,
   previous: [[Theatre]]
+},
+{
+  name: Aqueduct,
+  previous: [[Irrigation, Stone], [Irrigation, Hills, Potery]],
+  effects: {health: 3}
 }
 ]

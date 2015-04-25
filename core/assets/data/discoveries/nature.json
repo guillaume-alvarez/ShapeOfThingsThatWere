@@ -4,7 +4,7 @@
   previous: [[]],
   groups: [TERRAIN],
   terrains: [GRASSLAND, PLAIN],
-  effects: {GRASSLAND: 1}
+  effects: {GRASSLAND: 1, health: 1}
 },
 {
   name: Forest,
@@ -132,7 +132,7 @@
   name: Beach,
   previous: [[Sea]],
   terrains: [SHALLOW_WATER],
-  effects: {SHALLOW_WATER: 1}
+  effects: {SHALLOW_WATER: 1, health: 1}
 },
 {
   name: Crustaceans,

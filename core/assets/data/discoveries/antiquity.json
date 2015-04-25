@@ -34,7 +34,7 @@
   name: City,
   previous: [[Village, Chief], [Village, Trade], [Village, War]],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2, growth: 1, discovery: 1}
+  effects: {militaryPower: 2, health: 2, discovery: 1}
 },
 {
   name: War,
@@ -77,7 +77,7 @@
   name: Wealth,
   previous: [[Trade, LUXURY], [LUXURY, House]],
   groups: [VALUE],
-  effects: {growth: 2}
+  effects: {growth: 2, health: 2}
 },
 {
   name: Market,
@@ -135,17 +135,22 @@
 {
   name: Irrigation,
   previous: [[Crop, River], [River, Pottery], [Crop, Village], [Crop, City]],
-  effects: {growth: 2}
+  effects: {growth: 2, health: 1}
+},
+{
+  name: Well,
+  previous: [[River], [Irrigation], [Cave]],
+  effects: {health: 1}
 },
 {
   name: Granary,
   previous: [[House, CEREAL], [Pottery, CEREAL], [City, Crop]],
-  effects: {growth: 1}
+  effects: {health: 1}
 },
 {
   name: "Grain Mill",
   previous: [[CEREAL, Wheel]],
-  effects: {growth: 1}
+  effects: {health: 2}
 },
 {
   name: Floor,
@@ -211,7 +216,7 @@
 {
   name: Law,
   previous: [[City, Writing], [King, Writing], [Treaty, Writing], [Treaty, Storytelling]],
-  effects: {growth: 3}
+  effects: {health: 3}
 },
 {
   name: Music,

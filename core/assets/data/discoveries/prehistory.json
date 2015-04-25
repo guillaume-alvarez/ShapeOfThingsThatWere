@@ -38,6 +38,7 @@
 {
   name: Wind,
   previous: [[CEREAL, Sky], [Forest, Sky]],
+  effects: {health: 1}
 },
 {
   name: Sail,
@@ -76,12 +77,13 @@
 {
   name: Textile,
   previous: [[Flax], [Flax, Clothing], [Flax, Tent]],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  effects: {health: 1}
 },
 {
   name: Tent,
   previous: [[Skin], [Textile]],
-  effects: {growth: 1}
+  effects: {health: 1}
 },
 {
   name: Stick,
@@ -186,7 +188,7 @@
   name: House,
   previous: [[MATERIAL, Fire], [MATERIAL, Family], [MATERIAL, Pottery], [MATERIAL, Cave]],
   terrains: [GRASSLAND, FOREST, PLAIN, HILLS],
-  effects: {growth: 1}
+  effects: {health: 1}
 },
 {
   name: Forge,
@@ -210,7 +212,7 @@
 {
   name: Village,
   previous: [[House, Agriculture], [Tent, Agriculture], [House, Irrigation], [Desert, Irrigation]],
-  effects: {militaryPower: 1, growth: 1, discovery: 1, stability: 1}
+  effects: {growth: 1, health: 1, stability: 1}
 },
 {
   name: Crop,
@@ -333,12 +335,12 @@
 {
   name: Cooking,
   previous: [[Fire, FOOD]],
-  effects: {growth: 1}
+  effects: {health: 1}
 },
 {
   name: Oven,
   previous: [[Stone, Cooking], [Cave, Cooking]],
-  effects: {growth: 1}
+  effects: {health: 1}
 },
 {
   name: Death,
@@ -404,7 +406,7 @@
 {
   name: Burying,
   previous: [[Death, Beliefs], [Death, Family]],
-  effects: {militaryPower: 1, stability: 1}
+  effects: {militaryPower: 1, stability: 1, health: 1}
 },
 {
   name: Ritual,
@@ -414,7 +416,7 @@
 {
   name: Poison,
   previous: [[Desert, Death], [Desert, Animal], [Forest, Death]],
-  effects: {growth: -1, stability: -1, militaryPower: 1}
+  effects: {health: -1, stability: -1, militaryPower: 1}
 },
 {
   name: Barter,
