@@ -15,7 +15,7 @@ public class HexMapIslandGenerator implements MapGenerator {
 
   public static float coldThreshold = 0.1f;
 
-  public static float hotThreshold = 0.75f;
+  public static float hotThreshold = 0.65f;
 
   private static boolean isCold(float heat) {
     return heat < coldThreshold;
@@ -37,13 +37,13 @@ public class HexMapIslandGenerator implements MapGenerator {
     return wet > wetThreshold;
   }
 
-  public static float deepWaterThreshold = 0.3f;
+  public static float deepWaterThreshold = 0.2f;
 
-  public static float shallowWaterThreshold = 0.35f;
+  public static float shallowWaterThreshold = 0.25f;
 
-  public static float lowGroundsTreshold = 0.50f;
+  public static float lowGroundsTreshold = 0.45f;
 
-  public static float mediumGroundsThreshold = 0.75f;
+  public static float mediumGroundsThreshold = 0.65f;
 
   public static float highGroundThreshold = 0.88f;
 
@@ -57,9 +57,8 @@ public class HexMapIslandGenerator implements MapGenerator {
 
     MidpointDisplacement md = new MidpointDisplacement();
 
-    float[][] heightMap = md.getMap2(noise, width, height);
-    applyIslandForm(heightMap);
-    float[][] heatMap = md.getMap2(noise, width, height);
+    float[][] heightMap = applyIslandForm(md.getMap2(noise, width, height));
+    float[][] heatMap = southIsWarmer(md.getMap2(noise, width, height));
     float[][] wetMap = md.getMap2(noise, width, height);
     Terrain[][] returnMap = new Terrain[heightMap.length][heightMap[0].length];
 
@@ -119,10 +118,23 @@ public class HexMapIslandGenerator implements MapGenerator {
 
   }
 
+  private float[][] southIsWarmer(float[][] map) {
+    int rows = map.length;
+    int cols = map[0].length;
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+        float ratio = (float) (cols - col) / cols;
+        map[row][col] += ratio * 2 * MathUtils.randomTriangular(1f, 1.5f);
+      }
+    }
+    MidpointDisplacement.normalize(map);
+    return map;
+  }
+
   /**
    * Decrease height on borders and increase it on map center.
    */
-  private void applyIslandForm(float[][] heightMap) {
+  private float[][] applyIslandForm(float[][] heightMap) {
     int rows = heightMap.length;
     int cols = heightMap[0].length;
     int radius = min(rows / 2, cols / 2);
@@ -130,10 +142,11 @@ public class HexMapIslandGenerator implements MapGenerator {
       for (int col = 0; col < cols; col++) {
         int distanceFromBorder = min(min(row, col), min(rows - row, cols - col));
         float ratio = (float) distanceFromBorder / radius;
-        heightMap[row][col] += ratio * MathUtils.randomTriangular(0.8f, 1.2f);
+        heightMap[row][col] *= ratio * 2 * MathUtils.randomTriangular(0.8f, 1.2f);
       }
     }
     MidpointDisplacement.normalize(heightMap);
+    return heightMap;
   }
 
   @Override
