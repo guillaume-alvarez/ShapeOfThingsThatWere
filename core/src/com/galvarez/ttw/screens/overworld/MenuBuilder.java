@@ -185,8 +185,8 @@ public class MenuBuilder {
       addDescription(e);
       InfluenceSource source = e.getComponent(InfluenceSource.class);
       if (source != null)
-        selectionMenu.addLabel("Power: " + source.power() + "/" + source.health + "health ("
-            + number(source.growth / 10f) + "%/turn)");
+        selectionMenu.addLabel("Power: " + source.power() + " (" + number(source.growth / 10f) + "%/turn, health="
+            + source.health + ")");
     }
 
     Entity source = influence.getMainInfluenceSource(world);
