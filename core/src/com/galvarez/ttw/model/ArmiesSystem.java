@@ -1,5 +1,7 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.min;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
+import com.galvarez.ttw.rendering.components.TextBox;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 import com.galvarez.ttw.utils.RomanNumbers;
 
@@ -54,6 +57,8 @@ public final class ArmiesSystem extends EntitySystem {
   private ComponentMapper<Name> names;
 
   private ComponentMapper<Empire> empires;
+
+  private ComponentMapper<TextBox> boxes;
 
   private ComponentMapper<AIControlled> ai;
 
@@ -86,7 +91,7 @@ public final class ArmiesSystem extends EntitySystem {
                 "%s is depleting in other empire!", names.get(s));
         } else {
           if (army.currentPower < army.maxPower)
-            army.currentPower++;
+            army.currentPower += getArmyPowerIncrease(city, 1);
           else if (army.currentPower > army.maxPower)
             army.currentPower--;
         }
@@ -126,16 +131,30 @@ public final class ArmiesSystem extends EntitySystem {
   public Entity createNewArmy(Entity empire, int power) {
     MapPosition pos = emptyPositionNextTo(empire);
     if (pos != null) {
+      power = getArmyPowerIncrease(empire, power);
       ArmyCommand command = commands.get(empire);
       Entity army = EntityFactory.createArmy(world, pos, armyName(command, empire), empires.get(empire), empire, power);
       sources.get(empire).secondarySources.add(army);
       command.usedPower += power;
+
       map.setEntity(army, pos);
       return army;
     } else {
       log.warn("Cannot create an army near {}, no empty tile.", descriptions.get(empire));
       return null;
     }
+  }
+
+  private int getArmyPowerIncrease(Entity empire, int power) {
+    InfluenceSource source = sources.get(empire);
+    power = min(power, source.power());
+    source.addToPower(-power);
+
+    // update power displayed on screen
+    TextBox box = boxes.get(empire);
+    box.text = box.generator.get();
+
+    return power;
   }
 
   private String armyName(ArmyCommand command, Entity empire) {

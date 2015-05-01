@@ -82,14 +82,14 @@ public final class ArmiesMenuScreen extends AbstractPausedScreen<AbstractScreen>
     ArmyCommand command = player.getComponent(ArmyCommand.class);
     int availablePower = command.militaryPower - command.usedPower;
     if (availablePower > 0)
-      listMenu.addButton("Create new army with " + availablePower + " power (of " + command.militaryPower + ")",
-          () -> {
-            Entity newArmy = system.createNewArmy(player, availablePower);
-            if (newArmy != null) {
-              createListMenu();
-              createArmyMenu(newArmy);
-            }
-          });
+      listMenu.addButton("Create new army with " + availablePower + " power (of " + command.militaryPower
+          + ", will be removed from source)", () -> {
+        Entity newArmy = system.createNewArmy(player, availablePower);
+        if (newArmy != null) {
+          createListMenu();
+          createArmyMenu(newArmy);
+        }
+      });
     else
       listMenu.addLabel("- Cannot create a new army: no available military power. -");
 
