@@ -43,8 +43,8 @@ import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
+import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Condition;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -255,6 +255,11 @@ public final class DiscoverySystem extends EntitySystem {
     }
 
     Set<Discovery> toDiscover = new HashSet<>(this.toDiscover.values());
+
+    // can only discover discoveries from already known groups if discovered by
+    // neighbors, avoid having the same empire discovering all cereals
+    toDiscover.removeIf(d -> !d.groups.isEmpty() && groups.keySet().containsAll(d.groups));
+
     // add discoveries already made by neighboring empires
     for (Entity neighbor : getNeighbors(empire))
       for (Discovery d : empires.get(neighbor).done)
