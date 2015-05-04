@@ -32,10 +32,12 @@ PRE-ALPHA.
  * Discovery is working but need graphical enhancements (and more discoveries past Antiquity)
  * Player control is still too small.
 
-## How to launch game on Windows?
+## How to launch the game on Windows?
 
 Download the [latest version](https://github.com/guillaume-alvarez/ShapeOfThingsThatWere/releases/download/v0.2.0/ShapeOfThingsThatWere-0.2.0.zip).
+
 Extract the content in any directory.
+
 Execute file `ShapeOfThingsThatWere.exe`.
 
 ## How to launch the game?
