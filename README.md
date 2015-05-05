@@ -40,6 +40,8 @@ Extract the content in any directory.
 
 Execute file `ShapeOfThingsThatWere.exe`.
 
+(tested on Windows 7 64bits)
+
 ## How to launch the game?
 
 The game needs [Java 8 SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html), all other dependencies can be downloaded by gradle or are embedded into the executable jar.
