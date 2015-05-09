@@ -40,6 +40,7 @@ import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
+import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.rendering.CameraMovementSystem;
 import com.galvarez.ttw.rendering.CounterRenderSystem;
@@ -330,6 +331,12 @@ public final class OverworldScreen extends AbstractScreen {
     if (!empire.isComputerControlled())
       player = entity;
     map.setEntity(entity, x, y);
+    for (MapPosition p : map.getNeighbors(x, y, 1)) {
+      if (map.isOnMap(p)) {
+        Influence inf = map.getInfluenceAt(p);
+        inf.setInfluence(entity, inf.getMaxInfluence());
+      }
+    }
     log.info("Created {} for empire {}", name, empire);
     return entity;
   }
