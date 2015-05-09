@@ -25,8 +25,8 @@ import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.PathFinding;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
+import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
@@ -39,9 +39,6 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 public final class DestinationSystem extends EntitySystem {
 
   private static final Logger log = LoggerFactory.getLogger(DestinationSystem.class);
-
-  /** Number of turns required to move to next tile. */
-  private static final int TURNS_TO_MOVE = 2;
 
   private ComponentMapper<Destination> destinations;
 
@@ -105,7 +102,7 @@ public final class DestinationSystem extends EntitySystem {
     MapPosition current = positions.get(e);
     MapPosition next = dest.path.get(0);
     if (canMoveTo(e, dest, next)) {
-      if (++dest.progress >= TURNS_TO_MOVE) {
+      if (++dest.progress >= dest.turnsToMove) {
         dest.progress = 0;
         dest.path.remove(0);
         e.edit().remove(current).add(next);

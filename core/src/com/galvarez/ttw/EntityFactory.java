@@ -77,7 +77,7 @@ public class EntityFactory {
     edit.add(sprite);
 
     InfluenceSource source = new InfluenceSource();
-    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination(command.forbiddenTiles));
+    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination(command.forbiddenTiles, 2));
 
     edit.add(new Name(name)).add(new Description("Tribe of " + name))
         .add(new TextBox(() -> name + ": " + source.power()));
@@ -96,7 +96,7 @@ public class EntityFactory {
     edit.add(new Counter(Colors.contrast(empire.color), empire.color, militaryPower));
 
     edit.add(pos).add(new Name(name)).add(new Description(name))
-        .add(new Destination(source.getComponent(ArmyCommand.class).forbiddenTiles))
+        .add(new Destination(source.getComponent(ArmyCommand.class).forbiddenTiles, 1))
         .add(new Army(source, militaryPower)).add(empire);
 
     if (empire.isComputerControlled())
@@ -123,7 +123,8 @@ public class EntityFactory {
     return e;
   }
 
-  public static Entity createFadingTileIcon(World world, TextureRegion icon, Color color, float x, float y, float duration) {
+  public static Entity createFadingTileIcon(World world, TextureRegion icon, Color color, float x, float y,
+      float duration) {
     Entity e = world.createEntity();
     EntityEdit edit = e.edit();
 
