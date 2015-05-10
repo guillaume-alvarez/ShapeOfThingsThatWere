@@ -112,28 +112,28 @@
 {
   name: Horse,
   previous: [[Breeding, Grassland], [Walk, Animal, Grassland]],
-  groups: [FOOD, MOVE],
+  groups: [FOOD, MOVE, MEAT],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
 },
 {
   name: Goat,
   previous: [[Breeding, Grassland], [Breeding, Mountain], [Breeding, Hill]],
-  groups: [FOOD],
+  groups: [FOOD, MEAT],
   terrains: [GRASSLAND, PLAIN, HILLS, MOUNTAIN, DESERT],
   effects: {growth: 1, MOUNTAIN: 1, HILLS: 1, DESERT: 1}
 },
 {
   name: Ox,
   previous: [[Breeding, Grassland], [Breeding, Skin]],
-  groups: [FOOD, MOVE],
+  groups: [FOOD, MOVE, MEAT],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 3, FOREST: -1, MOUNTAIN: -1, HILLS: -1, DESERT: -1}
 },
 {
   name: Sheep,
   previous: [[Breeding, Grassland], [Breeding, Hill], [Breeding, Textile]],
-  groups: [FOOD],
+  groups: [FOOD, MEAT],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 2, FOREST: -1, HILLS: 1, MOUNTAIN: 1, DESERT: -1}
 },
@@ -335,6 +335,11 @@
 {
   name: Cooking,
   previous: [[Fire, FOOD]],
+  effects: {health: 1}
+},
+{
+  name: Smoking,
+  previous: [[Fire, MEAT], [Fire, Fish]],
   effects: {health: 1}
 },
 {
