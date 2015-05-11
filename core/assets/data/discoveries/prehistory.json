@@ -12,19 +12,47 @@
   effects: {growth: 1}
 },
 {
+  name: Vines,
+  previous: [[Gathering, Grassland], [Gathering, Forest]],
+  terrains: [GRASSLAND, PLAIN, FOREST],
+  groups: [FIBER]
+},
+{
   name: Flax,
   previous: [[Gathering, Grassland]],
-  terrains: [GRASSLAND, PLAIN]
+  terrains: [GRASSLAND, PLAIN],
+  groups: [FIBER]
+},
+{
+  name: Hemp,
+  previous: [[Gathering, Grassland]],
+  terrains: [GRASSLAND, PLAIN],
+  groups: [FIBER]
+},
+{
+  name: Rope,
+  previous: [[FIBER]],
+},
+{
+  name: Basket,
+  previous: [[FIBER, Gathering], [FIBER, CEREAL], [Wood, CEREAL], [Wood, Gathering]],
+  effects: {health: 1}
 },
 {
   name: Fishing,
-  previous: [[Fish, Wood], [Fish, Stone]],
+  previous: [[Fish, Wood], [Fish, Stone], [Fish, Gathering]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
   effects: {militaryPower: 1, growth: 1}
 },
 {
+  name: Net,
+  previous: [[Fishing, Rope], [Fishing, Textile]],
+  terrains: [DEEP_WATER, SHALLOW_WATER],
+  effects: {growth: 1}
+},
+{
   name: Raft,
-  previous: [[Fishing, Wood], [Sea, Wood], [Beach, Wood]],
+  previous: [[Fishing, Wood], [Sea, Wood], [Beach, Wood], [Wood, Rope]],
   terrains: [SHALLOW_WATER],
   groups: [MOVE],
   effects: {SHALLOW_WATER: 2}
@@ -72,11 +100,11 @@
 {
   name: Clothing,
   previous: [[Skin], [Textile]],
-  effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 5}  
+  effects: {health: 1, MOUNTAIN: 2, ARCTIC: 5}  
 },
 {
   name: Textile,
-  previous: [[Flax], [Flax, Clothing], [Flax, Tent]],
+  previous: [[FIBER], [FIBER, Clothing], [FIBER, Tent]],
   terrains: [GRASSLAND, PLAIN],
   effects: {health: 1}
 },
@@ -114,7 +142,7 @@
   previous: [[Breeding, Grassland], [Walk, Animal, Grassland]],
   groups: [FOOD, MOVE, MEAT],
   terrains: [GRASSLAND, PLAIN],
-  effects: {growth: 1, militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
+  effects: {militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
 },
 {
   name: Goat,

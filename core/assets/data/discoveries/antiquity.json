@@ -164,6 +164,24 @@
   effects: {growth: 2}
 },
 {
+  name: Bees,
+  previous: [[Forest, Animal]],
+  groups: [FOOD],
+  effects: {growth: -1}
+},
+{
+  name: Honey,
+  previous: [[Bees]],
+  groups: [FOOD],
+  effects: {health: 1}
+},
+{
+  name: Cake,
+  previous: [[Floor, Honey, Milk], [Floor, Milk], [Floor, Honey]],
+  groups: [FOOD],
+  effects: {growth: 2}
+},
+{
   name: "Water Mill",
   previous: [["Grain Mill", River]],
   terrains: [HILLS],
