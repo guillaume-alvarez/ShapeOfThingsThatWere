@@ -72,7 +72,7 @@
 },
 {
   name: Aqueduct,
-  previous: [[Irrigation, Stone], [Irrigation, Hills, Potery]],
+  previous: [[Irrigation, Stone], [Irrigation, Hill, Pottery]],
   effects: {health: 3}
 }
 ]
