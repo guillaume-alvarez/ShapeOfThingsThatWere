@@ -201,6 +201,11 @@
   effects: {growth: 1}
 },
 {
+  name: Brick,
+  previous: [[Fire, Clay], [Clay, Wood]],
+  groups: [MATERIAL]
+},
+{
   name: Metallurgy,
   previous: [[METAL, Fire], [Ore, Fire]],
   terrains: [FOREST, HILLS],
@@ -275,7 +280,7 @@
 },
 {
   name: Slave,
-  previous: [[Crop, WEAPON], [War, WEAPON]],
+  previous: [[Crop, WEAPON], [War, WEAPON], [Brick, WEAPON]],
   groups: [JOBS],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 1, growth: 1, stability: -1}
