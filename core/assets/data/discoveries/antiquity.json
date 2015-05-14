@@ -1,5 +1,15 @@
 [
 {
+  name: Beer,
+  previous: [[Pottery, CEREAL]],
+  effects: {growth: 1, health: -1}
+},
+{
+  name: Wine,
+  previous: [[Pottery, Vines]],
+  effects: {growth: 1, health: -1}
+},
+{
   name: Harbor,
   previous: [[Boat, Beach]],
   terrains: [DEEP_WATER, SHALLOW_WATER],
