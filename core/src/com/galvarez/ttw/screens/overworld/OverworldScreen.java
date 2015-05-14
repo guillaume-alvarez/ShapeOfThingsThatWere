@@ -37,6 +37,7 @@ import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.RevoltSystem;
 import com.galvarez.ttw.model.ScoreSystem;
 import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
@@ -331,10 +332,13 @@ public final class OverworldScreen extends AbstractScreen {
     if (!empire.isComputerControlled())
       player = entity;
     map.setEntity(entity, x, y);
+    InfluenceSource source = entity.getComponent(InfluenceSource.class);
+    source.influencedTiles.add(map.getPositionAt(x, y));
     for (MapPosition p : map.getNeighbors(x, y, 1)) {
       if (map.isOnMap(p)) {
         Influence inf = map.getInfluenceAt(p);
         inf.setInfluence(entity, inf.getMaxInfluence());
+        source.influencedTiles.add(p);        
       }
     }
     log.info("Created {} for empire {}", name, empire);
