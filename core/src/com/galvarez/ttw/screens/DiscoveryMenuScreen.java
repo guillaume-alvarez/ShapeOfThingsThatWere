@@ -3,14 +3,11 @@ package com.galvarez.ttw.screens;
 import static java.lang.Math.max;
 import static java.lang.String.format;
 
-import java.util.Map.Entry;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.model.DiscoverySystem;
-import com.galvarez.ttw.model.Faction;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
@@ -35,12 +32,9 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
 
   private final DiscoverySystem discoverySystem;
 
-  private final Entity entity;
-
   public DiscoveryMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen,
       Entity empire, DiscoverySystem discoverySystem) {
     super(game, world, batch, gameScreen);
-    this.entity = empire;
     this.empire = empire.getComponent(Discoveries.class);
     this.source = empire.getComponent(InfluenceSource.class);
     this.discoverySystem = discoverySystem;
@@ -79,44 +73,10 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     terrains.addToStage(stage, 30, lastDiscovery.getY() - 30, false);
 
     discoveryChoices.clear();
-    if (empire.next != null) {
-      discoveryChoices.addLabel("Progress toward new discovery from " + previousString(empire.next) + ": "
-          + empire.next.progress + "% (+" + empire.progressPerTurn + "%/turn)");
-      discoveryChoices.addLabel(" ");
-      discoveryChoices.addButton("Change discovery (progress will be reset)!", this::changeResearch);
-    } else {
-      if (empire.nextPossible.isEmpty()) {
-        discoveryChoices.addLabel("No discoveries to combine!");
-      } else {
-        discoveryChoices.addLabel("Which faction do you choose to make new discoveries?");
-        for (Entry<Faction, Research> next : empire.nextPossible.entrySet())
-          discoveryChoices.addButton(
-              action(next.getKey()),
-              previousString(next.getValue()) + " (~"
-                  + discoverySystem.guessNbTurns(empire, entity, next.getValue().target) + " turns)", //
-              new Runnable() {
-                @Override
-                public void run() {
-                  empire.next = next.getValue();
-                  resumeGame();
-                }
-              }, true);
-      }
-    }
+    discoveryChoices.addButton("Progress toward next discovery: " + empire.progress + "% (+" + empire.progressPerTurn
+        + "%/turn)", gameScreen::askDiscovery);
+    discoveryChoices.addLabel(" ");
     discoveryChoices.addToStage(stage, 30, terrains.getY() - 30, false);
-  }
-
-  private static String action(Faction faction) {
-    switch (faction) {
-      case CULTURAL:
-        return "Cultural faction advises to meditate on ";
-      case ECONOMIC:
-        return "Economic faction recommends we pursue profit in ";
-      case MILITARY:
-        return "Military faction commands us to investigate ";
-      default:
-        throw new IllegalStateException("Unknown faction " + faction);
-    }
   }
 
   private static String previousString(Research next) {
@@ -130,8 +90,4 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     return sb.toString();
   }
 
-  private void changeResearch() {
-    empire.next = null;
-    initMenu();
-  }
 }

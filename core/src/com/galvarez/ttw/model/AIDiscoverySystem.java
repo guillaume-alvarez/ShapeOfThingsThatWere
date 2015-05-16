@@ -32,6 +32,8 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
 
   private ComponentMapper<Empire> empires;
 
+  private DiscoverySystem system;
+
   @SuppressWarnings("unchecked")
   public AIDiscoverySystem() {
     super(Aspect.getAspectForAll(AIControlled.class, Discoveries.class, Empire.class));
@@ -45,7 +47,9 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
   @Override
   protected void process(Entity e) {
     Discoveries d = discoveries.get(e);
-    if (d.next == null) {
+
+    if (d.nextPossible != null) {
+      // we need to make some discovery
       Culture culture = empires.get(e).culture;
       Entry<Faction, Research> prefered = null;
       float max = Float.NEGATIVE_INFINITY;
@@ -60,7 +64,7 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
       if (prefered != null) {
         log.debug("{} follows {} advice to investigate {} from {}", e.getComponent(Name.class), prefered.getKey(),
             prefered.getValue().target, prefered.getValue().previous);
-        d.next = prefered.getValue();
+        system.discoverNew(e, d, prefered.getValue());
       }
       Set<Policy> newPolicies;
       if (d.last != null && (newPolicies = PoliciesSystem.getPolicies(d.last.target)) != null) {

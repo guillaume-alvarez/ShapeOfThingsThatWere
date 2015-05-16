@@ -282,6 +282,9 @@ public class FramedMenu {
    * Adds the frame and scrollpane to the specified stage at the specified
    * location. Sizes the scrollpane to the (estimated) table size, up to a
    * maximum given in the constructor.
+   * <p>
+   * If x or y coordinate is negative, center the menu in the corresponding
+   * dimension.
    * 
    * @param canEscape if true pressing on ESC key will close the menu
    */
