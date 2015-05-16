@@ -50,13 +50,8 @@ public final class AskDiscoveryScreen extends AbstractPausedScreen<OverworldScre
     } else {
       choices.addLabel("Which faction do you choose to make new discoveries?");
       for (Entry<Faction, Research> next : empire.nextPossible.entrySet())
-        choices.addButton(action(next.getKey()), previousString(next.getValue()), new Runnable() {
-          @Override
-          public void run() {
-            discoverySystem.discoverNew(player, empire, next.getValue());
-            resumeGame();
-          }
-        }, true);
+        choices.addButton(action(next.getKey()), previousString(next.getValue()), () -> newDiscovery(next.getValue()),
+            true);
 
       choices.addLabel(" ");
       choices.addButton("Choose later...", this::resumeGame);
@@ -87,5 +82,18 @@ public final class AskDiscoveryScreen extends AbstractPausedScreen<OverworldScre
       default:
         throw new IllegalStateException("Unknown faction " + faction);
     }
+  }
+
+  private void newDiscovery(Research next) {
+    discoverySystem.discoverNew(player, empire, next);
+
+    choices.clear();
+
+    StringBuilder sb = new StringBuilder("We discovered " + next.target.name + "!");
+    for (String effect : discoverySystem.effectsStrings(empire.last.target))
+      sb.append("\n - " + effect);
+    choices.addButton(sb.toString(), this::resumeGame);
+
+    choices.addToStage(stage, -1, -1, true);
   }
 }
