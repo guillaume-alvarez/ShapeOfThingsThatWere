@@ -178,8 +178,10 @@ public final class DestinationSystem extends EntitySystem {
    */
   public List<MapPosition> computePath(Entity e, MapPosition target) {
     Destination dest = destinations.get(e);
-    List<MapPosition> path = astar.aStarSearch(positions.get(e), target,//
-        p -> !dest.forbiddenTiles.contains(map.getTerrainAt(p)) && map.getEntityAt(p) == null);
+    MapPosition start = positions.get(e);
+    List<MapPosition> path = astar.aStarSearch(start, target,//
+        p -> (!dest.forbiddenTiles.contains(map.getTerrainAt(p)) || map.getTerrainAt(start) == map.getTerrainAt(p))
+            && map.getEntityAt(p) == null);
 
     if (path == null)
       return null;
