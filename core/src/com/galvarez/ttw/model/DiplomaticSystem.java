@@ -23,8 +23,8 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
+import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -160,6 +160,14 @@ public final class DiplomaticSystem extends EntitySystem {
     else if (!ai.has(target))
       notifications.addNotification(screen::diplomacyMenu, null, Type.DIPLOMACY, "Your relation with %s is now %s!",
           entity.getComponent(Name.class), action.afterYou);
+  }
+
+  public void clearRelations(Entity empire, Diplomacy diplo) {
+    diplo.proposals.clear();
+    for (Entity e : diplo.relations.keySet()) {
+      relations.get(e).relations.remove(empire);
+    }
+    diplo.relations.clear();
   }
 
   public Collection<Action> getPossibleActions(Diplomacy diplo, Entity target) {
