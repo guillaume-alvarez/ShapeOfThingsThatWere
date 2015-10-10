@@ -73,7 +73,7 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
     float angle = 2f * PI / (player != null ? empires.size() - 1 : empires.size());
     float angle1 = 0f;
     Diplomacy playerDiplo = player != null ? player.getComponent(Diplomacy.class) : null;
-    for (Entity empire : empires) {
+    for (Entity empire : playerDiplo != null ? playerDiplo.relations.keySet() : empires) {
       if (empire != player) {
         FramedMenu menu = new FramedMenu(skin, maxWidth, 128);
         menu.addLabel(empire.getComponent(Name.class).name);

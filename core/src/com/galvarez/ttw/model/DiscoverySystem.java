@@ -1,7 +1,6 @@
 package com.galvarez.ttw.model;
 
 import static java.lang.Math.min;
-import static java.lang.String.join;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
-import com.galvarez.ttw.rendering.NotificationsSystem.Condition;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -159,51 +157,55 @@ public final class DiscoverySystem extends EntitySystem {
     super.inserted(e);
     Discoveries d = empires.get(e);
     d.nextPossible = possibleDiscoveries(e, d);
-
-    if (e == screen.player)
-      notifications.addNotification(screen::discoveryMenu, () -> d.next != null, Type.DISCOVERY,
-          "No research selected!");
+    d.progress = DISCOVERY_THRESHOLD;
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
     for (Entity entity : entities) {
       Discoveries discovery = empires.get(entity);
-      if (discovery.nextPossible == null || discovery.nextPossible.isEmpty())
-        discovery.nextPossible = possibleDiscoveries(entity, discovery);
-      if (discovery.next != null) {
+      if (discovery.last != null) {
         if (progressNext(discovery, influences.get(entity)))
           discoverNext(entity, discovery);
-      }
+        else
+          discovery.nextPossible = null;
+      } else
+        discoverNext(entity, discovery);
     }
   }
 
   private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
     int progress = discovery.progressPerTurn;
-    Set<Terrain> terrains = discovery.next.target.terrains;
+    Set<Terrain> terrains = discovery.last.target.terrains;
     if (terrains != null && !terrains.isEmpty()) {
       for (MapPosition pos : influence.influencedTiles) {
         if (terrains.contains(map.getTerrainAt(pos)))
           progress += PROGRESS_PER_TILE;
       }
     }
-    discovery.next.progress += progress;
-    return discovery.next.progress >= DISCOVERY_THRESHOLD;
+    discovery.progress += progress;
+    return discovery.progress >= DISCOVERY_THRESHOLD;
   }
 
   private void discoverNext(Entity empire, Discoveries discovery) {
-    Research next = discovery.next;
-    Discovery target = next.target;
-    log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, next.previous);
-    discovery.done.add(target);
-    discovery.next = null;
-
     discovery.nextPossible = possibleDiscoveries(empire, discovery);
+
+    if (!ai.has(empire) && !discovery.nextPossible.isEmpty()) {
+      Research last = discovery.last;
+      notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
+          "We can make a new discovery!");
+    }
+  }
+
+  /** Called when the next discovery is chosen. */
+  public void discoverNew(Entity empire, Discoveries discovery, Research research) {
+    Discovery target = research.target;
+    log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, research.previous);
+    discovery.done.add(target);
+    discovery.progress = 0;
+    discovery.nextPossible.clear();
+
     if (!ai.has(empire)) {
-      Condition condition = !discovery.nextPossible.isEmpty() ? (() -> discovery.next != null
-          || discovery.nextPossible.isEmpty()) : null;
-      notifications.addNotification(screen::discoveryMenu, condition, Type.DISCOVERY, "Discovered %s: %s", target,
-          target.effects.isEmpty() ? "No effect." : join(", ", effectsStrings(target)));
       Set<Policy> policies = PoliciesSystem.getPolicies(target);
       if (policies != null) {
         for (Policy policy : policies)
@@ -221,7 +223,7 @@ public final class DiscoverySystem extends EntitySystem {
     // remove last discovery 2x bonus (to keep only the basic effect)
     if (discovery.last != null)
       effects.apply(discovery.last.target.effects, empire, true);
-    discovery.last = next;
+    discovery.last = research;
 
     // apply new discovery
     effects.apply(target.effects, empire, false);
@@ -335,20 +337,6 @@ public final class DiscoverySystem extends EntitySystem {
           neighbors.put(inf.key, world.getEntity(inf.key));
 
     return neighbors.values();
-  }
-
-  public int guessNbTurns(Discoveries discovery, Entity empire, Discovery d) {
-    InfluenceSource influence = influences.get(empire);
-
-    Set<Terrain> terrains = d.terrains;
-    int progressPerTurn = discovery.progressPerTurn;
-    if (terrains != null && !terrains.isEmpty()) {
-      for (MapPosition pos : influence.influencedTiles)
-        if (terrains.contains(map.getTerrainAt(pos)))
-          progressPerTurn += PROGRESS_PER_TILE;
-    }
-
-    return DISCOVERY_THRESHOLD / progressPerTurn;
   }
 
   public List<String> effectsStrings(Discovery d) {

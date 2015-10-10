@@ -15,11 +15,12 @@ public final class Discoveries extends Component {
   /** Increase to speed progress up. */
   public int progressPerTurn = 20;
 
+  /** Contains possibles discoveries when one is expected. */
   public Map<Faction, Research> nextPossible;
 
-  public Research next;
-
   public Research last;
+
+  public int progress = 0;
 
   public Discoveries() {
   }

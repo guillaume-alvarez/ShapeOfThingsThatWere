@@ -179,6 +179,7 @@ public final class InfluenceSystem extends EntitySystem {
               influencer.getComponent(Description.class));
           delete(empire);
         } else {
+          diplomaticSystem.clearRelations(empire, loser);
           diplomaticSystem.changeRelation(empire, loser, influencer, relations.get(influencer), Action.SURRENDER);
           loser.proposals.remove(influencer);
 

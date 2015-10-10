@@ -15,8 +15,6 @@ public class Research extends Component {
 
   public final Discovery target;
 
-  public int progress = 0;
-
   public Research(Discovery target, Collection<Discovery> previous) {
     this.target = target;
     this.previous = previous;
@@ -31,7 +29,7 @@ public class Research extends Component {
 
   @Override
   public String toString() {
-    return target.name + "[" + progress + "% " + factions + "]";
+    return target.name + factions;
   }
 
 }

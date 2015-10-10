@@ -95,10 +95,11 @@ public final class EffectsSystem extends VoidEntitySystem {
     @Override
     public void apply(Number value, Entity empire, boolean revert) {
       ArmyCommand army = armies.get(empire);
+      int delta = 2 * value.intValue();
       if (revert)
-        army.militaryPower -= 2 * value.intValue();
+        army.militaryPower -= delta;
       else
-        army.militaryPower += 2 * value.intValue();
+        army.militaryPower += delta;
     }
 
     @Override
