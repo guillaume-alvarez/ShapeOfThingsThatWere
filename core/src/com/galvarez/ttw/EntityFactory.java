@@ -13,6 +13,7 @@ import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.components.EventsCount;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Policies;
 import com.galvarez.ttw.model.components.Score;
@@ -66,7 +67,8 @@ public class EntityFactory {
     EntityEdit edit = e.edit();
 
     ArmyCommand command = new ArmyCommand();
-    edit.add(empire).add(new Discoveries()).add(new Policies()).add(new Diplomacy()).add(command).add(new Score());
+    edit.add(empire).add(new EventsCount()).add(new Discoveries()).add(new Policies()).add(new Diplomacy())
+        .add(command).add(new Score());
 
     Sprite sprite = new Sprite();
     sprite.name = "cylinderwide";

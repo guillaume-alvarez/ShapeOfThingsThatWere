@@ -158,8 +158,7 @@ public class MenuBuilder {
 
     // here present a sub-menu to see current discovery and be able to change it
     Discoveries discoveries = screen.player.getComponent(Discoveries.class);
-    empireMenu.addButton("Discovery " + (discoveries != null ? "(" + discoveries.progress + "%)" : "(NONE)"),
-        screen::discoveryMenu);
+    empireMenu.addButton("Discoveries", screen::discoveryMenu);
 
     // here present a new screen to choose policies
     int instability = screen.revoltSystem.getInstabilityPercent(screen.player);

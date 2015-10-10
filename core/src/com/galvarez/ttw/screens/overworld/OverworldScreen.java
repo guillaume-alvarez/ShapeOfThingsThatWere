@@ -32,6 +32,7 @@ import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DisasterSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
+import com.galvarez.ttw.model.EventsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.RevoltSystem;
@@ -89,6 +90,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final FadingMessageRenderSystem fadingMessageRenderSystem;
 
   private final EffectsSystem effectsSystem;
+
+  private final EventsSystem eventsSystem;
 
   private final DiscoverySystem discoverySystem;
 
@@ -174,6 +177,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     iconsSystem = world.setSystem(new IconsSystem(), true);
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
+    eventsSystem = world.setSystem(new EventsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
     world.setSystem(new SpecialDiscoveriesSystem(this), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
@@ -383,6 +387,7 @@ public final class OverworldScreen extends AbstractScreen {
     revoltSystem.process();
     disasterSystem.process();
     scoreSystem.process();
+    eventsSystem.process();
 
     world.setDelta(0);
     world.process();

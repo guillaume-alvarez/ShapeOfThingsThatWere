@@ -73,8 +73,7 @@ public final class DiscoveryMenuScreen extends AbstractPausedScreen<OverworldScr
     terrains.addToStage(stage, 30, lastDiscovery.getY() - 30, false);
 
     discoveryChoices.clear();
-    discoveryChoices.addButton("Progress toward next discovery: " + empire.progress + "% (+" + empire.progressPerTurn
-        + "%/turn)", gameScreen::askDiscovery);
+    discoveryChoices.addButton("Next discovery?", gameScreen::askDiscovery);
     discoveryChoices.addLabel(" ");
     discoveryChoices.addToStage(stage, 30, terrains.getY() - 30, false);
   }

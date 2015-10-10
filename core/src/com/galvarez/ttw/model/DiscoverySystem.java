@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.IntIntMap.Entry;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -58,12 +59,9 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  * @author Guillaume Alvarez
  */
 @Wire
-public final class DiscoverySystem extends EntitySystem {
+public final class DiscoverySystem extends EntitySystem implements EventHandler {
 
   private static final Logger log = LoggerFactory.getLogger(DiscoverySystem.class);
-
-  /** This value permits to display values as percentages. */
-  private static final int DISCOVERY_THRESHOLD = 100;
 
   /** Increase to speed progress up. */
   private static final int PROGRESS_PER_TILE = 1;
@@ -132,6 +130,8 @@ public final class DiscoverySystem extends EntitySystem {
       if (b.previous != null && !buildings.containsKey(b.previous))
         log.warn("Cannot find previous {} for building {}", b.previous, b);
     }
+
+    world.getSystem(EventsSystem.class).addEventType(this);
   }
 
   private ObjectFloatMap<Faction> getFactionsScores(Discovery discovery) {
@@ -157,84 +157,11 @@ public final class DiscoverySystem extends EntitySystem {
     super.inserted(e);
     Discoveries d = empires.get(e);
     d.nextPossible = possibleDiscoveries(e, d);
-    d.progress = DISCOVERY_THRESHOLD;
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    for (Entity entity : entities) {
-      Discoveries discovery = empires.get(entity);
-      if (discovery.last != null) {
-        if (progressNext(discovery, influences.get(entity)))
-          discoverNext(entity, discovery);
-        else
-          discovery.nextPossible = null;
-      } else
-        discoverNext(entity, discovery);
-    }
-  }
-
-  private boolean progressNext(Discoveries discovery, InfluenceSource influence) {
-    int progress = discovery.progressPerTurn;
-    Set<Terrain> terrains = discovery.last.target.terrains;
-    if (terrains != null && !terrains.isEmpty()) {
-      for (MapPosition pos : influence.influencedTiles) {
-        if (terrains.contains(map.getTerrainAt(pos)))
-          progress += PROGRESS_PER_TILE;
-      }
-    }
-    discovery.progress += progress;
-    return discovery.progress >= DISCOVERY_THRESHOLD;
-  }
-
-  private void discoverNext(Entity empire, Discoveries discovery) {
-    discovery.nextPossible = possibleDiscoveries(empire, discovery);
-
-    if (!ai.has(empire) && !discovery.nextPossible.isEmpty()) {
-      Research last = discovery.last;
-      notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
-          "We can make a new discovery!");
-    }
-  }
-
-  /** Called when the next discovery is chosen. */
-  public void discoverNew(Entity empire, Discoveries discovery, Research research) {
-    Discovery target = research.target;
-    log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, research.previous);
-    discovery.done.add(target);
-    discovery.progress = 0;
-    discovery.nextPossible.clear();
-
-    if (!ai.has(empire)) {
-      Set<Policy> policies = PoliciesSystem.getPolicies(target);
-      if (policies != null) {
-        for (Policy policy : policies)
-          notifications
-              .addNotification(screen::policiesMenu, null, Type.DISCOVERY, "New %s policy: %s", policy, target);
-      }
-    }
-
-    // Once an empire made a discovery, none other can research it. Those
-    // already researching it can continue. It makes sure starting discoveries
-    // are not found only by a single empire.
-    if (!target.previous.isEmpty())
-      toDiscover.remove(target.name);
-
-    // remove last discovery 2x bonus (to keep only the basic effect)
-    if (discovery.last != null)
-      effects.apply(discovery.last.target.effects, empire, true);
-    discovery.last = research;
-
-    // apply new discovery
-    effects.apply(target.effects, empire, false);
-    // ... and bonus time until next discovery!
-    effects.apply(target.effects, empire, false);
-
-    // may be some 'special discovery'
-    special.apply(empire, target, discovery);
-
-    MapPosition pos = empire.getComponent(MapPosition.class);
-    EntityFactory.createFadingTileLabel(world, target.name, empire.getComponent(Empire.class).color, pos.x, pos.y, 3f);
+    // progress toward next discovery is triggered by EventsSystem
   }
 
   /**
@@ -354,6 +281,76 @@ public final class DiscoverySystem extends EntitySystem {
         effects.apply(d.effects, to, false);
         special.apply(to, d, toD);
       }
+  }
+
+  @Override
+  public int getProgress(Entity e) {
+    Discoveries discovery = empires.get(e);
+    InfluenceSource influence = influences.get(e);
+
+    int progress = discovery.progressPerTurn;
+    Set<Terrain> terrains = discovery.last != null ? discovery.last.target.terrains : null;
+    if (terrains != null && !terrains.isEmpty()) {
+      for (MapPosition pos : influence.influencedTiles) {
+        if (terrains.contains(map.getTerrainAt(pos)))
+          progress += PROGRESS_PER_TILE;
+      }
+    }
+    return progress;
+  }
+
+  @Override
+  public void execute(Entity e) {
+    discoverNext(e, empires.get(e));
+  }
+
+  private void discoverNext(Entity empire, Discoveries discovery) {
+    discovery.nextPossible = possibleDiscoveries(empire, discovery);
+
+    if (!ai.has(empire) && !discovery.nextPossible.isEmpty()) {
+      Research last = discovery.last;
+      notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
+          "We can make a new discovery!");
+    }
+  }
+
+  /** Called when the next discovery is chosen. */
+  public void discoverNew(Entity empire, Discoveries discovery, Research research) {
+    Discovery target = research.target;
+    log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, research.previous);
+    discovery.done.add(target);
+    discovery.nextPossible.clear();
+
+    if (!ai.has(empire)) {
+      Set<Policy> policies = PoliciesSystem.getPolicies(target);
+      if (policies != null) {
+        for (Policy policy : policies)
+          notifications
+              .addNotification(screen::policiesMenu, null, Type.DISCOVERY, "New %s policy: %s", policy, target);
+      }
+    }
+
+    // Once an empire made a discovery, none other can research it. Those
+    // already researching it can continue. It makes sure starting discoveries
+    // are not found only by a single empire.
+    if (!target.previous.isEmpty())
+      toDiscover.remove(target.name);
+
+    // remove last discovery 2x bonus (to keep only the basic effect)
+    if (discovery.last != null)
+      effects.apply(discovery.last.target.effects, empire, true);
+    discovery.last = research;
+
+    // apply new discovery
+    effects.apply(target.effects, empire, false);
+    // ... and bonus time until next discovery!
+    effects.apply(target.effects, empire, false);
+
+    // may be some 'special discovery'
+    special.apply(empire, target, discovery);
+
+    MapPosition pos = empire.getComponent(MapPosition.class);
+    EntityFactory.createFadingTileLabel(world, target.name, empire.getComponent(Empire.class).color, pos.x, pos.y, 3f);
   }
 
 }
