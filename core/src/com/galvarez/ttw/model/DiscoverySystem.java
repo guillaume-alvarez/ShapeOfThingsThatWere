@@ -260,8 +260,12 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     // collect entities we share influence with
     for (MapPosition p : influences.get(empire).influencedTiles)
       for (Entry inf : map.getInfluenceAt(p))
-        if (inf.key != empire.getId() && !neighbors.containsKey(inf.key))
-          neighbors.put(inf.key, world.getEntity(inf.key));
+        if (inf.key != empire.getId() && !neighbors.containsKey(inf.key)) {
+          Entity neighbor = world.getEntity(inf.key);
+          if (neighbor != null)
+            // may not have been inserted yet?
+            neighbors.put(inf.key, neighbor);
+        }
 
     return neighbors.values();
   }
