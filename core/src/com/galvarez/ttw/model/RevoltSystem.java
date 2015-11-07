@@ -132,7 +132,7 @@ public final class RevoltSystem extends EntitySystem {
   private void updateEmpireAfterRevolt(Entity empire, int instability, InfluenceSource source) {
     // decrease power by instability to avoid popping revolts in loop
     policies.get(empire).stability += instability;
-    source.setPower(max(max(1, source.power() / 2), source.power() - instability / 2));
+    source.setPower(max(max(1, source.power() / 2), source.power() - instability / 5));
   }
 
   private boolean isValidRevoltTile(Entity empire, MapPosition pos, int instability) {
