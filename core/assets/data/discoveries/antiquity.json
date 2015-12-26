@@ -42,7 +42,7 @@
 },
 {
   name: City,
-  previous: [[Village, Chief], [Village, Trade], [Village, War]],
+  previous: [[Village, Chief], [Village, Trade], [Village, War], [Village, "Stone circle"]],
   terrains: [GRASSLAND, PLAIN],
   effects: {militaryPower: 2, health: 2, discovery: 1}
 },
@@ -91,7 +91,7 @@
 },
 {
   name: Market,
-  previous: [[Trade, FOOD], [Trade, LUXURY]],
+  previous: [[Trade, FOOD], [Trade, LUXURY], [Trade, "Stone circle"]],
   terrains: [GRASSLAND, PLAIN, SHALLOW_WATER],
   effects: {growth: 2, discovery: 1}
 },
@@ -103,7 +103,7 @@
 },
 {
   name: Caravanserai,
-  previous: [[Merchant, Camel], [House, Camel]],
+  previous: [[Merchant, Camel], [House, Camel], [Camel, "Stone circle"]],
   terrains: [DESERT],
   effects: {DESERT: 1, growth: 1}
 },

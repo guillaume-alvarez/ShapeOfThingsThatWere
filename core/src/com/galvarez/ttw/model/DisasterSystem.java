@@ -1,14 +1,14 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.max;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
+import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -25,7 +25,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  * @author Guillaume Alvarez
  */
 @Wire
-public final class DisasterSystem extends EntitySystem {
+public final class DisasterSystem extends EntitySystem implements EventHandler {
 
   private ComponentMapper<InfluenceSource> sources;
 
@@ -46,53 +46,44 @@ public final class DisasterSystem extends EntitySystem {
   }
 
   @Override
+  public String getType() {
+    return "Disaster";
+  }
+
+  @Override
+  protected void initialize() {
+    super.initialize();
+
+    world.getSystem(EventsSystem.class).addEventType(this);
+  }
+
+  @Override
   protected boolean checkProcessing() {
     return true;
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    Entity target = getDisasterTarget(entities);
-    if (target != null)
-      createDisaster(target);
+    // done from events
   }
 
-  /** Return the entity targeted by a disaster this turn, null if none is. */
-  private Entity getDisasterTarget(ImmutableBag<Entity> entities) {
-    Array<Entity> empires = new Array<>(entities.size() / 2);
-    IntArray chances = new IntArray(entities.size() / 2);
-    int total = 0;
-
-    for (Entity e : entities) {
-      InfluenceSource source = sources.get(e);
-      int unhealth = source.power() - source.health;
-      if (unhealth > 0) {
-        empires.add(e);
-        chances.add(unhealth);
-        total += unhealth;
-      }
-    }
-
-    if (total > 100 || MathUtils.random(100) > total) {
-      int target = MathUtils.random(total);
-      int counter = 0;
-      for (int i = 0; i < chances.size; i++) {
-        counter += chances.get(i);
-        if (counter > target)
-          return empires.get(i);
-      }
-    }
-
-    return null;
+  @Override
+  public int getProgress(Entity e) {
+    InfluenceSource source = sources.get(e);
+    int unhealth = source.power() - source.health;
+    return max(0, unhealth);
   }
 
-  /** Apply the disaster effect and notify player. */
-  private void createDisaster(Entity target) {
-    InfluenceSource source = sources.get(target);
+  @Override
+  public boolean execute(Entity e) {
+    InfluenceSource source = sources.get(e);
     source.setPower(source.health / 2);
 
-    fadingSystem.createFadingIcon(Type.DISEASE, empires.get(target).color, positions.get(target), 3f);
-    notifications.addNotification(() -> screen.select(target, false), null, Type.DISEASE, "Mortal disease strikes %s!",
-        target.getComponent(Description.class));
+    fadingSystem.createFadingIcon(Type.DISEASE, empires.get(e).color, positions.get(e), 3f);
+    notifications.addNotification(() -> screen.select(e, false), null, Type.DISEASE, "Mortal disease strikes %s!",
+        e.getComponent(Description.class));
+
+    return true;
   }
+
 }

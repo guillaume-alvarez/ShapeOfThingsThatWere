@@ -20,8 +20,6 @@ public final class Discoveries extends Component {
 
   public Research last;
 
-  public int progress = 0;
-
   public Discoveries() {
   }
 

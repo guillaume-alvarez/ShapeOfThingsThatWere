@@ -26,12 +26,12 @@ import com.galvarez.ttw.model.AIDiplomaticSystem;
 import com.galvarez.ttw.model.AIDiscoverySystem;
 import com.galvarez.ttw.model.AISourceDestinationSystem;
 import com.galvarez.ttw.model.ArmiesSystem;
-import com.galvarez.ttw.model.BuildingsSystem;
 import com.galvarez.ttw.model.DestinationSystem;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DisasterSystem;
 import com.galvarez.ttw.model.DiscoverySystem;
 import com.galvarez.ttw.model.EffectsSystem;
+import com.galvarez.ttw.model.EventsSystem;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.PoliciesSystem;
 import com.galvarez.ttw.model.RevoltSystem;
@@ -90,9 +90,9 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final EffectsSystem effectsSystem;
 
-  private final DiscoverySystem discoverySystem;
+  private final EventsSystem eventsSystem;
 
-  private final BuildingsSystem buildingsSystem;
+  private final DiscoverySystem discoverySystem;
 
   private final PoliciesSystem policiesSystem;
 
@@ -174,10 +174,10 @@ public final class OverworldScreen extends AbstractScreen {
 
     iconsSystem = world.setSystem(new IconsSystem(), true);
     notificationsSystem = world.setSystem(new NotificationsSystem(), true);
+    eventsSystem = world.setSystem(new EventsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
     world.setSystem(new SpecialDiscoveriesSystem(this), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
-    buildingsSystem = world.setSystem(new BuildingsSystem(this, settings, map), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(map), true);
@@ -202,7 +202,6 @@ public final class OverworldScreen extends AbstractScreen {
     world.initialize();
     empires = fillWorldWithEntities();
     discoverySystem.process();
-    buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
     influenceSystem.process();
@@ -374,7 +373,6 @@ public final class OverworldScreen extends AbstractScreen {
     aiArmies.process();
 
     discoverySystem.process();
-    buildingsSystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
     armiesSystem.process();
@@ -383,6 +381,7 @@ public final class OverworldScreen extends AbstractScreen {
     revoltSystem.process();
     disasterSystem.process();
     scoreSystem.process();
+    eventsSystem.process();
 
     world.setDelta(0);
     world.process();
