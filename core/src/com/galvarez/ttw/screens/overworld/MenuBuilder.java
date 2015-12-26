@@ -160,12 +160,12 @@ public class MenuBuilder {
     empireMenu.addButton("Discoveries", screen::discoveryMenu);
 
     // here present a new screen to choose policies
-    int instability = screen.revoltSystem.getInstabilityPercent(screen.player);
+    int instability = screen.revoltSystem.getInstability(screen.player);
     if (instability <= 0)
-      empireMenu.addButton("Policies (instability " + instability + "%)", screen::policiesMenu);
+      empireMenu.addButton("Policies (instability " + instability, screen::policiesMenu);
     else {
       empireMenu.addButton(empireMenu.getSkin().get("colored", LabelStyle.class), //
-          "[BLACK]Policies (instability [RED]" + instability + "%[])", //
+          "[BLACK]Policies (instability [RED]" + instability + "[])", //
           null, screen::policiesMenu, true);
     }
 

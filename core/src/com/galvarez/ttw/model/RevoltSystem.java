@@ -102,15 +102,14 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
 
   @Override
   public int getProgress(Entity empire) {
-    return max(0, getInstabilityPercent(empire));
+    return max(0, getInstability(empire) / 2);
   }
 
-  public int getInstabilityPercent(Entity empire) {
+  public int getInstability(Entity empire) {
     InfluenceSource source = sources.get(empire);
     Policies empirePolicies = policies.get(empire);
     int totalStability = empirePolicies.stability + max(0, army.get(empire).militaryPower);
-    int missingStability = source.influencedTiles.size() - totalStability;
-    return (int) (((float) missingStability / (float) totalStability) * 100f);
+    return source.influencedTiles.size() - totalStability;
   }
 
   /**
@@ -119,7 +118,7 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
    */
   @Override
   public boolean execute(Entity empire) {
-    int instability = getInstabilityPercent(empire);
+    int instability = getInstability(empire);
     if (instability <= 0)
       return false;
 

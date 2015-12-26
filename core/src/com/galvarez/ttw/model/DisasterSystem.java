@@ -71,7 +71,7 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
   public int getProgress(Entity e) {
     InfluenceSource source = sources.get(e);
     int unhealth = source.power() - source.health;
-    return max(0, unhealth);
+    return max(0, unhealth / 2);
   }
 
   @Override

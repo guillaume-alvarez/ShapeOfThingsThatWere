@@ -13,7 +13,7 @@ public final class Discoveries extends Component {
   public final Set<Discovery> done = new HashSet<>();
 
   /** Increase to speed progress up. */
-  public int progressPerTurn = 20;
+  public int progressPerTurn = 1;
 
   /** Contains possibles discoveries when one is expected. */
   public Map<Faction, Research> nextPossible;
