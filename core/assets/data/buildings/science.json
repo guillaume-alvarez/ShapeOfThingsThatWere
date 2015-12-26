@@ -1,9 +1,0 @@
-[
-{
-  name: School,
-  type: science,
-  turns: 10,
-  effects: {discovery: 1},
-  conditions: {power: 50},
-},
-]

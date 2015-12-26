@@ -4,7 +4,6 @@ import static com.galvarez.ttw.utils.Colors.markup;
 import static java.lang.Math.min;
 
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -22,12 +21,10 @@ import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Score;
-import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -53,8 +50,6 @@ public class MenuBuilder {
   private final FramedMenu turnMenu, indicationMenu, empireMenu, notifMenu;
 
   private final FramedMenu selectionMenu;
-
-  private final FramedMenu buildingsMenu;
 
   private FramedMenu actionMenu, mapMenu;
 
@@ -82,7 +77,6 @@ public class MenuBuilder {
     indicationMenu = new FramedMenu(skin, 512, 512);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
-    buildingsMenu = new FramedMenu(skin, 256, 1024);
     notifMenu = new FramedMenu(skin, 400, 512);
   }
 
@@ -134,7 +128,7 @@ public class MenuBuilder {
     List<String> indications = screen.getIndications();
     if (indications != null && !indications.isEmpty()) {
       // set width before for better layout
-      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + buildingsMenu.getWidth() + MENU_PADDING * 3));
+      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + MENU_PADDING * 3));
       for (String i : indications)
         indicationMenu.addLabel(i);
 
@@ -273,24 +267,6 @@ public class MenuBuilder {
     } else {
       actionMenu.clear();
       actionMenu = null;
-    }
-  }
-
-  public void buildBuildingsMenu(Entity e) {
-    buildingsMenu.clear();
-
-    if (e != null) {
-      Buildings buildings = e.getComponent(Buildings.class);
-      if (buildings != null) {
-        buildingsMenu.addLabel("Buildings in " + e.getComponent(Name.class));
-        if (buildings.built.isEmpty())
-          buildingsMenu.addLabel("- no buildings -");
-        else
-          for (Entry<String, Building> b : buildings.built.entrySet())
-            buildingsMenu.addLabel(" " + b.getValue().getName() + " (" + b.getKey() + ")");
-
-        buildingsMenu.addToStage(stage, stage.getWidth() - 256, stage.getHeight() - MENU_PADDING, false);
-      }
     }
   }
 

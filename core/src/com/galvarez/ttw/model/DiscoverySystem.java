@@ -35,7 +35,6 @@ import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Research;
-import com.galvarez.ttw.model.data.Building;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.Policy;
@@ -73,8 +72,6 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   /** Discoveries free to be discovered by any empire. */
   private final Map<String, Discovery> toDiscover;
 
-  private final Map<String, Building> buildings;
-
   private final GameMap map;
 
   private final Random rand = new Random();
@@ -98,7 +95,6 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     super(Aspect.getAspectForAll(Discoveries.class));
     this.discoveries = s.getDiscoveries();
     this.toDiscover = new HashMap<>(discoveries);
-    this.buildings = s.getBuildings();
     this.map = map;
     this.screen = screen;
   }
@@ -121,14 +117,6 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
         for (String previous : list)
           if (!discoveries.containsKey(previous) && !groups.contains(previous))
             log.warn("Cannot find previous {} for discovery {}", previous, d);
-    }
-
-    // check buildings discovery and previous type
-    for (Building b : buildings.values()) {
-      if (!discoveries.containsKey(b.getName()))
-        log.warn("Cannot find discovery {} for building {}", b.getName(), b);
-      if (b.previous != null && !buildings.containsKey(b.previous))
-        log.warn("Cannot find previous {} for building {}", b.previous, b);
     }
 
     world.getSystem(EventsSystem.class).addEventType(this);
@@ -269,10 +257,7 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   }
 
   public List<String> effectsStrings(Discovery d) {
-    List<String> list = effects.toString(d.effects);
-    if (buildings.containsKey(d.name))
-      list.add("building: " + d.name);
-    return list;
+    return effects.toString(d.effects);
   }
 
   public void copyDiscoveries(Entity from, Entity to) {

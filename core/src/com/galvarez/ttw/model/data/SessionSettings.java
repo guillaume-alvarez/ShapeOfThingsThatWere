@@ -33,8 +33,6 @@ public final class SessionSettings implements Cloneable {
 
   private final Map<String, Discovery> discoveries;
 
-  private final Map<String, Building> buildings;
-
   public final List<Empire> empires = new ArrayList<>();
 
   public final Properties map;
@@ -52,7 +50,6 @@ public final class SessionSettings implements Cloneable {
     Json json = new Json();
     this.cultures = cultures(json).stream().collect(toMap(Culture::getName, c -> c));
     this.discoveries = discoveries(json).stream().collect(toMap(Discovery::getName, c -> c));
-    this.buildings = buildings(json).stream().collect(toMap(Building::getName, c -> c));
 
     // generate some default empires
     boolean ai = false;
@@ -67,7 +64,6 @@ public final class SessionSettings implements Cloneable {
     Json json = new Json();
     this.cultures = cultures(json).stream().collect(toMap(Culture::getName, c -> c));
     this.discoveries = discoveries(json).stream().collect(toMap(Discovery::getName, c -> c));
-    this.buildings = buildings(json).stream().collect(toMap(Building::getName, c -> c));
 
     // copy map creation options
     this.map = new Properties();
@@ -89,14 +85,6 @@ public final class SessionSettings implements Cloneable {
     return cultures;
   }
 
-  private static List<Building> buildings(Json json) {
-    json.setSerializer(Building.class, Building.SER);
-    List<Building> buildings = new ArrayList<>();
-    for (FileHandle f : files("data/buildings/", "culture.json", "religion.json", "trade.json"))
-      buildings.addAll(Arrays.asList(json.fromJson(Building[].class, f)));
-    return buildings;
-  }
-
   private static List<Discovery> discoveries(Json json) {
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_Devil
     // TODO add ideas from http://doodlegod.wikia.com/wiki/Doodle_God_2
@@ -110,10 +98,6 @@ public final class SessionSettings implements Cloneable {
 
   private static Iterable<FileHandle> files(String dir, String ... files) {
     return Arrays.stream(files).map(f -> Gdx.files.internal(dir + f)).collect(toList());
-  }
-
-  public Map<String, Building> getBuildings() {
-    return buildings;
   }
 
   public Map<String, Discovery> getDiscoveries() {

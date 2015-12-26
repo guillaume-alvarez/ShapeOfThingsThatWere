@@ -9,7 +9,6 @@ import com.galvarez.ttw.ExpiringSystem.Expires;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Army;
 import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Buildings;
 import com.galvarez.ttw.model.components.Destination;
 import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
@@ -79,7 +78,7 @@ public class EntityFactory {
     edit.add(sprite);
 
     InfluenceSource source = new InfluenceSource();
-    edit.add(new MapPosition(x, y)).add(source).add(new Buildings()).add(new Destination(command.forbiddenTiles, 2));
+    edit.add(new MapPosition(x, y)).add(source).add(new Destination(command.forbiddenTiles, 2));
 
     edit.add(new Name(name)).add(new Description("Tribe of " + name))
         .add(new TextBox(() -> name + ": " + source.power()));
