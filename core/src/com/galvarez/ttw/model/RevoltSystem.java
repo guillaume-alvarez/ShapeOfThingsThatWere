@@ -5,7 +5,6 @@ import static java.lang.Math.min;
 import static java.util.Comparator.comparingInt;
 
 import java.util.Optional;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.EntityFactory;
+import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.InfluenceSource;
@@ -42,7 +42,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
  * @author Guillaume Alvarez
  */
 @Wire
-public final class RevoltSystem extends EntitySystem {
+public final class RevoltSystem extends EntitySystem implements EventHandler {
 
   private static final Logger log = LoggerFactory.getLogger(RevoltSystem.class);
 
@@ -68,8 +68,6 @@ public final class RevoltSystem extends EntitySystem {
 
   private final SessionSettings settings;
 
-  private final Random rand = new Random();
-
   private final OverworldScreen screen;
 
   @SuppressWarnings("unchecked")
@@ -81,14 +79,25 @@ public final class RevoltSystem extends EntitySystem {
   }
 
   @Override
+  protected void initialize() {
+    super.initialize();
+
+    world.getSystem(EventsSystem.class).addEventType(this);
+  }
+
+  @Override
   protected boolean checkProcessing() {
     return true;
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> empires) {
-    for (Entity empire : empires)
-      checkRevolt(empire);
+    // progress toward next revolt is triggered by EventsSystem
+  }
+
+  @Override
+  public int getProgress(Entity empire) {
+    return max(0, getInstabilityPercent(empire));
   }
 
   public int getInstabilityPercent(Entity empire) {
@@ -99,13 +108,18 @@ public final class RevoltSystem extends EntitySystem {
     return (int) (((float) missingStability / (float) totalStability) * 100f);
   }
 
+  @Override
+  public void execute(Entity empire) {
+    checkRevolt(empire);
+  }
+
   /**
    * Cities revolt when the source power is above its stability. The higher it
    * is the higher chance it will revolt.
    */
   private void checkRevolt(Entity empire) {
     int instability = getInstabilityPercent(empire);
-    if (instability > 0 && rand.nextInt(100) < instability) {
+    if (instability > 0) {
       InfluenceSource source = sources.get(empire);
       // revolt happens, select the tile!
       Optional<Influence> tile = source.influencedTiles.stream() //
