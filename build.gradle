@@ -14,7 +14,7 @@ allprojects {
     version = '0.2.0'
     ext {
         appName = 'ShapeOfThingsThatWere'
-        gdxVersion = '1.5.5'
+        gdxVersion = '1.7.2'
         artemisVersion = '0.7.1'
         slf4jVersion = '1.7.12'
         log4jBindingsVersion = '2.2'

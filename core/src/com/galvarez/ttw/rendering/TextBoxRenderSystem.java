@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -65,7 +65,7 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
 
       Empire empire = empires.get(e);
 
-      TextBounds bounds = font.getBounds(box.text);
+      GlyphLayout bounds = font.getCache().setText(box.text, 0, 0);
       Pixmap pm = new Pixmap((int) bounds.width + PAD * 2, (int) bounds.height + PAD * 2, Pixmap.Format.RGBA8888);
       pm.setColor(empire.backColor);
       pm.fill();
