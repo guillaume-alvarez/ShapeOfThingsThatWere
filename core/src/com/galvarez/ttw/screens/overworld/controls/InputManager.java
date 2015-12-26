@@ -77,6 +77,7 @@ public class InputManager {
     menuBuilder.buildIndicationMenu();
     menuBuilder.buildEmpireMenu();
     menuBuilder.buildNotificationMenu();
+    menuBuilder.buildEventsMenu();
     if (screen.selectedTile != null)
       menuBuilder.buildSelectionMenu(screen.selectedTile, selectedEntity);
 

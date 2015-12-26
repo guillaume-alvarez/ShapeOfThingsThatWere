@@ -100,6 +100,11 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   }
 
   @Override
+  public String getType() {
+    return "Discovery";
+  }
+
+  @Override
   protected void initialize() {
     super.initialize();
 
@@ -189,6 +194,11 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
     for (Faction f : Faction.values()) {
+      if (possible.isEmpty()) {
+        log.debug("Found no {} research among {} for {}", f, possible, empire.getComponent(Description.class));
+        continue;
+      }
+
       Collections.sort(possible, new Comparator<Research>() {
         @Override
         public int compare(Research d1, Research d2) {
@@ -196,9 +206,6 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
           return -Float.compare(d1.factions.get(f, 0f), d2.factions.get(f, 0f));
         }
       });
-
-      if (possible.isEmpty())
-        continue;
 
       Research selected = null;
       for (int i = rand.nextInt(min(2, possible.size())); i >= 0 && selected == null; i--)
@@ -287,18 +294,22 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   }
 
   @Override
-  public void execute(Entity e) {
-    discoverNext(e, empires.get(e));
+  public boolean execute(Entity e) {
+    return discoverNext(e, empires.get(e));
   }
 
-  private void discoverNext(Entity empire, Discoveries discovery) {
+  private boolean discoverNext(Entity empire, Discoveries discovery) {
     discovery.nextPossible = possibleDiscoveries(empire, discovery);
 
-    if (!ai.has(empire) && !discovery.nextPossible.isEmpty()) {
+    if (discovery.nextPossible.isEmpty())
+      return false;
+
+    if (!ai.has(empire)) {
       Research last = discovery.last;
       notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
           "We can make a new discovery!");
     }
+    return true;
   }
 
   /** Called when the next discovery is chosen. */

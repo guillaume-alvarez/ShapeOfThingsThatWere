@@ -79,6 +79,11 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
   }
 
   @Override
+  public String getType() {
+    return "Revolt";
+  }
+
+  @Override
   protected void initialize() {
     super.initialize();
 
@@ -108,39 +113,37 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
     return (int) (((float) missingStability / (float) totalStability) * 100f);
   }
 
-  @Override
-  public void execute(Entity empire) {
-    checkRevolt(empire);
-  }
-
   /**
    * Cities revolt when the source power is above its stability. The higher it
    * is the higher chance it will revolt.
    */
-  private void checkRevolt(Entity empire) {
+  @Override
+  public boolean execute(Entity empire) {
     int instability = getInstabilityPercent(empire);
-    if (instability > 0) {
-      InfluenceSource source = sources.get(empire);
-      // revolt happens, select the tile!
-      Optional<Influence> tile = source.influencedTiles.stream() //
-          .filter(p -> isValidRevoltTile(empire, p, instability)) //
-          .map(p -> map.getInfluenceAt(p)) //
-          .min(comparingInt(Influence::getSecondInfluenceDiff));
+    if (instability <= 0)
+      return false;
 
-      if (tile.isPresent()) {
-        updateEmpireAfterRevolt(empire, instability, source);
+    InfluenceSource source = sources.get(empire);
+    // revolt happens, select the tile!
+    Optional<Influence> tile = source.influencedTiles.stream() //
+        .filter(p -> isValidRevoltTile(empire, p, instability)) //
+        .map(p -> map.getInfluenceAt(p)) //
+        .min(comparingInt(Influence::getSecondInfluenceDiff));
 
-        createRevoltingEmpire(empire, instability, tile.get());
-      } else if (instability > 50) {
-        updateEmpireAfterRevolt(empire, instability, source);
+    if (tile.isPresent()) {
+      updateEmpireAfterRevolt(empire, instability, source);
 
-        log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
-            empire.getComponent(Name.class), instability, source.power());
-        if (!ai.has(empire))
-          notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
-              "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power());
-      }
+      createRevoltingEmpire(empire, instability, tile.get());
+    } else if (instability > 50) {
+      updateEmpireAfterRevolt(empire, instability, source);
+
+      log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
+          empire.getComponent(Name.class), instability, source.power());
+      if (!ai.has(empire))
+        notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
+            "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power());
     }
+    return true;
   }
 
   private void updateEmpireAfterRevolt(Entity empire, int instability, InfluenceSource source) {

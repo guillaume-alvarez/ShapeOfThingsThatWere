@@ -46,6 +46,11 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
   }
 
   @Override
+  public String getType() {
+    return "Disaster";
+  }
+
+  @Override
   protected void initialize() {
     super.initialize();
 
@@ -70,13 +75,15 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
   }
 
   @Override
-  public void execute(Entity e) {
+  public boolean execute(Entity e) {
     InfluenceSource source = sources.get(e);
     source.setPower(source.health / 2);
 
     fadingSystem.createFadingIcon(Type.DISEASE, empires.get(e).color, positions.get(e), 3f);
     notifications.addNotification(() -> screen.select(e, false), null, Type.DISEASE, "Mortal disease strikes %s!",
         e.getComponent(Description.class));
+
+    return true;
   }
 
 }

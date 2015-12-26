@@ -8,6 +8,10 @@ public class EventsCount extends Component {
 
   public final ObjectIntMap<EventHandler> scores = new ObjectIntMap<>();
 
+  public final ObjectIntMap<EventHandler> increment = new ObjectIntMap<>();
+
+  public final ObjectIntMap<EventHandler> display = new ObjectIntMap<>();
+
   public EventsCount() {
   }
 

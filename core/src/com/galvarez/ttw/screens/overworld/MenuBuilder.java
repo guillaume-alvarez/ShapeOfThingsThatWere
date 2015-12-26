@@ -2,6 +2,7 @@ package com.galvarez.ttw.screens.overworld;
 
 import static com.galvarez.ttw.utils.Colors.markup;
 import static java.lang.Math.min;
+import static java.lang.String.format;
 
 import java.util.List;
 
@@ -17,12 +18,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.ObjectIntMap.Entry;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
+import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.components.EventsCount;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.components.Score;
 import com.galvarez.ttw.model.data.Empire;
@@ -51,6 +54,8 @@ public class MenuBuilder {
 
   private final FramedMenu selectionMenu;
 
+  private final FramedMenu eventsMenu;
+
   private FramedMenu actionMenu, mapMenu;
 
   private final World world;
@@ -77,6 +82,7 @@ public class MenuBuilder {
     indicationMenu = new FramedMenu(skin, 512, 512);
     empireMenu = new FramedMenu(skin, 256, 256).nbColumns(1);
     selectionMenu = new FramedMenu(skin, 256, 512);
+    eventsMenu = new FramedMenu(skin, 256, 1024);
     notifMenu = new FramedMenu(skin, 400, 512);
   }
 
@@ -128,7 +134,7 @@ public class MenuBuilder {
     List<String> indications = screen.getIndications();
     if (indications != null && !indications.isEmpty()) {
       // set width before for better layout
-      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + MENU_PADDING * 3));
+      indicationMenu.setWidth(stage.getWidth() - (turnMenu.getWidth() + eventsMenu.getWidth() + MENU_PADDING * 3));
       for (String i : indications)
         indicationMenu.addLabel(i);
 
@@ -151,7 +157,6 @@ public class MenuBuilder {
         + ")", screen::armiesMenu);
 
     // here present a sub-menu to see current discovery and be able to change it
-    Discoveries discoveries = screen.player.getComponent(Discoveries.class);
     empireMenu.addButton("Discoveries", screen::discoveryMenu);
 
     // here present a new screen to choose policies
@@ -267,6 +272,19 @@ public class MenuBuilder {
     } else {
       actionMenu.clear();
       actionMenu = null;
+    }
+  }
+
+  public void buildEventsMenu() {
+    eventsMenu.clear();
+
+    EventsCount events = screen.player.getComponent(EventsCount.class);
+    if (events != null) {
+      eventsMenu.addLabel("Possible events in " + screen.player.getComponent(Name.class));
+      for (Entry<EventHandler> evt : events.display)
+        eventsMenu.addLabel(format(" %s: %d (+%d)", evt.key.getType(), evt.value, events.increment.get(evt.key, 0)));
+
+      eventsMenu.addToStage(stage, stage.getWidth() - 256, stage.getHeight() - MENU_PADDING, false);
     }
   }
 

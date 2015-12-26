@@ -19,8 +19,16 @@ public final class EventsSystem extends EntitySystem {
     /** Get the score progress toward next event of this type. */
     int getProgress(Entity e);
 
-    /** Execute the event on the entity. */
-    void execute(Entity e);
+    /**
+     * Execute the event on the entity.
+     * 
+     * @return true if it could execute the event (false if some system
+     *         condition prevented it)
+     */
+    boolean execute(Entity e);
+
+    /** A pretty printing name for the event. */
+    String getType();
 
   }
 
@@ -39,29 +47,39 @@ public final class EventsSystem extends EntitySystem {
   @Override
   protected void inserted(Entity e) {
     super.inserted(e);
-    for (EventHandler type : types)
-      counts.get(e).scores.put(type, 0);
+    EventsCount count = counts.get(e);
+    for (EventHandler type : types) {
+      count.scores.put(type, 0);
+    }
+    count.increment.putAll(count.scores);
+    count.display.putAll(count.scores);
   }
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
+    for (Entity e : entities)
+      checkEvents(e);
+  }
+
+  private void checkEvents(Entity e) {
     int maxScore = Integer.MIN_VALUE;
     EventHandler selected = null;
-    for (Entity e : entities) {
-      EventsCount count = counts.get(e);
-      for (EventHandler type : count.scores.keys()) {
-        int newScore = type.getProgress(e) + count.scores.get(type, 0);
-        count.scores.put(type, newScore);
-        if (newScore > maxScore) {
-          selected = type;
-          maxScore = newScore;
-        }
+    EventsCount count = counts.get(e);
+    for (EventHandler type : count.scores.keys()) {
+      int progress = type.getProgress(e);
+      int newScore = progress + count.scores.get(type, 0);
+      count.increment.put(type, progress);
+      count.display.put(type, newScore);
+      count.scores.put(type, newScore);
+      if (newScore > maxScore) {
+        selected = type;
+        maxScore = newScore;
       }
-      if (selected != null) {
-        selected.execute(e);
+    }
+    if (selected != null) {
+      if (selected.execute(e))
         // also reset score
         count.scores.put(selected, 0);
-      }
     }
   }
 }
