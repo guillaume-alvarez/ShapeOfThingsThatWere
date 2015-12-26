@@ -398,6 +398,7 @@
 {
   name: "Stone circle",
   previous: [[Sky, Stone], [Death, Stone]],
+  effects: {discovery: 1, stability: 1}
 },
 {
   name: Beliefs,
