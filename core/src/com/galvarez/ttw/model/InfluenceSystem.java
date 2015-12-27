@@ -232,6 +232,8 @@ public final class InfluenceSystem extends EntitySystem {
    */
   private void addInfluenceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
+
+    // first compute the target influence from the city itself
     for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power())) {
       Influence tile = map.getInfluenceAt(entry.key);
       int target = canInfluence(e, entry.key) ? entry.value
@@ -243,6 +245,7 @@ public final class InfluenceSystem extends EntitySystem {
       targets.put(entry.key, target);
     }
 
+    // then add influence from its armies
     for (Entity s : source.secondarySources) {
       for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)) {
         MapPosition pos = entry.key;
@@ -252,6 +255,7 @@ public final class InfluenceSystem extends EntitySystem {
       }
     }
 
+    // finally compute the delta from the target level
     for (ObjectIntMap.Entry<MapPosition> entry : targets) {
       Influence tile = map.getInfluenceAt(entry.key);
       int current = tile.getInfluence(e);
