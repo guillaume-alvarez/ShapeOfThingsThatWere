@@ -337,7 +337,8 @@ public final class InfluenceSystem extends EntitySystem {
     // cannot influence on tiles from empires we have a treaty with
     if (influence.hasMainInfluence()) {
       Diplomacy treaties = relations.get(source);
-      if (treaties.getRelationWith(influence.getMainInfluenceSource(world)) == State.TREATY)
+      State relation = treaties.getRelationWith(influence.getMainInfluenceSource(world));
+      if (relation == State.TREATY || relation == State.PROTECTORATE)
         return false;
     }
 

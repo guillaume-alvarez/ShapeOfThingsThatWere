@@ -45,7 +45,7 @@ public final class DiplomaticSystem extends EntitySystem {
   private static final Logger log = LoggerFactory.getLogger(DiplomaticSystem.class);
 
   public enum State {
-    NONE, WAR, TREATY, TRIBUTE;
+    NONE, WAR, TREATY, PROTECTORATE, TRIBUTE;
   }
 
   public enum Action {
@@ -56,10 +56,10 @@ public final class DiplomaticSystem extends EntitySystem {
 
     MAKE_PEACE("make peace", State.NONE, State.NONE, of(State.WAR), a -> false),
 
-    SIGN_TREATY("sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE),
-        a -> a == MAKE_PEACE),
+    SIGN_TREATY("sign a treaty", State.TREATY, State.TREATY, of(State.WAR, State.NONE, State.TRIBUTE,
+        State.PROTECTORATE), a -> a == MAKE_PEACE),
 
-    SURRENDER("surrender", State.TRIBUTE, State.TREATY, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
+    SURRENDER("surrender", State.TRIBUTE, State.PROTECTORATE, of(State.WAR), a -> a == MAKE_PEACE || a == SIGN_TREATY);
 
     public final String str;
 

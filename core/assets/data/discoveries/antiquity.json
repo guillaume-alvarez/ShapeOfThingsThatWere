@@ -44,7 +44,7 @@
   name: City,
   previous: [[Village, Chief], [Village, Trade], [Village, War], [Village, "Stone circle"]],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2, health: 2, discovery: 1}
+  effects: {militaryPower: 2, health: 2, discovery: 1, diplomacy: PROTECTORATE}
 },
 {
   name: War,
@@ -122,7 +122,7 @@
   name: King,
   previous: [[City, Chief], [City, WEAPON]],
   groups: [GOVERNMENT, LEADER],
-  effects: {militaryPower: 2}
+  effects: {militaryPower: 2, diplomacy: PROTECTORATE}
 },
 {
   name: Wheel,

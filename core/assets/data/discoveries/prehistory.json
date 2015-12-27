@@ -283,7 +283,7 @@
   previous: [[Crop, WEAPON], [War, WEAPON], [Brick, WEAPON]],
   groups: [JOBS],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 1, growth: 1, stability: -1}
+  effects: {militaryPower: 1, growth: 1, stability: -1, diplomacy: PROTECTORATE}
 },
 {
   name: Chief,

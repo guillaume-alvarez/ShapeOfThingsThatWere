@@ -142,18 +142,13 @@ public final class ScoreSystem extends EntitySystem {
 
       // add to overlords and allies
       for (Entry<Entity, State> e : diplomacy.relations.entrySet()) {
-        // we have a treaty with all vassals/tributary states
-        if (e.getValue() == State.TREATY && !isTributaryTo(e.getKey(), empire))
+        if (e.getValue() == State.TREATY)
           add(e.getKey(), delta / 4, Collections.emptySet());
         else if (e.getValue() == State.TRIBUTE)
           // overlord controls me and my vassals
           add(e.getKey(), delta / 2, score.controlledEmpires);
       }
     }
-  }
-
-  private boolean isTributaryTo(Entity vassal, Entity lord) {
-    return relations.get(vassal).getRelationWith(lord) == State.TRIBUTE;
   }
 
   public final class Item {
