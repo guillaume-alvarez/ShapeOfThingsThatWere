@@ -145,16 +145,16 @@ public final class ArmiesSystem extends EntitySystem {
     }
   }
 
-  private int getArmyPowerIncrease(Entity empire, int power) {
+  private int getArmyPowerIncrease(Entity empire, int increase) {
     InfluenceSource source = sources.get(empire);
-    power = min(power, source.power());
-    source.addToPower(-power);
+    increase = min(increase, source.power());
+    source.addToPower(-increase);
 
     // update power displayed on screen
     TextBox box = boxes.get(empire);
     box.text = box.generator.get();
 
-    return power;
+    return increase;
   }
 
   private String armyName(ArmyCommand command, Entity empire) {
