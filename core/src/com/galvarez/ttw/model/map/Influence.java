@@ -37,6 +37,12 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     recomputeMain();
   }
 
+  /** Move the source influence on the tile. */
+  public void moveInfluence(Entity from, Entity to) {
+    influence.getAndIncrement(to.getId(), 0, influence.remove(from.getId(), 0));
+    recomputeMain();
+  }
+
   /** Remove the source influence from the tile. */
   public void removeInfluence(Entity source) {
     influence.remove(source.getId(), 0);

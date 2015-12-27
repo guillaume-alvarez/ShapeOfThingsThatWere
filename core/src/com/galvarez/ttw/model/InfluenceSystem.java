@@ -141,12 +141,13 @@ public final class InfluenceSystem extends EntitySystem {
     }
 
     // and update source power
-    for (Entity city : empires) {
-      updateInfluencedTiles(city);
-      accumulatePower(city);
+    for (Entity empire : empires) {
+      updateInfluencedTiles(empire);
+      accumulatePower(empire);
+      checkInfluencedByOther(sources.get(empire), empire);
     }
 
-    // then compute the delta for every entity and tile
+    // then compute the new delta for every entity and tile
     for (Entity empire : empires) {
       IntIntMap armyInfluenceOn = new IntIntMap();
       Diplomacy diplo = relations.get(empire);
@@ -154,9 +155,7 @@ public final class InfluenceSystem extends EntitySystem {
       for (Entity enemy : diplo.getEmpires(State.WAR))
         armyInfluenceOn.put(enemy.getId(), armyPower - commands.get(enemy).militaryPower);
 
-      InfluenceSource source = sources.get(empire);
-      checkInfluencedByOther(source, empire);
-      addInfluenceDelta(source, empire, armyInfluenceOn);
+      addInfluenceDelta(sources.get(empire), empire, armyInfluenceOn);
     }
   }
 
@@ -183,9 +182,19 @@ public final class InfluenceSystem extends EntitySystem {
           diplomaticSystem.changeRelation(empire, loser, influencer, relations.get(influencer), Action.SURRENDER);
           loser.proposals.remove(influencer);
 
-          // keep influence on own tile
-          tile.setInfluence(empire, tile.getMaxInfluence() + 1);
+          // keep influence on own tile...
+          tile.moveInfluence(influencer, empire);
           source.influencedTiles.add(tile.position);
+          // ...and neighbors
+          for (Border b : Border.values()) {
+            Influence t = map.getInfluenceAt(b.getNeighbor(tile.position));
+            // do not modify influence if there is an army or city on the tile
+            if (t != null && !map.hasEntity(t.position)) {
+              t.moveInfluence(influencer, empire);
+              if (t.isMainInfluencer(empire))
+                source.influencedTiles.add(t.position);
+            }
+          }
         }
       }
     }
