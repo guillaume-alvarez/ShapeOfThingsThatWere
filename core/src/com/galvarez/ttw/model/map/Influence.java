@@ -11,20 +11,30 @@ import com.badlogic.gdx.utils.IntIntMap.Entry;
 
 public final class Influence implements Iterable<IntIntMap.Entry> {
 
+  public final MapPosition position;
+
   public final Terrain terrain;
 
   /** Entity id to influence score. */
   private final IntIntMap influence = new IntIntMap();
 
+  /**
+   * Entity id to influence delta from last turn. Only for display when starting
+   * a new turn, player needs to know how things evolve.
+   */
   private final IntIntMap influenceDelta = new IntIntMap();
+
+  /**
+   * Entity id to influence target for next turn. Used to compute the increment
+   * at each turn.
+   */
+  private final IntIntMap influenceTarget = new IntIntMap();
 
   private int mainInfluence = 0;
 
   private int mainInfluenceSource = -1;
 
   private int secondInfluenceDiff = 0;
-
-  public final MapPosition position;
 
   public Influence(MapPosition position, Terrain terrain) {
     this.position = position;
@@ -50,11 +60,6 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     recomputeMain();
   }
 
-  /** Add to the delta for source influence on next turn to the tile. */
-  public void addInfluenceDelta(Entity source, int delta) {
-    influenceDelta.getAndIncrement(source.getId(), 0, delta);
-  }
-
   public Iterable<IntIntMap.Entry> getDelta() {
     return influenceDelta;
   }
@@ -63,13 +68,40 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
     return influenceDelta.get(source.getId(), 0);
   }
 
-  /** Apply stored delta on influence. */
-  public void applyDelta() {
-    for (Entry e : influenceDelta) {
-      int old = influence.get(e.key, 0);
-      influence.put(e.key, max(0, e.value + old));
-    }
+  public void clearInfluenceTarget() {
+    influenceTarget.clear();
+  }
+
+  public void increaseTarget(Entity source, int target) {
+    influenceTarget.getAndIncrement(source.getId(), 0, target);
+  }
+
+  /** Make each participant influence closer to target and compute delta. */
+  public void computeNewInfluence() {
     influenceDelta.clear();
+
+    // make sure all involved empires have a target influence
+    for (Entry e : influence) {
+      if (!influenceTarget.containsKey(e.key))
+        influenceTarget.put(e.key, 0);
+    }
+
+    // then compute the delta and apply it
+    for (Entry e : influenceTarget) {
+      final int current = influence.get(e.key, 0);
+      final int target = e.value;
+      int delta = 0;
+      if (target > current)
+        delta = max(1, (target - current) / 10);
+      else if (target < current)
+        delta = -max(1, (current - target) / 10);
+
+      if (delta != 0) {
+        // do nothing if same obviously
+        influence.put(e.key, max(0, current + delta));
+        influenceDelta.put(e.key, delta);
+      }
+    }
     recomputeMain();
   }
 

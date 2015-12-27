@@ -112,7 +112,7 @@ public final class DestinationSystem extends EntitySystem {
           // just make sure to have enough influence
           inf.setInfluence(e, inf.getMaxInfluence());
           if (inf.hasMainInfluence() && !inf.isMainInfluencer(e))
-            inf.addInfluenceDelta(e, inf.getDelta(inf.getMainInfluenceSource(world)) + 1);
+            inf.setInfluence(e, inf.getMaxInfluence() + 1);
         }
         if (dest.path.isEmpty()) {
           dest.target = null;

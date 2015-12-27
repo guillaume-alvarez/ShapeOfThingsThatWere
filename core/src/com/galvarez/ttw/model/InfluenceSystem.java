@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,12 +132,10 @@ public final class InfluenceSystem extends EntitySystem {
   protected void processEntities(ImmutableBag<Entity> empires) {
     // must apply each step to all sources to have a consistent behavior
 
-    // first apply delta from previous turn and display it
-    for (int x = 0; x < map.height; x++) {
-      for (int y = 0; y < map.width; y++) {
-        updateTileInfluence(x, y);
-      }
-    }
+    // prepare new influence target that will be computed
+    for (int x = 0; x < map.height; x++)
+      for (int y = 0; y < map.width; y++)
+        map.getInfluenceAt(x, y).clearInfluenceTarget();
 
     // and update source power
     for (Entity empire : empires) {
@@ -155,8 +152,13 @@ public final class InfluenceSystem extends EntitySystem {
       for (Entity enemy : diplo.getEmpires(State.WAR))
         armyInfluenceOn.put(enemy.getId(), armyPower - commands.get(enemy).militaryPower);
 
-      addInfluenceDelta(sources.get(empire), empire, armyInfluenceOn);
+      updateInfluenceTarget(sources.get(empire), empire, armyInfluenceOn);
     }
+
+    // finally compute new influence at start of turn
+    for (int x = 0; x < map.height; x++)
+      for (int y = 0; y < map.width; y++)
+        updateTileInfluence(x, y);
   }
 
   /**
@@ -218,7 +220,7 @@ public final class InfluenceSystem extends EntitySystem {
             empires.get(empire).color, x, y, 1f);
       }
     }
-    tile.applyDelta();
+    tile.computeNewInfluence();
     // do not forget to update the main source
     Entity main = tile.getMainInfluenceSource(world);
     if (main != null)
@@ -230,19 +232,20 @@ public final class InfluenceSystem extends EntitySystem {
    * or next to one we compute the minimal distance to the source. Then from the
    * distance we compute the target influence level. Then apply the delta.
    */
-  private void addInfluenceDelta(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
+  private void updateInfluenceTarget(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
     ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
 
     // first compute the target influence from the city itself
     for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power())) {
       Influence tile = map.getInfluenceAt(entry.key);
-      int target = canInfluence(e, entry.key) ? entry.value
+
       // start losing influence when no neighboring tile
-          : 0;
-      // do not forget the military from war
+      if (canInfluence(e, entry.key))
+        tile.increaseTarget(e, entry.value);
+
+      // do not forget the military bonus from war
       if (tile.hasMainInfluence())
-        target += armyInfluenceOn.get(tile.getMainInfluenceSource(), 0);
-      targets.put(entry.key, target);
+        tile.increaseTarget(e, armyInfluenceOn.get(tile.getMainInfluenceSource(), 0));
     }
 
     // then add influence from its armies
@@ -251,20 +254,8 @@ public final class InfluenceSystem extends EntitySystem {
         MapPosition pos = entry.key;
         // armies only add to influence, they do not reduce it
         if (entry.value > 0 && canInfluence(e, pos))
-          targets.getAndIncrement(pos, 0, entry.value);
+          map.getInfluenceAt(pos).increaseTarget(e, entry.value);
       }
-    }
-
-    // finally compute the delta from the target level
-    for (ObjectIntMap.Entry<MapPosition> entry : targets) {
-      Influence tile = map.getInfluenceAt(entry.key);
-      int current = tile.getInfluence(e);
-      int target = entry.value;
-      if (target > current)
-        tile.addInfluenceDelta(e, max(1, (target - current) / 10));
-      else if (target < current)
-        tile.addInfluenceDelta(e, -max(1, (current - target) / 10));
-      // do nothing if same obviously
     }
   }
 
@@ -272,13 +263,13 @@ public final class InfluenceSystem extends EntitySystem {
    * Compute the target influence on all tiles around the starting position.
    * <p>
    * Note: resulting target can be negative. It stops on tiles where there is no
-   * source influence AND target is not positive.
+   * influence from source AND target is not positive.
    */
   private ObjectIntMap<MapPosition> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
     Map<Terrain, Integer> costs = terrainCosts(source);
     Queue<Pos> frontier = new PriorityQueue<>();
     frontier.add(new Pos(startPos, startingPower));
-    ObjectIntMap<MapPosition> targets = new ObjectIntMap<MapPosition>();
+    ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
     targets.put(startPos, startingPower);
 
     while (!frontier.isEmpty()) {
@@ -362,8 +353,7 @@ public final class InfluenceSystem extends EntitySystem {
   private void updateInfluencedTiles(Entity e) {
     InfluenceSource source = sources.get(e);
 
-    Predicate<MapPosition> isNotMain = p -> !map.getInfluenceAt(p).isMainInfluencer(e);
-    source.influencedTiles.removeIf(isNotMain);
+    source.influencedTiles.removeIf(p -> !map.getInfluenceAt(p).isMainInfluencer(e));
   }
 
   /**
