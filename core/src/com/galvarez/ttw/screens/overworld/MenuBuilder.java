@@ -165,7 +165,7 @@ public class MenuBuilder {
       empireMenu.addButton("Policies (instability " + instability, screen::policiesMenu);
     else {
       empireMenu.addButton(empireMenu.getSkin().get("colored", LabelStyle.class), //
-          "[BLACK]Policies (instability [RED]" + instability + "[])", //
+          "[BLACK]Policies (instability [RED]" + instability + "[]))", //
           null, screen::policiesMenu, true);
     }
 
