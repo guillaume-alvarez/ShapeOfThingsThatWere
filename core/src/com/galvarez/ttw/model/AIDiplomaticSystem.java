@@ -17,6 +17,7 @@ import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
@@ -30,6 +31,8 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   private ComponentMapper<Diplomacy> relations;
 
   private ComponentMapper<MapPosition> positions;
+
+  private ComponentMapper<InfluenceSource> influences;
 
   private DiplomaticSystem diplomaticSystem;
 
@@ -49,18 +52,30 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
   @Override
   protected void process(Entity entity) {
     Diplomacy diplo = relations.get(entity);
+
+    // first check if we could revolt from overlord
+    List<Entity> lords = diplo.getEmpires(State.TRIBUTE);
+    if (lords.size() > 0)
+      for (Entity lord : lords)
+        if (isWeaker(lord, entity)) {
+          makeProposal(entity, diplo, lord, Action.DECLARE_WAR);
+          return;
+        }
+
     // TODO have a real AI algorithm for diplomacy
     // neighbors from the nicest to the baddest
     List<Entity> neighbors = getNeighboringSources(entity);
+
+    // sign treaty with half the neighbors, not the last one (WAR for him!)
     if (diplo.knownStates.contains(State.TREATY) && neighbors.size() > 2) {
-      // sign treaty with half the neighbors, not the last one (WAR for him!)
       for (int i = 0; i < neighbors.size() / 2 && i < neighbors.size() - 1; i++) {
         Entity target = neighbors.get(i);
         makeProposal(entity, diplo, target, Action.SIGN_TREATY);
       }
     }
+
+    // try to be at war with somebody, and only that somebody
     if (diplo.knownStates.contains(State.WAR)) {
-      // try to be at war with somebody, and only that somebody
       List<Entity> atWarWith = diplo.getEmpires(State.WAR);
       Entity target = neighbors.isEmpty() ? null : neighbors.get(neighbors.size() - 1);
       // to change our war target, first make peace with preceding one
@@ -71,6 +86,10 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
       if (target != null && !atWarWith.contains(target))
         makeProposal(entity, diplo, target, Action.DECLARE_WAR);
     }
+  }
+
+  private boolean isWeaker(Entity lord, Entity entity) {
+    return influences.get(entity).power() >= influences.get(lord).power();
   }
 
   private void makeProposal(Entity entity, Diplomacy diplo, Entity target, Action action) {
