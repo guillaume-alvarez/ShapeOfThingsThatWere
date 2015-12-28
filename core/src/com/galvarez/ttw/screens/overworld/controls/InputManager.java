@@ -77,7 +77,7 @@ public class InputManager {
     menuBuilder.buildIndicationMenu();
     menuBuilder.buildEmpireMenu();
     menuBuilder.buildNotificationMenu();
-    menuBuilder.buildEventsMenu();
+    menuBuilder.buildEventsMenu(selectedEntity);
     if (screen.selectedTile != null)
       menuBuilder.buildSelectionMenu(screen.selectedTile, selectedEntity);
 
@@ -122,6 +122,7 @@ public class InputManager {
     // Put up a menu for the selected entity
     menuBuilder.clearSubMenus();
     menuBuilder.buildSelectionMenu(coords, entity);
+    menuBuilder.buildEventsMenu(entity);
 
     if (flagIfMoveable && entity != null && entity.getComponent(Destination.class) != null
     // player cannot control AI empires

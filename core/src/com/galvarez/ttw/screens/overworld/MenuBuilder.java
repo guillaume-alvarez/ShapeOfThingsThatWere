@@ -275,12 +275,15 @@ public class MenuBuilder {
     }
   }
 
-  public void buildEventsMenu() {
+  public void buildEventsMenu(Entity e) {
     eventsMenu.clear();
 
-    EventsCount events = screen.player.getComponent(EventsCount.class);
+    if (e == null || e.getComponent(EventsCount.class) == null)
+      e = screen.player;
+
+    EventsCount events = e.getComponent(EventsCount.class);
     if (events != null) {
-      eventsMenu.addLabel("Possible events in " + screen.player.getComponent(Name.class));
+      eventsMenu.addLabel("Possible events in " + e.getComponent(Name.class));
       for (Entry<EventHandler> evt : events.display)
         eventsMenu.addLabel(format(" %s: %d (+%d)", evt.key.getType(), evt.value, events.increment.get(evt.key, 0)));
 
