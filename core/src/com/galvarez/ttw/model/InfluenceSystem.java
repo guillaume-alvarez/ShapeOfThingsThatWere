@@ -1,5 +1,6 @@
 package com.galvarez.ttw.model;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -211,13 +212,18 @@ public final class InfluenceSystem extends EntitySystem {
     entity.edit().deleteEntity();
   }
 
+  private static final String[] DELTA_STR = { "----", "---", "--", "-", "", "+", "++", "+++", "++++" };
+
   private void updateTileInfluence(int x, int y) {
     Influence tile = map.getInfluenceAt(x, y);
+    float shift = 0f;
     for (IntIntMap.Entry e : tile.getDelta()) {
       if (e.value != 0) {
         Entity empire = world.getEntity(e.key);
-        EntityFactory.createFadingTileLabel(world, e.value > 0 ? "+" + e.value : Integer.toString(e.value),
-            empires.get(empire).color, x, y, 1f);
+        String text = abs(e.value) > 4 ? (e.value > 0 ? "+" + e.value : Integer.toString(e.value))
+            : DELTA_STR[e.value + 4];
+        EntityFactory.createFadingTileLabel(world, text, empires.get(empire).color, x, y + shift, 1f);
+        shift += 0.2;
       }
     }
     tile.computeNewInfluence();
