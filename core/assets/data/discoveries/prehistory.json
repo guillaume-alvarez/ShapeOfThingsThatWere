@@ -234,7 +234,7 @@
   previous: [[Forge, MATERIAL], [Textile, House]],
   terrains: [GRASSLAND, PLAIN],
   groups: [JOBS],
-  effects: {growth: 1}
+  effects: {growth: 1, stability: 1}
 },
 {
   name: Family,
