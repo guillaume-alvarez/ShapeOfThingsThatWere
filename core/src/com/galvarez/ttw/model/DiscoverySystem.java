@@ -221,6 +221,9 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   }
 
   private Research toResearch(Discovery d, Set<String> done, Map<String, List<String>> groups) {
+    if (d.previous.isEmpty())
+      return new Research(d, Collections.emptyList());
+
     List<Discovery> previous = new ArrayList<>(d.previous.size());
     for (Collection<String> l : d.previous)
       if (done.containsAll(l)) {

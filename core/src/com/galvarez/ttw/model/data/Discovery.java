@@ -40,7 +40,7 @@ public final class Discovery {
       Map<String, Object> effects) {
     this.name = name;
     this.effects = effects != null ? effects : Collections.emptyMap();
-    this.previous = previous.stream().map(l -> set(l)).collect(toSet());
+    this.previous = previous.stream().filter(l -> !l.isEmpty()).map(l -> set(l)).collect(toSet());
     this.groups = set(groups);
     if (terrains != null)
       this.terrains.addAll(terrains);
