@@ -383,17 +383,17 @@
 {
   name: Death,
   previous: [[]],
-  effects: {militaryPower: -1}
+  effects: {militaryPower: -1, stability: 1}
 },
 {
   name: Sky,
   previous: [[]],
-  effects: {militaryPower: -1}
+  effects: {militaryPower: -1, stability: 1}
 },
 {
   name: Underworld,
   previous: [[]],
-  effects: {militaryPower: -1}
+  effects: {militaryPower: -1, stability: 1}
 },
 {
   name: "Stone circle",
