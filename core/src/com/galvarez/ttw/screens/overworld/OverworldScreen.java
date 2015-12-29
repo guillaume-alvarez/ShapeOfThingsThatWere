@@ -402,7 +402,7 @@ public final class OverworldScreen extends AbstractScreen {
   public void highlightFlagRange(Entity source) {
     highlightedTiles.clear();
     for (MapPosition tile : destinationSystem.getTargetTiles(source))
-      highlightedTiles.put(tile, String.valueOf(map.getInfluenceAt(tile).requiredInfluence(source)));
+      highlightedTiles.put(tile, null);
     renderHighlighter = true;
     mapHighlighter.setColor(0f, 0f, 0.2f, 0.3f);
     indications.add("Select destination in highlighted tiles for " + source.getComponent(Description.class));

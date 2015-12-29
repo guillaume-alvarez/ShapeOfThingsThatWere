@@ -60,7 +60,8 @@ public class MapHighlighter extends AbstractRenderer {
 
       // then draw the remaining cost for each cell
       String msg = e.getValue();
-      font.draw(batch, msg, coords.x, coords.y);
+      if (msg != null)
+        font.draw(batch, msg, coords.x, coords.y);
     }
 
     t += Gdx.graphics.getDeltaTime();
