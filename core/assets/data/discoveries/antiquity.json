@@ -41,10 +41,16 @@
   effects: {militaryPower: 3}
 },
 {
+  name: Protectorate,
+  previous: [[Slave, Writing], [City], [War], [King]],
+  groups: [RELATION],
+  effects: {diplomacy: PROTECTORATE, militaryPower: 1, stability: 1, growth: 1}
+},
+{
   name: City,
   previous: [[Village, Chief], [Village, Trade], [Village, War], [Village, "Stone circle"]],
   terrains: [GRASSLAND, PLAIN],
-  effects: {militaryPower: 2, health: 2, discovery: 1, diplomacy: PROTECTORATE}
+  effects: {militaryPower: 2, health: 2, discovery: 1}
 },
 {
   name: War,
@@ -122,7 +128,7 @@
   name: King,
   previous: [[City, Chief], [City, WEAPON]],
   groups: [GOVERNMENT, LEADER],
-  effects: {militaryPower: 2, diplomacy: PROTECTORATE}
+  effects: {militaryPower: 2}
 },
 {
   name: Wheel,
