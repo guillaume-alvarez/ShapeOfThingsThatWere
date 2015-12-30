@@ -20,6 +20,7 @@ import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.IntIntMap.Entry;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
@@ -69,7 +70,7 @@ public final class InfluenceSystem extends EntitySystem {
 
   public static final int INITIAL_POWER = 100;
 
-  private ComponentMapper<Empire> empires;
+  private ComponentMapper<Empire> data;
 
   private ComponentMapper<InfluenceSource> sources;
 
@@ -222,7 +223,7 @@ public final class InfluenceSystem extends EntitySystem {
         Entity empire = world.getEntity(e.key);
         String text = abs(e.value) > 4 ? (e.value > 0 ? "+" + e.value : Integer.toString(e.value))
             : DELTA_STR[e.value + 4];
-        EntityFactory.createFadingTileLabel(world, text, empires.get(empire).color, x, y + shift, 1f);
+        EntityFactory.createFadingTileLabel(world, text, data.get(empire).color, x, y + shift, 1f);
         shift += 0.2;
       }
     }
@@ -239,15 +240,22 @@ public final class InfluenceSystem extends EntitySystem {
    * distance we compute the target influence level. Then apply the delta.
    */
   private void updateInfluenceTarget(InfluenceSource source, Entity e, IntIntMap armyInfluenceOn) {
-    ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
-
     // first compute the target influence from the city itself
-    for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(e), source.power())) {
-      Influence tile = map.getInfluenceAt(entry.key);
+    for (ObjectIntMap.Entry<Influence> entry : getTargetInfluence(e, positions.get(e), source.power())) {
+      Influence tile = entry.key;
+      int target = entry.value;
 
       // start losing influence when no neighboring tile
-      if (canInfluence(e, entry.key))
-        tile.increaseTarget(e, entry.value);
+      if (canInfluence(e, tile))
+        tile.increaseTarget(e, target);
+      else {
+        // pass influence to protectorates
+        for (Entry inf : tile) {
+          Entity influencer = world.getEntity(inf.key);
+          if (relations.get(influencer).getRelationWith(e) == State.PROTECTORATE)
+            tile.increaseTarget(influencer, target);
+        }
+      }
 
       // do not forget the military bonus from war
       if (tile.hasMainInfluence())
@@ -256,11 +264,13 @@ public final class InfluenceSystem extends EntitySystem {
 
     // then add influence from its armies
     for (Entity s : source.secondarySources) {
-      for (ObjectIntMap.Entry<MapPosition> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)) {
-        MapPosition pos = entry.key;
+      for (ObjectIntMap.Entry<Influence> entry : getTargetInfluence(e, positions.get(s), armies.get(s).currentPower)) {
         // armies only add to influence, they do not reduce it
-        if (entry.value > 0 && canInfluence(e, pos))
-          map.getInfluenceAt(pos).increaseTarget(e, entry.value);
+        Influence inf = entry.key;
+        int target = entry.value;
+
+        if (target > 0 && canInfluence(e, inf))
+          inf.increaseTarget(e, target);
       }
     }
   }
@@ -271,12 +281,12 @@ public final class InfluenceSystem extends EntitySystem {
    * Note: resulting target can be negative. It stops on tiles where there is no
    * influence from source AND target is not positive.
    */
-  private ObjectIntMap<MapPosition> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
+  private ObjectIntMap<Influence> getTargetInfluence(Entity source, MapPosition startPos, int startingPower) {
     Map<Terrain, Integer> costs = terrainCosts(source);
     Queue<Pos> frontier = new PriorityQueue<>();
     frontier.add(new Pos(startPos, startingPower));
-    ObjectIntMap<MapPosition> targets = new ObjectIntMap<>();
-    targets.put(startPos, startingPower);
+    ObjectIntMap<Influence> targets = new ObjectIntMap<>();
+    targets.put(map.getInfluenceAt(startPos), startingPower);
 
     while (!frontier.isEmpty()) {
       Pos current = frontier.poll();
@@ -285,9 +295,9 @@ public final class InfluenceSystem extends EntitySystem {
         Influence inf = map.getInfluenceAt(next);
         if (!inf.terrain.moveBlock()) {
           int newTarget = current.target - costs.get(inf.terrain);
-          int oldTarget = targets.get(next, Integer.MIN_VALUE);
+          int oldTarget = targets.get(inf, Integer.MIN_VALUE);
           if (newTarget > oldTarget) {
-            targets.put(next, newTarget);
+            targets.put(inf, newTarget);
             /*
              * Increase only one tile from already influenced tiles. Decreases
              * wherever we have some influence (makes no sense to decrease
@@ -330,22 +340,21 @@ public final class InfluenceSystem extends EntitySystem {
    * Can only influence a tile if it belongs to the source or one of its
    * neighbor does. Cannot influence if we have a treaty.
    */
-  private boolean canInfluence(Entity source, MapPosition pos) {
-    Influence influence = map.getInfluenceAt(pos);
-    if (influence.isMainInfluencer(source))
+  private boolean canInfluence(Entity source, Influence inf) {
+    if (inf.isMainInfluencer(source))
       return true;
 
     // cannot influence on tiles from empires we have a treaty with
-    if (influence.hasMainInfluence()) {
+    if (inf.hasMainInfluence()) {
       Diplomacy treaties = relations.get(source);
-      State relation = treaties.getRelationWith(influence.getMainInfluenceSource(world));
+      State relation = treaties.getRelationWith(inf.getMainInfluenceSource(world));
       if (relation == State.TREATY || relation == State.PROTECTORATE)
         return false;
     }
 
     // need a neighbor we already have influence on
     for (Border b : Border.values()) {
-      Influence tile = map.getInfluenceAt(b.getNeighbor(pos));
+      Influence tile = map.getInfluenceAt(b.getNeighbor(inf.position));
       if (tile != null && tile.isMainInfluencer(source))
         return true;
     }

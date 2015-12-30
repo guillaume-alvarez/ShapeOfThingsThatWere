@@ -186,6 +186,19 @@ public final class Influence implements Iterable<IntIntMap.Entry> {
   }
 
   @Override
+  public int hashCode() {
+    return position.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    else
+      return (obj instanceof Influence) && position.equals(((Influence) obj).position);
+  }
+
+  @Override
   public String toString() {
     return terrain + influence.toString();
   }
