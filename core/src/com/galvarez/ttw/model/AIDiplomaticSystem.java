@@ -57,10 +57,9 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     List<Entity> lords = diplo.getEmpires(State.TRIBUTE);
     if (lords.size() > 0)
       for (Entity lord : lords)
-        if (isWeaker(lord, entity)) {
-          makeProposal(entity, diplo, lord, Action.DECLARE_WAR);
-          return;
-        }
+        if (isWeaker(lord, entity))
+          if (makeProposal(entity, diplo, lord, Action.DECLARE_WAR))
+            return;
 
     // TODO have a real AI algorithm for diplomacy
     // neighbors from the nicest to the baddest
@@ -92,7 +91,7 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
     return influences.get(entity).power() >= influences.get(lord).power();
   }
 
-  private void makeProposal(Entity entity, Diplomacy diplo, Entity target, Action action) {
+  private boolean makeProposal(Entity entity, Diplomacy diplo, Entity target, Action action) {
     if (diplomaticSystem.getPossibleActions(diplo, target).contains(action)
     // do not change status if same proposal is already on the table
         && diplo.proposals.get(target) != action
@@ -100,7 +99,9 @@ public final class AIDiplomaticSystem extends EntityProcessingSystem {
         && entity != target) {
       log.debug("{} wants to {} with {}", entity.getComponent(Name.class), action.str, target.getComponent(Name.class));
       diplo.proposals.put(target, action);
+      return true;
     }
+    return false;
   }
 
   /** Neighbors from the nicest to the worst. */
