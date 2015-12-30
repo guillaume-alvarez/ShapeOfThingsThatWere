@@ -8,7 +8,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.artemis.managers.PlayerManager;
@@ -434,13 +433,6 @@ public final class OverworldScreen extends AbstractScreen {
     return notificationsSystem.canFinishTurn()
     // make sure no player action on map is waiting for input
         && !renderHighlighter;
-  }
-
-  public Entity addComponent(Component component, Entity entity) {
-    if (entity == null)
-      return null;
-    entity.edit().add(component);
-    return entity;
   }
 
   public void endTurn() {
