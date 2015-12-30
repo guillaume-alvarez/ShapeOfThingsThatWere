@@ -26,8 +26,6 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
 
   private static final Logger log = LoggerFactory.getLogger(AIDiscoverySystem.class);
 
-  private ComponentMapper<Discoveries> discoveries;
-
   private ComponentMapper<Policies> policies;
 
   private ComponentMapper<Empire> empires;
@@ -41,47 +39,49 @@ public final class AIDiscoverySystem extends EntityProcessingSystem {
 
   @Override
   protected boolean checkProcessing() {
-    return true;
+    return false;
   }
 
   @Override
   protected void process(Entity e) {
-    Discoveries d = discoveries.get(e);
+    // should not be called, selectNewDiscovery will be called when an event
+    // triggers a discovery
+  }
 
-    if (d.nextPossible != null) {
-      // we need to make some discovery
-      Culture culture = empires.get(e).culture;
-      Entry<Faction, Research> prefered = null;
-      float max = Float.NEGATIVE_INFINITY;
-      for (Entry<Faction, Research> possible : d.nextPossible.entrySet()) {
-        Faction faction = possible.getKey();
-        float score = culture.ai.get(faction) * possible.getValue().target.factions.get(faction, 1);
-        if (score > max) {
-          max = score;
-          prefered = possible;
-        }
+  public void selectNewDiscovery(Entity empire, Discoveries lab) {
+    Culture culture = empires.get(empire).culture;
+    Entry<Faction, Research> prefered = null;
+    float max = Float.NEGATIVE_INFINITY;
+    for (Entry<Faction, Research> possible : lab.nextPossible.entrySet()) {
+      Faction faction = possible.getKey();
+      float score = culture.ai.get(faction) * possible.getValue().target.factions.get(faction, 1);
+      if (score > max) {
+        max = score;
+        prefered = possible;
       }
-      if (prefered != null) {
-        log.debug("{} follows {} advice to investigate {} from {}", e.getComponent(Name.class), prefered.getKey(),
-            prefered.getValue().target, prefered.getValue().previous);
-        system.discoverNew(e, d, prefered.getValue());
-      }
-      Set<Policy> newPolicies;
-      if (d.last != null && (newPolicies = PoliciesSystem.getPolicies(d.last.target)) != null) {
-        Policies empirePolicies = policies.get(e);
-        for (Policy p : newPolicies) {
-          Discovery newD = d.last.target;
-          Discovery oldD = empirePolicies.policies.get(p);
-          float oldScore = policyScore(oldD, culture);
-          float newScore = policyScore(newD, culture);
-          if (newScore > oldScore) {
-            log.info("{} replaced policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
-                oldScore, newD, newScore);
-            empirePolicies.policies.put(p, newD);
-          } else
-            log.debug("{} did not replace policy {}={}(score={}) by {}(score={})", e.getComponent(Name.class), p, oldD,
-                oldScore, newD, newScore);
-        }
+    }
+
+    if (prefered != null) {
+      log.debug("{} follows {} advice to investigate {} from {}", empire.getComponent(Name.class), prefered.getKey(),
+          prefered.getValue().target, prefered.getValue().previous);
+      system.discoverNew(empire, lab, prefered.getValue());
+    }
+
+    Set<Policy> newPolicies;
+    if (lab.last != null && (newPolicies = PoliciesSystem.getPolicies(lab.last.target)) != null) {
+      Policies empirePolicies = policies.get(empire);
+      for (Policy p : newPolicies) {
+        Discovery newD = lab.last.target;
+        Discovery oldD = empirePolicies.policies.get(p);
+        float oldScore = policyScore(oldD, culture);
+        float newScore = policyScore(newD, culture);
+        if (newScore > oldScore) {
+          log.info("{} replaced policy {}={}(score={}) by {}(score={})", empire.getComponent(Name.class), p, oldD,
+              oldScore, newD, newScore);
+          empirePolicies.policies.put(p, newD);
+        } else
+          log.debug("{} did not replace policy {}={}(score={}) by {}(score={})", empire.getComponent(Name.class), p,
+              oldD, oldScore, newD, newScore);
       }
     }
   }

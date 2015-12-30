@@ -82,6 +82,8 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
   private SpecialDiscoveriesSystem special;
 
+  private AIDiscoverySystem aiSystem;
+
   private ComponentMapper<Discoveries> empires;
 
   private ComponentMapper<Diplomacy> relations;
@@ -142,7 +144,7 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
   @Override
   protected boolean checkProcessing() {
-    return true;
+    return false;
   }
 
   @Override
@@ -311,7 +313,9 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
       Research last = discovery.last;
       notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
           "We can make a new discovery!");
-    }
+    } else
+      aiSystem.selectNewDiscovery(empire, discovery);
+
     return true;
   }
 
