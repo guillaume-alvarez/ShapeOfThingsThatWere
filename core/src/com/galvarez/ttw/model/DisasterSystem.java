@@ -59,7 +59,7 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
 
   @Override
   protected boolean checkProcessing() {
-    return true;
+    return false;
   }
 
   @Override

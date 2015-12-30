@@ -92,7 +92,7 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
 
   @Override
   protected boolean checkProcessing() {
-    return true;
+    return false;
   }
 
   @Override
