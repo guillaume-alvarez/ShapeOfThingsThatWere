@@ -85,7 +85,8 @@ public final class NotificationsSystem extends VoidEntitySystem {
   }
 
   public void discard(Notification n) {
-    current.remove(n);
+    if (n.discard == null || n.discard.canDiscard())
+      current.remove(n);
   }
 
 }

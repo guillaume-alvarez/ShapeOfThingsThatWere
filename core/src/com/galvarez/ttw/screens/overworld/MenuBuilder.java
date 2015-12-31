@@ -9,13 +9,16 @@ import java.util.List;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.ObjectIntMap.Entry;
@@ -298,11 +301,18 @@ public class MenuBuilder {
       notifMenu.addLabel("No notifications");
     else
       for (Notification n : notifs) {
-        notifMenu.addButtonSprite(n.type, n.msg, () -> {
+        Button b = notifMenu.addButtonSprite(n.type, n.msg, () -> {
           inputManager.reloadMenus();
           if (n.action != null)
             n.action.run();
         }, true);
+        b.addListener(new ClickListener(Buttons.RIGHT) {
+          @Override
+          public void clicked(InputEvent event, float x, float y) {
+            notifications.discard(n);
+            inputManager.reloadMenus();
+          }
+        });
       }
     notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
   }

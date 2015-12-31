@@ -173,7 +173,7 @@ public class FramedMenu {
   /**
    * Adds a button to the menu, with an icon on the left and label on the right.
    */
-  public void addButtonSprite(Drawable icon, String label, Runnable action, boolean active) {
+  public Button addButtonSprite(Drawable icon, String label, Runnable action, boolean active) {
     LabelStyle style = active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class);
 
     Button b = new Button(skin.get(ButtonStyle.class));
@@ -193,6 +193,8 @@ public class FramedMenu {
 
     table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
     table.row();
+
+    return b;
   }
 
   /** Adds a label followed by a sprite to the menu. */
