@@ -33,6 +33,13 @@ public final class Diplomacy extends Component {
     return state != null ? state : State.NONE;
   }
 
+  public boolean hasRelationWith(Entity other) {
+    if (other == null)
+      return false;
+    else
+      return relations.containsKey(other) || proposals.containsKey(other) || lastChange.containsKey(other);
+  }
+
   public Action getProposalTo(Entity other) {
     Action action = proposals.get(other);
     return action != null ? action : Action.NO_CHANGE;

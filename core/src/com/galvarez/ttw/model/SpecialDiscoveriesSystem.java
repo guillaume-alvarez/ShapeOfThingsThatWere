@@ -13,14 +13,16 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
+import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.ArmyCommand;
 import com.galvarez.ttw.model.components.Destination;
+import com.galvarez.ttw.model.components.Diplomacy;
 import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.IconsSystem.Type;
+import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
@@ -53,6 +55,10 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
   private ComponentMapper<Destination> destinations;
 
   private ComponentMapper<ArmyCommand> commanders;
+
+  private ComponentMapper<Diplomacy> relations;
+
+  private ComponentMapper<AIControlled> ai;
 
   private NotificationsSystem notifications;
 
@@ -113,9 +119,10 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
   private void setDescription(Entity empire, String name, String desc) {
     descriptions.get(empire).desc = desc;
     log.info("{} is now known as '{}'", name, desc);
-    // notify all empires to player
-    notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS, "%s is now known as '%s'",
-        name, desc);
+    // notify only player empire, avoid spamming
+    if (!ai.has(empire) || relations.get(empire).hasRelationWith(screen.player))
+      notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS,
+          "%s is now known as '%s'", name, desc);
   }
 
   private void cannotMove(Entity capital) {
