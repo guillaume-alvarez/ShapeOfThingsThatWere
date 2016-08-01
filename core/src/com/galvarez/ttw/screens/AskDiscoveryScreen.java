@@ -15,8 +15,7 @@ import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
- * This screen appears when user tries to pause or escape from the main game
- * screen.
+ * This screen appears when player must choose his next discovery.
  * 
  * @author Guillaume Alvarez
  */
