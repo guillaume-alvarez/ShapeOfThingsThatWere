@@ -60,20 +60,26 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
   /** Update the text for all the entities. */
   public void preprocess() {
     for (Entity e : entities) {
-      TextBox box = boxes.get(e);
-      box.text = box.generator.get();
-
-      Empire empire = empires.get(e);
-
-      GlyphLayout bounds = font.getCache().setText(box.text, 0, 0);
-      Pixmap pm = new Pixmap((int) bounds.width + PAD * 2, (int) bounds.height + PAD * 2, Pixmap.Format.RGBA8888);
-      pm.setColor(empire.backColor);
-      pm.fill();
-      pm.setColor(empire.color);
-      pm.drawRectangle(0, 0, pm.getWidth(), pm.getHeight());
-      box.texture = new Texture(pm);
-      box.color = empire.color;
+      preprocess(e);
     }
+  }
+
+  private Texture preprocess(Entity e) {
+    TextBox box = boxes.get(e);
+    box.text = box.generator.get();
+
+    Empire empire = empires.get(e);
+
+    GlyphLayout bounds = font.getCache().setText(box.text, 0, 0);
+    Pixmap pm = new Pixmap((int) bounds.width + PAD * 2, (int) bounds.height + PAD * 2, Pixmap.Format.RGBA8888);
+    pm.setColor(empire.backColor);
+    pm.fill();
+    pm.setColor(empire.color);
+    pm.drawRectangle(0, 0, pm.getWidth(), pm.getHeight());
+    box.texture = new Texture(pm);
+    box.color = empire.color;
+
+    return box.texture;
   }
 
   @Override
@@ -92,6 +98,8 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
 
       TextBox box = boxes.get(e);
       Texture texture = box.texture;
+      if (texture == null)
+        texture = preprocess(e);
 
       int width = texture.getWidth();
       int height = texture.getHeight();

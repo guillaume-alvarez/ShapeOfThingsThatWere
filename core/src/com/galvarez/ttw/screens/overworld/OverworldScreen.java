@@ -58,6 +58,7 @@ import com.galvarez.ttw.rendering.map.MapRenderer;
 import com.galvarez.ttw.screens.AbstractScreen;
 import com.galvarez.ttw.screens.ArmiesMenuScreen;
 import com.galvarez.ttw.screens.AskDiscoveryScreen;
+import com.galvarez.ttw.screens.AskEventScreen;
 import com.galvarez.ttw.screens.DiplomacyMenuScreen;
 import com.galvarez.ttw.screens.DiscoveryMenuScreen;
 import com.galvarez.ttw.screens.PauseMenuScreen;
@@ -150,6 +151,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final AskDiscoveryScreen askDiscoveryScreen;
 
+  private final AskEventScreen askEventScreen;
+
   private final PoliciesMenuScreen policiesScreen;
 
   private final ScoresMenuScreen scoresScreen;
@@ -232,6 +235,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
     askDiscoveryScreen = new AskDiscoveryScreen(game, world, batch, this, player, discoverySystem);
+    askEventScreen = new AskEventScreen(game, world, batch, this);
     policiesScreen = new PoliciesMenuScreen(game, world, batch, this, player, policiesSystem, effectsSystem,
         revoltSystem);
     scoresScreen = new ScoresMenuScreen(game, world, batch, this, scoreSystem);
@@ -384,14 +388,18 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.setDelta(0);
     world.process();
-
-    diplomacyRenderSystem.preprocess();
-    influenceRenderSystem.preprocess();
-    textBoxRenderSystem.preprocess();
+    
+    updateRendering();
     notificationsSystem.process();
     turnNumber++;
 
     log.debug("Processed turn #{} in {}ms", turnNumber, System.currentTimeMillis() - start);
+  }
+  
+  public void updateRendering() {
+    diplomacyRenderSystem.preprocess();
+    influenceRenderSystem.preprocess();
+    textBoxRenderSystem.preprocess();    
   }
 
   public void flag(Entity source, int x, int y) {
@@ -457,6 +465,11 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void askDiscovery() {
     game.setScreen(askDiscoveryScreen);
+  }
+
+  public void askEvent(String label, Map<String, Runnable> choices) {
+    askEventScreen.setEvent(label, choices);
+    game.setScreen(askEventScreen);
   }
 
   public void armiesMenu() {

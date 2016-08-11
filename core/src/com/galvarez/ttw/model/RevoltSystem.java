@@ -4,6 +4,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Comparator.comparingInt;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -130,9 +132,21 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
         .min(comparingInt(Influence::getSecondInfluenceDiff));
 
     if (tile.isPresent()) {
-      updateEmpireAfterRevolt(empire, instability, source);
-
-      createRevoltingEmpire(empire, instability, tile.get());
+      if (ai.has(empire)) {
+        revolt(empire, instability, source, tile);
+        return true;
+      } else {
+        Map<String, Runnable> choices = new HashMap<String, Runnable>();
+        choices.put("Let them revolt!", () -> revolt(empire, instability, source, tile));
+        choices.put("Try to ease the tension...", () -> reduceInstability(empire, instability));
+        notifications.addNotification(() -> screen.askEvent("Our people are revolting, what should we do?", choices),
+            () -> getInstability(empire) <= 0, Type.REVOLT, "Revolt is sprawling!");
+        // TODO display choice screen asking what to do
+        // - lose power but keep tiles
+        // - create revoltee
+        // - change policies?
+        return true;
+      }
     } else if (instability > 50) {
       updateEmpireAfterRevolt(empire, instability, source);
 
@@ -141,8 +155,22 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
       if (!ai.has(empire))
         notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
             "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power());
+      return true;
     }
-    return true;
+    return false;
+  }
+
+  private void revolt(Entity empire, int instability, InfluenceSource source, Optional<Influence> tile) {
+    updateEmpireAfterRevolt(empire, instability, source);
+    createRevoltingEmpire(empire, instability, tile.get());
+  }
+
+  private void reduceInstability(Entity empire, int instability) {
+    // stop the revolt
+    policies.get(empire).stability += instability;
+    // decrease power by instability to avoid popping revolts in loop
+    InfluenceSource source = sources.get(empire);
+    source.setPower(max(max(1, source.power() / 2), source.power() - instability));
   }
 
   private void updateEmpireAfterRevolt(Entity empire, int instability, InfluenceSource source) {
