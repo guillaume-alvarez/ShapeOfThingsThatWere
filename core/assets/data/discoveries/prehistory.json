@@ -145,6 +145,20 @@
   effects: {militaryPower: 1, FOREST: -1, MOUNTAIN: -1, PLAIN: 1, GRASSLAND: 1}
 },
 {
+  name: Alpaca,
+  previous: [[Breeding, Mountain], [Breeding, Hill]],
+  groups: [FOOD, MEAT],
+  terrains: [HILLS, MOUNTAIN],
+  effects: {MOUNTAIN: 1, HILLS: 1}
+},
+{
+  name: Llama,
+  previous: [[Breeding, Mountain]],
+  groups: [FOOD, MEAT],
+  terrains: [MOUNTAIN],
+  effects: {MOUNTAIN: 1}
+},
+{
   name: Goat,
   previous: [[Breeding, Grassland], [Breeding, Mountain], [Breeding, Hill]],
   groups: [FOOD, MEAT],
