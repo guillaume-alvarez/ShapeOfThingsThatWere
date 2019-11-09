@@ -13,6 +13,9 @@
 .project
 .settings
 
+# IntelliJ project files
+.idea
+
 # gradle temp files
 .gradle
 build/
