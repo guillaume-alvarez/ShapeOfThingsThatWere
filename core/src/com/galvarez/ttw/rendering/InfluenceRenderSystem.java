@@ -75,7 +75,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   }
 
-  private final Map<MapPosition, Float> colors = new HashMap<>();
+  private final Map<MapPosition, Color> colors = new HashMap<>();
 
   private volatile boolean displayColoredInfluence = true;
 
@@ -111,7 +111,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
           // collect color
           Color c = empire.color;
-          colors.put(inf.position, Color.toFloatBits(c.r, c.g, c.b, min(0.8f,inf.getMaxInfluence() / 300f)));
+          colors.put(inf.position, new Color(c.r, c.g, c.b, min(0.8f,inf.getMaxInfluence() / 300f)));
         }
       }
     }
@@ -137,8 +137,8 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
     }
 
     if (displayColoredInfluence)
-      for (Entry<MapPosition, Float> e : colors.entrySet()) {
-        batch.setColor(e.getValue().floatValue());
+      for (Entry<MapPosition, Color> e : colors.entrySet()) {
+        batch.setColor(e.getValue());
         draw(blank, e.getKey());
       }
 

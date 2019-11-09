@@ -14,11 +14,11 @@ allprojects {
     version = '0.2.0'
     ext {
         appName = 'ShapeOfThingsThatWere'
-        gdxVersion = '1.7.2'
+        gdxVersion = '1.9.10'
         artemisVersion = '0.7.1'
-        slf4jVersion = '1.7.12'
-        log4jBindingsVersion = '2.2'
-        log4jCoreVersion = '2.2'
+        slf4jVersion = '1.7.29'
+        log4jBindingsVersion = '2.12.1'
+        log4jCoreVersion = '2.12.1'
     }
 
     repositories {

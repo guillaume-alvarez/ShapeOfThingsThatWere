@@ -75,7 +75,7 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   }
 
   private void drawLabel(FloatPair drawPosition, FadingMessage message) {
-    float posX = drawPosition.x - message.label.length() * font.getSpaceWidth();
+    float posX = drawPosition.x - message.label.length() /* TODO * font.getSpaceWidth()*/;
     float posY = drawPosition.y;
 
     Color color = message.color;
