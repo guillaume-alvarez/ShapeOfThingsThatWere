@@ -75,7 +75,9 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   }
 
   private void drawLabel(FloatPair drawPosition, FadingMessage message) {
-    float posX = drawPosition.x - message.label.length() /* TODO * font.getSpaceWidth()*/;
+    // TODO replace with centering solution from
+    //  https://stackoverflow.com/questions/16600547/how-get-a-string-width-in-libgdx
+    float posX = drawPosition.x - message.label.length() * font.getData().getFirstGlyph().width;
     float posY = drawPosition.y;
 
     Color color = message.color;
