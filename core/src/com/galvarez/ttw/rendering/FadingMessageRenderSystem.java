@@ -8,7 +8,9 @@ import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
@@ -32,6 +34,8 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   private final OrthographicCamera camera;
 
   private final BitmapFont font;
+
+  private final GlyphLayout layout  = new GlyphLayout();
 
   @SuppressWarnings("unchecked")
   public FadingMessageRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
@@ -75,14 +79,13 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   }
 
   private void drawLabel(FloatPair drawPosition, FadingMessage message) {
-    // TODO replace with centering solution from
-    //  https://stackoverflow.com/questions/16600547/how-get-a-string-width-in-libgdx
-    float posX = drawPosition.x - message.label.length() * font.getData().getFirstGlyph().width;
-    float posY = drawPosition.y;
-
     Color color = message.color;
     font.setColor(color.r, color.g, color.b, 1f - message.currentTime / message.duration);
-    font.draw(batch, message.label, posX, posY);
+    layout.setText(font, message.label);
+
+    float posX = drawPosition.x - layout.width / 2;
+    float posY = drawPosition.y;
+    font.draw(batch, layout, posX, posY);
   }
 
   private void drawIcon(FloatPair drawPosition, FadingMessage message) {
