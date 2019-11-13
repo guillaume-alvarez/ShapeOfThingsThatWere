@@ -193,7 +193,7 @@
 },
 {
   name: Wool,
-  previous: [[Sheep, Textile]],
+  previous: [[Sheep, Textile, Llama, Alpaca]],
   effects: {growth: 1, MOUNTAIN: 2, ARCTIC: 2}
 },
 {
