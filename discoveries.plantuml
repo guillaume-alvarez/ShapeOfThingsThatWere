@@ -1,0 +1,683 @@
+@startuml
+scale max 4096*4096
+
+frame ART {
+  rectangle Storytelling
+  rectangle Music
+  rectangle Parietal_art
+  rectangle Theatre
+}
+frame RELATION {
+  rectangle Treaty
+  rectangle Tribute
+  rectangle Protectorate
+  rectangle War
+}
+frame TERRAIN {
+  rectangle Grassland
+  rectangle Hill
+  rectangle Mountain
+  rectangle Forest
+  rectangle River
+  rectangle Desert
+  rectangle Sea
+}
+frame CEREAL {
+  rectangle Barley
+  rectangle Quinoa
+  rectangle Oat
+  rectangle Millet
+  rectangle Sorghum
+  rectangle Wheat
+  rectangle Rye
+  rectangle Rice
+}
+frame LUXURY {
+  rectangle Gold
+  rectangle Silver
+}
+frame VALUE {
+  rectangle Honor
+  rectangle Family
+  rectangle Piety
+  rectangle Equality
+  rectangle Liberty
+  rectangle Wealth
+}
+frame MEAT {
+  rectangle Llama
+  rectangle Horse
+  rectangle Ox
+  rectangle Sheep
+  rectangle Goat
+  rectangle Alpaca
+}
+frame FIBER {
+  rectangle Hemp
+  rectangle Vines
+  rectangle Flax
+}
+frame LEADER {
+  rectangle Aristocracy
+  rectangle Oligarchy
+  rectangle Chief
+  rectangle King
+  rectangle Priest
+}
+frame JOBS {
+  rectangle Artist
+  rectangle Hunter
+  rectangle Soldier
+  rectangle Slave
+  rectangle Craftman
+  rectangle Merchant
+  rectangle Peasant
+  rectangle Erudite
+  rectangle Sailor
+}
+frame MOVE {
+  rectangle Walk
+  rectangle Horse
+  rectangle Ox
+  rectangle Raft
+  rectangle Camel
+  rectangle Boat
+  rectangle Cart
+}
+frame HIGH_TERRAIN {
+  rectangle Hill
+  rectangle Mountain
+}
+frame METAL {
+  rectangle Bronze
+  rectangle Tin
+  rectangle Iron
+  rectangle Copper
+}
+frame WEAPON {
+  rectangle Knife
+  rectangle Sword
+  rectangle Club
+  rectangle Stick
+  rectangle Lance
+}
+frame GOVERNMENT {
+  rectangle Aristocracy
+  rectangle Oligarchy
+  rectangle Chief
+  rectangle King
+  rectangle Priest
+  rectangle Democracy
+  rectangle City_Council
+  rectangle Elders_Council
+  rectangle Republic
+  rectangle Tyranny
+}
+frame MATERIAL {
+  rectangle Clay
+  rectangle Wood
+  rectangle Brick
+  rectangle Dirt
+  rectangle Stone
+}
+frame FOOD {
+  rectangle Barley
+  rectangle Quinoa
+  rectangle Oat
+  rectangle Cake
+  rectangle Ox
+  rectangle Sorghum
+  rectangle Cheese
+  rectangle Alpaca
+  rectangle Bees
+  rectangle Bread
+  rectangle Honey
+  rectangle Crustaceans
+  rectangle Llama
+  rectangle Millet
+  rectangle Horse
+  rectangle Fish
+  rectangle Sheep
+  rectangle Goat
+  rectangle Wheat
+  rectangle Milk
+  rectangle Rye
+  rectangle Rice
+}
+rectangle Sky
+rectangle Wine
+rectangle Wind
+rectangle Textile
+rectangle Cooking
+rectangle Law
+rectangle Underworld
+rectangle Shamanism
+rectangle Beliefs
+rectangle Stone_circle
+rectangle Crop
+rectangle Aqueduct
+rectangle Hunt
+rectangle Trade
+rectangle Beach
+rectangle Animism
+rectangle Granary
+rectangle Amphitheatre
+rectangle Clothing
+rectangle Breeding
+rectangle Village
+rectangle Ritual
+rectangle Burying
+rectangle House
+rectangle City
+rectangle Market
+rectangle Tent
+rectangle Cave
+rectangle Trail
+rectangle Rope
+rectangle Animal
+rectangle Sail
+rectangle Gods
+rectangle Death
+rectangle Skin
+rectangle Gathering
+rectangle Smoking
+rectangle Oar
+rectangle Wheel
+rectangle Irrigation
+rectangle Art
+rectangle Ore
+rectangle Spirits
+rectangle Mysticism
+rectangle Harbor
+rectangle Scorched_earth
+rectangle Well
+rectangle Forge
+rectangle Basket
+rectangle Fishing
+rectangle Beer
+rectangle Money
+rectangle School
+rectangle Oven
+rectangle Grain_Mill
+rectangle Pottery
+rectangle Agriculture
+rectangle Path
+rectangle Floor
+rectangle Fur
+rectangle Barter
+rectangle Citizens
+rectangle Road
+rectangle Magic
+rectangle Religion
+rectangle Election
+rectangle Slash_and_burn_cultivation
+rectangle Water_Mill
+rectangle Temple
+rectangle Symbols
+rectangle Fire
+rectangle Writing
+rectangle Poison
+rectangle Caravanserai
+rectangle Metallurgy
+rectangle Net
+rectangle Wool
+rectangle Sanctuary
+Grassland --> River 
+HIGH_TERRAIN --> River 
+Sea --> River 
+Hill --> Dirt 
+Desert --> Dirt 
+Dirt --> Ore 
+METAL --> Ore 
+Ore --> Copper 
+HIGH_TERRAIN --> Copper 
+River --> Copper 
+Metallurgy --> Copper 
+Ore --> Tin 
+HIGH_TERRAIN --> Tin 
+River --> Tin 
+Metallurgy --> Tin 
+Ore --> Iron 
+Metallurgy --> Iron 
+HIGH_TERRAIN --> Gold 
+River --> Gold 
+HIGH_TERRAIN --> Silver 
+River --> Silver 
+Grassland --> Wood 
+Forest --> Wood 
+Crop --> Stone 
+Breeding --> Stone 
+HIGH_TERRAIN --> Stone 
+Hill --> Clay 
+Dirt --> Clay 
+River --> Clay 
+Sea --> Clay 
+TERRAIN --> Animal 
+Animal --> Fish 
+River --> Fish 
+Sea --> Fish 
+Sea --> Beach 
+Beach --> Crustaceans 
+Animal --> Crustaceans 
+HIGH_TERRAIN --> Cave 
+Animal --> Hunt 
+WEAPON --> Hunt 
+Grassland --> Gathering 
+Crustaceans --> Gathering 
+Forest --> Gathering 
+Grassland --> Vines 
+Forest --> Vines 
+Gathering --> Vines 
+Grassland --> Flax 
+Gathering --> Flax 
+Grassland --> Hemp 
+Gathering --> Hemp 
+FIBER --> Rope 
+FIBER --> Basket 
+Wood --> Basket 
+CEREAL --> Basket 
+Gathering --> Basket 
+Wood --> Fishing 
+Fish --> Fishing 
+Gathering --> Fishing 
+Stone --> Fishing 
+Textile --> Net 
+Rope --> Net 
+Fishing --> Net 
+Beach --> Raft 
+Wood --> Raft 
+Rope --> Raft 
+Fishing --> Raft 
+Sea --> Raft 
+Wood --> Oar 
+Raft --> Oar 
+Sky --> Wind 
+CEREAL --> Wind 
+Forest --> Wind 
+Wind --> Sail 
+Textile --> Sail 
+Raft --> Sail 
+Oar --> Boat 
+Sail --> Boat 
+Raft --> Boat 
+Hunt --> Knife 
+War --> Knife 
+METAL --> Knife 
+Stone --> Knife 
+Knife --> Skin 
+Slave --> Skin 
+Animal --> Skin 
+Mountain --> Fur 
+Clothing --> Fur 
+Skin --> Fur 
+Textile --> Clothing 
+Skin --> Clothing 
+FIBER --> Textile 
+Tent --> Textile 
+Clothing --> Textile 
+Textile --> Tent 
+Skin --> Tent 
+Walk --> Stick 
+Hunt --> Stick 
+Knife --> Stick 
+Wood --> Stick 
+Hunt --> Walk 
+Beach --> Walk 
+River --> Walk 
+Gathering --> Walk 
+Fishing --> Walk 
+Grassland --> Agriculture 
+Animal --> Agriculture 
+Gathering --> Agriculture 
+Village --> Breeding 
+Animal --> Breeding 
+Agriculture --> Breeding 
+Grassland --> Horse 
+Walk --> Horse 
+Breeding --> Horse 
+Animal --> Horse 
+Hill --> Alpaca 
+Mountain --> Alpaca 
+Breeding --> Alpaca 
+Mountain --> Llama 
+Breeding --> Llama 
+Grassland --> Goat 
+Hill --> Goat 
+Mountain --> Goat 
+Breeding --> Goat 
+Grassland --> Ox 
+Breeding --> Ox 
+Skin --> Ox 
+Grassland --> Sheep 
+Hill --> Sheep 
+Textile --> Sheep 
+Breeding --> Sheep 
+Breeding --> Milk 
+Horse --> Milk 
+Sheep --> Milk 
+Ox --> Milk 
+Goat --> Milk 
+Textile --> Cheese 
+Pottery --> Cheese 
+Milk --> Cheese 
+Textile --> Wool 
+Sheep --> Wool 
+Walk --> Camel 
+Breeding --> Camel 
+Animal --> Camel 
+Desert --> Camel 
+Grassland --> Fire 
+Sky --> Fire 
+Wood --> Fire 
+Clay --> Pottery 
+Fire --> Pottery 
+Desert --> Pottery 
+Clay --> Brick 
+Wood --> Brick 
+Fire --> Brick 
+Ore --> Metallurgy 
+Fire --> Metallurgy 
+METAL --> Metallurgy 
+Fire --> Bronze 
+Tin --> Bronze 
+Metallurgy --> Bronze 
+Copper --> Bronze 
+Cave --> House 
+Fire --> House 
+Pottery --> House 
+Family --> House 
+MATERIAL --> House 
+Iron --> Forge 
+House --> Forge 
+Metallurgy --> Forge 
+Textile --> Craftman 
+Forge --> Craftman 
+House --> Craftman 
+MATERIAL --> Craftman 
+Crop --> Family 
+Cave --> Family 
+Fire --> Family 
+House --> Family 
+Rice --> Family 
+Tent --> Village 
+Irrigation --> Village 
+House --> Village 
+Agriculture --> Village 
+Desert --> Village 
+Village --> Crop 
+Stick --> Crop 
+Agriculture --> Crop 
+Crop --> Peasant 
+Slave --> Peasant 
+Village --> Peasant 
+Family --> Peasant 
+Liberty --> Peasant 
+Crop --> Slash_and_burn_cultivation 
+Fire --> Slash_and_burn_cultivation 
+Tent --> Liberty 
+Crop --> Liberty 
+Hunt --> Liberty 
+Fishing --> Liberty 
+Sea --> Liberty 
+Boat --> Liberty 
+Village --> Equality 
+Crop --> Slave 
+Brick --> Slave 
+War --> Slave 
+WEAPON --> Slave 
+Village --> Chief 
+War --> Chief 
+Family --> Chief 
+WEAPON --> Chief 
+Village --> Elders_Council 
+Fire --> Elders_Council 
+Family --> Elders_Council 
+Equality --> Elders_Council 
+Grassland --> Wheat 
+Agriculture --> Wheat 
+Grassland --> Oat 
+Agriculture --> Oat 
+Grassland --> Rye 
+Agriculture --> Rye 
+Grassland --> Barley 
+Hill --> Barley 
+Agriculture --> Barley 
+Grassland --> Millet 
+Hill --> Millet 
+Agriculture --> Millet 
+Desert --> Millet 
+Hill --> Quinoa 
+Mountain --> Quinoa 
+Agriculture --> Quinoa 
+Grassland --> Sorghum 
+Agriculture --> Sorghum 
+Desert --> Sorghum 
+River --> Rice 
+Agriculture --> Rice 
+Grassland --> Trail 
+Animal --> Trail 
+Forest --> Trail 
+Hunt --> Path 
+Trail --> Path 
+Village --> Path 
+Animal --> Path 
+Fire --> Cooking 
+FOOD --> Cooking 
+Fire --> Smoking 
+Fish --> Smoking 
+MEAT --> Smoking 
+Cave --> Oven 
+Cooking --> Oven 
+Stone --> Oven 
+Sky --> Stone_circle 
+Death --> Stone_circle 
+Stone --> Stone_circle 
+Sky --> Beliefs 
+Underworld --> Beliefs 
+Death --> Beliefs 
+Beliefs --> Art 
+Art --> Parietal_art 
+Cave --> Parietal_art 
+Beliefs --> Storytelling 
+Sky --> Symbols 
+Beliefs --> Symbols 
+Beliefs --> Spirits 
+Animal --> Spirits 
+Beliefs --> Animism 
+TERRAIN --> Animism 
+Spirits --> Shamanism 
+Liberty --> Shamanism 
+Elders_Council --> Shamanism 
+Beliefs --> Burying 
+Death --> Burying 
+Family --> Burying 
+Crop --> Ritual 
+Shamanism --> Ritual 
+Beliefs --> Ritual 
+Family --> Ritual 
+Animal --> Poison 
+Forest --> Poison 
+Death --> Poison 
+Desert --> Poison 
+MOVE --> Barter 
+LUXURY --> Barter 
+METAL --> Barter 
+WEAPON --> Barter 
+MATERIAL --> Barter 
+FOOD --> Barter 
+CEREAL --> Beer 
+Pottery --> Beer 
+Vines --> Wine 
+Pottery --> Wine 
+Beach --> Harbor 
+Boat --> Harbor 
+Hunter --> Sailor 
+Merchant --> Sailor 
+Harbor --> Sailor 
+Boat --> Sailor 
+Knife --> Sword 
+Metallurgy --> Sword 
+Stone --> Sword 
+Stick --> Club 
+Stone --> Club 
+Stick --> Lance 
+Metallurgy --> Lance 
+Stone --> Lance 
+Slave --> Protectorate 
+King --> Protectorate 
+Writing --> Protectorate 
+War --> Protectorate 
+City --> Protectorate 
+Trade --> City 
+Chief --> City 
+Village --> City 
+War --> City 
+Stone_circle --> City 
+Hunt --> War 
+Chief --> War 
+Village --> War 
+City --> War 
+WEAPON --> War 
+Hunt --> Hunter 
+Peasant --> Hunter 
+Family --> Hunter 
+Peasant --> Soldier 
+War --> Soldier 
+Family --> Soldier 
+Crop --> Scorched_earth 
+Fire --> Scorched_earth 
+War --> Scorched_earth 
+Writing --> Treaty 
+War --> Treaty 
+GOVERNMENT --> Treaty 
+Fur --> Trade 
+Barter --> Trade 
+Village --> Trade 
+Road --> Trade 
+Writing --> Trade 
+LUXURY --> Trade 
+City --> Trade 
+Trade --> Wealth 
+LUXURY --> Wealth 
+House --> Wealth 
+Trade --> Market 
+LUXURY --> Market 
+FOOD --> Market 
+Stone_circle --> Market 
+Trade --> Merchant 
+Peasant --> Merchant 
+LUXURY --> Merchant 
+Market --> Merchant 
+Merchant --> Caravanserai 
+House --> Caravanserai 
+Camel --> Caravanserai 
+Stone_circle --> Caravanserai 
+Trade --> Money 
+King --> Money 
+LUXURY --> Money 
+War --> Tribute 
+LUXURY --> Tribute 
+Chief --> King 
+City --> King 
+WEAPON --> King 
+Path --> Wheel 
+MATERIAL --> Wheel 
+Wheel --> Cart 
+Wood --> Cart 
+MOVE --> Cart 
+Path --> Road 
+Wheel --> Road 
+Stone --> Road 
+Crop --> Irrigation 
+Village --> Irrigation 
+Pottery --> Irrigation 
+River --> Irrigation 
+City --> Irrigation 
+Irrigation --> Well 
+Cave --> Well 
+River --> Well 
+Crop --> Granary 
+CEREAL --> Granary 
+Pottery --> Granary 
+House --> Granary 
+City --> Granary 
+Wheel --> Grain_Mill 
+CEREAL --> Grain_Mill 
+Grain_Mill --> Floor 
+CEREAL --> Floor 
+Stone --> Floor 
+Floor --> Bread 
+Oven --> Bread 
+Animal --> Bees 
+Forest --> Bees 
+Bees --> Honey 
+Floor --> Cake 
+Honey --> Cake 
+Milk --> Cake 
+Grain_Mill --> Water_Mill 
+River --> Water_Mill 
+LEADER --> Gods 
+Spirits --> Gods 
+Gods --> Sanctuary 
+House --> Sanctuary 
+Beliefs --> Magic 
+Symbols --> Magic 
+Magic --> Mysticism 
+Elders_Council --> Mysticism 
+Gods --> Religion 
+Ritual --> Religion 
+Village --> Piety 
+Religion --> Piety 
+LEADER --> Priest 
+Religion --> Priest 
+RELATION --> Honor 
+Gods --> Honor 
+Art --> Writing 
+RELATION --> Writing 
+City --> Writing 
+Treaty --> Law 
+King --> Law 
+Storytelling --> Law 
+Writing --> Law 
+City --> Law 
+Wind --> Music 
+Art --> Music 
+River --> Music 
+Art --> School 
+Village --> School 
+Writing --> School 
+Law --> City_Council 
+City --> City_Council 
+Elders_Council --> City_Council 
+Gods --> Temple 
+City --> Temple 
+Sanctuary --> Temple 
+City_Council --> Temple 
+Equality --> Election 
+City --> Election 
+City_Council --> Election 
+JOBS --> Republic 
+City --> Republic 
+Equality --> Republic 
+Election --> Republic 
+Citizens --> Democracy 
+Crop --> Aristocracy 
+War --> Aristocracy 
+Aristocracy --> Oligarchy 
+Trade --> Oligarchy 
+City --> Citizens 
+Liberty --> Citizens 
+Art --> Artist 
+Citizens --> Artist 
+Citizens --> Erudite 
+Writing --> Erudite 
+King --> Tyranny 
+War --> Tyranny 
+Storytelling --> Theatre 
+Writing --> Theatre 
+Theatre --> Amphitheatre 
+Irrigation --> Aqueduct 
+Hill --> Aqueduct 
+Pottery --> Aqueduct 
+Stone --> Aqueduct 
+@enduml
