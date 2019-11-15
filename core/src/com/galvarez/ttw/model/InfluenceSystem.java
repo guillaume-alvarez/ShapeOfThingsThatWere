@@ -135,8 +135,8 @@ public final class InfluenceSystem extends EntitySystem {
     // must apply each step to all sources to have a consistent behavior
 
     // prepare new influence target that will be computed
-    for (int x = 0; x < map.height; x++)
-      for (int y = 0; y < map.width; y++)
+    for (int x = 0; x < map.width; x++)
+      for (int y = 0; y < map.height; y++)
         map.getInfluenceAt(x, y).clearInfluenceTarget();
 
     // and update source power
@@ -158,8 +158,8 @@ public final class InfluenceSystem extends EntitySystem {
     }
 
     // finally compute new influence at start of turn
-    for (int x = 0; x < map.height; x++)
-      for (int y = 0; y < map.width; y++)
+    for (int x = 0; x < map.width; x++)
+      for (int y = 0; y < map.height; y++)
         updateTileInfluence(x, y);
   }
 
