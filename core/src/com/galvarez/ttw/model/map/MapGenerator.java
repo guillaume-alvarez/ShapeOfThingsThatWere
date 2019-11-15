@@ -3,24 +3,30 @@ package com.galvarez.ttw.model.map;
 import java.util.Properties;
 
 public interface MapGenerator {
-  Terrain[][] getMapData(Properties props);
+    Terrain[][] getMapData(Properties props);
 
-  /**
-   * Return the default values for all possible properties available to the
-   * user.
-   */
-  Properties getDefaultValues();
+    /**
+     * Return the default values for all possible properties available to the
+     * user.
+     */
+    Properties getDefaultValues();
 
-  enum Generator {
+    enum Generator {
 
-    SIMPLE(new HexMapGenerator()), COMBINED(new HexMapCombinedGenerator()), ISLAND(new HexMapIslandGenerator());
+        SIMPLE(new HexMapGenerator()),
 
-    public final MapGenerator algo;
+        COMBINED(new HexMapCombinedGenerator()),
 
-    private Generator(MapGenerator algo) {
-      this.algo = algo;
+        ISLAND(new HexMapIslandGenerator()),
+
+        TERRA(new HexMapTerraGenerator());
+
+        public final MapGenerator algo;
+
+        private Generator(MapGenerator algo) {
+            this.algo = algo;
+        }
+
     }
-
-  }
 
 }
