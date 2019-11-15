@@ -52,9 +52,10 @@ public final class GameMap {
   }
 
   public Entity getEntityAt(int x, int y) {
-    if (x < 0 || x >= entityByCoord.length || y < 0 || y >= entityByCoord[0].length)
+    if (isOnMap(x, y))
+      return entityByCoord[x][y];
+    else
       return null;
-    return entityByCoord[x][y];
   }
 
   public Entity getEntityAt(MapPosition pos) {
@@ -70,9 +71,10 @@ public final class GameMap {
   }
 
   public Terrain getTerrainAt(int x, int y) {
-    if (x < 0 || x > map.length - 1 || y < 0 || y > map[0].length - 1)
-      return null;
-    return map[x][y];
+    if (isOnMap(x, y))
+      return map[x][y];
+    else
+      throw new IllegalStateException("(" + x + ", " + y + ") is outside map boundaries.");
   }
 
   public Influence getInfluenceAt(MapPosition pos) {
@@ -80,27 +82,25 @@ public final class GameMap {
   }
 
   public Influence getInfluenceAt(int x, int y) {
-    if (x < 0 || x > influenceByCoord.length - 1 || y < 0 || y > influenceByCoord[0].length - 1)
-      return null;
-    return influenceByCoord[x][y];
+    if (isOnMap(x, y))
+      return influenceByCoord[x][y];
+    else
+      throw new IllegalStateException("(" + x + ", " + y + ") is outside map boundaries.");
   }
 
   public boolean isOnMap(MapPosition p) {
     return isOnMap(p.x, p.y);
   }
 
-  public boolean isOnMapBorder(MapPosition p) {
-    return p.x == 0 || p.x == posByCoord.length - 1 || p.y == 0 || p.y == posByCoord[0].length - 1;
-  }
-
-  private boolean isOnMap(int x, int y) {
+  public boolean isOnMap(int x, int y) {
     return x >= 0 && x < posByCoord.length && y >= 0 && y < posByCoord[0].length;
   }
 
   public MapPosition getPositionAt(int x, int y) {
-    if (x < 0 || x > posByCoord.length - 1 || y < 0 || y > posByCoord[0].length - 1)
-      return null;
-    return posByCoord[x][y];
+    if (isOnMap(x, y))
+      return posByCoord[x][y];
+    else
+      throw new IllegalStateException("(" + x + ", " + y + ") is outside map boundaries.");
   }
 
   public void setEntity(Entity e, int x, int y) {
