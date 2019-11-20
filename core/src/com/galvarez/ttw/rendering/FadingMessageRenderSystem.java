@@ -93,7 +93,7 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
     float posY = drawPosition.y;
 
     Color color = message.color;
-    Color oldColor = batch.getColor();
+    Color oldColor = batch.getColor().cpy();
     batch.setColor(color.r, color.g, color.b, 1f - message.currentTime / message.duration);
     batch.draw(message.icon, posX, posY);
     batch.setColor(oldColor);

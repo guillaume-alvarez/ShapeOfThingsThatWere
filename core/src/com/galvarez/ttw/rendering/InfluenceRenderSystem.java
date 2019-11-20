@@ -124,7 +124,7 @@ public final class InfluenceRenderSystem extends AbstractRendererSystem {
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    Color c = batch.getColor();
+    Color c = batch.getColor().cpy();
 
     // draw all the pre-processed borders
     for (Empire empire : borders.keySet()) {

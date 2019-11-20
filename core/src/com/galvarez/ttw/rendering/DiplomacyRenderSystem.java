@@ -128,7 +128,7 @@ public final class DiplomacyRenderSystem extends AbstractRendererSystem {
 
   @Override
   protected void processEntities(ImmutableBag<Entity> entities) {
-    Color c = batch.getColor();
+    Color c = batch.getColor().cpy();
 
     // draw all the pre-processed links
     for (Link l : links) {

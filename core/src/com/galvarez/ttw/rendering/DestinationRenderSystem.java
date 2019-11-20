@@ -72,7 +72,7 @@ public final class DestinationRenderSystem extends EntitySystem {
     Destination dest = destinations.get(e);
 
     // use source color
-    Color c = batch.getColor();
+    Color c = batch.getColor().cpy();
     batch.setColor(empires.get(e).color);
     // draw the flag for influencing
     if (dest.target != null)
