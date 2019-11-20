@@ -290,7 +290,7 @@
   name: Equality,
   previous: [[Village]],
   groups: [VALUE],
-  effects: {stability: 1}
+  effects: {stability: 3}
 },
 {
   name: Slave,

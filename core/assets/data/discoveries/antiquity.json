@@ -93,7 +93,7 @@
   name: Wealth,
   previous: [[Trade, LUXURY], [LUXURY, House]],
   groups: [VALUE],
-  effects: {growth: 2, health: 2}
+  effects: {growth: 2, health: 1, stability: 1}
 },
 {
   name: Market,
@@ -116,11 +116,11 @@
 {
   name: Money,
   previous: [[Trade, LUXURY], [King, LUXURY]],
-  effects: {growth: 1, militaryPower: -2}
+  effects: {growth: 1, militaryPower: -2, stability: 10}
 },
 {
   name: Tribute,
-  previous: [[LUXURY, War]],
+  previous: [[LUXURY, War], [FOOD, War]],
   groups: [RELATION],
   effects: {diplomacy: TRIBUTE, militaryPower: 1}
 },
