@@ -39,4 +39,9 @@
   cities: [Bibracte, Tolosa, Gergovia, Lugdun, Virodunon, Windobona, Brigantium, Briva, Catu, Diwoduro, Eburovicensis, Noviiomagh, Mogunt],
   ai: {MILITARY: 3, ECONOMIC: 2, CULTURAL: 1}
 },
+{
+  name: Chinese,
+  cities: ["Xi'an", Beijing, Shanghai, Henan, Nanjing, Luoyang, Hangzhoun, Anyang, Kaifeng, Nanxun, Luodai],
+  ai: {MILITARY: 2, ECONOMIC: 2, CULTURAL: 2}
+},
 ]
