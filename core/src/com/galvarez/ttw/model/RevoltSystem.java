@@ -1,16 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.util.Comparator.comparingInt;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -36,6 +25,16 @@ import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.util.Comparator.comparingInt;
 
 /**
  * This classes check if new empires should revolt from existing ones with
@@ -137,10 +136,13 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
         return true;
       } else {
         Map<String, Runnable> choices = new HashMap<String, Runnable>();
-        choices.put("Let them revolt!", () -> revolt(empire, instability, source, tile));
-        choices.put("Try to ease the tension...", () -> reduceInstability(empire, instability));
-        notifications.addNotification(() -> screen.askEvent("Our people are revolting, what should we do?", choices),
-            () -> getInstability(empire) <= 0, Type.REVOLT, "Revolt is sprawling!");
+        choices.put("Let them revolt!",
+                () -> revolt(empire, instability, source, tile));
+        choices.put("Try to ease the tension, losing up to " + instability + " power...",
+                () -> reduceInstability(empire, instability));
+        notifications.addNotification(
+                () -> screen.askEvent("Our people are revolting, what should we do?", choices),
+                () -> getInstability(empire) <= 0, Type.REVOLT, "Revolt is sprawling!");
         // TODO display choice screen asking what to do
         // - lose power but keep tiles
         // - create revoltee
