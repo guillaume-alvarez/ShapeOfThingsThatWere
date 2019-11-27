@@ -87,18 +87,24 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
   protected void inserted(Entity e) {
     sortedEntities.add(e);
     Sprite sprite = sprites.get(e);
+    initSprite(sprite);
+
+    sortedEntities.sort((e1, e2) -> sprites.get(e1).layer.compareTo(sprites.get(e2).layer));
+  }
+
+  public void setSprite(Entity e, String spriteName) {
+    Sprite sprite = sprites.get(e);
+    sprite.name = spriteName;
+    initSprite(sprite);
+  }
+
+  private void initSprite(Sprite sprite) {
     TextureRegion reg = atlas.findRegion(sprite.name);
     sprite.region = reg;
     sprite.x = reg.getRegionX();
     sprite.y = reg.getRegionY();
     sprite.width = reg.getRegionWidth();
     sprite.height = reg.getRegionHeight();
-    if (animations.has(e)) {
-      SpriteAnimation anim = animations.getSafe(e);
-      anim.animation = new Animation(anim.frameDuration, atlas.findRegions(sprite.name), anim.playMode);
-    }
-
-    sortedEntities.sort((e1, e2) -> sprites.get(e1).layer.compareTo(sprites.get(e2).layer));
   }
 
   @Override

@@ -70,7 +70,7 @@ public class EntityFactory {
         .add(command).add(new Score());
 
     Sprite sprite = new Sprite();
-    sprite.name = "cylinderwide";
+    sprite.name = "camp";
     sprite.rotation = 0f;
     sprite.scaleX = 1f;
     sprite.scaleY = 1f;

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.galvarez.ttw.rendering.SpriteRenderSystem;
+import com.galvarez.ttw.rendering.components.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +64,8 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   private NotificationsSystem notifications;
 
+  private SpriteRenderSystem sprites;
+
   private interface Special {
     void apply(Entity empire, Discovery d, Discoveries discoveries);
   }
@@ -79,6 +83,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
           String name = names.get(empire).name;
           String desc = "Village of " + name;
           setDescription(empire, name, desc);
+          sprites.setSprite(empire, "village");
           cannotMove(empire);
         }
       }
@@ -89,6 +94,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
         String name = names.get(empire).name;
         String desc = "City of " + name;
         setDescription(empire, name, desc);
+        sprites.setSprite(empire, "city");
         cannotMove(empire);
       }
     });

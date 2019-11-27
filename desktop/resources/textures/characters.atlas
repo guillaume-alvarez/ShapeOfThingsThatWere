@@ -1,34 +1,55 @@
 
 characters.png
-size: 160,71
+size: 94,146
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+camp
+  rotate: false
+  xy: 64, 116
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+city
+  rotate: false
+  xy: 64, 86
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
 click
   rotate: false
-  xy: 2, 9
+  xy: 2, 84
   size: 60, 60
   orig: 60, 60
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 64, 30
+  xy: 2, 43
   size: 46, 39
   orig: 46, 39
   offset: 0, 0
   index: -1
 cylinderwide
   rotate: false
-  xy: 64, 2
+  xy: 50, 26
   size: 28, 26
   orig: 28, 26
   offset: 0, 0
   index: -1
 flag
   rotate: false
-  xy: 112, 30
+  xy: 2, 2
   size: 46, 39
   orig: 46, 39
+  offset: 0, 0
+  index: -1
+village
+  rotate: false
+  xy: 50, 54
+  size: 28, 28
+  orig: 28, 28
   offset: 0, 0
   index: -1
