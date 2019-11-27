@@ -1,11 +1,5 @@
 package com.galvarez.ttw.screens.overworld;
 
-import static com.galvarez.ttw.utils.Colors.markup;
-import static java.lang.Math.min;
-import static java.lang.String.format;
-
-import java.util.List;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -26,11 +20,7 @@ import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.InfluenceSystem;
-import com.galvarez.ttw.model.components.ArmyCommand;
-import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.model.components.EventsCount;
-import com.galvarez.ttw.model.components.InfluenceSource;
-import com.galvarez.ttw.model.components.Score;
+import com.galvarez.ttw.model.components.*;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -44,6 +34,12 @@ import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
+
+import java.util.List;
+
+import static com.galvarez.ttw.utils.Colors.markup;
+import static java.lang.Math.min;
+import static java.lang.String.format;
 
 public class MenuBuilder {
 
@@ -226,8 +222,8 @@ public class MenuBuilder {
 
   private void addTileDescription(MapPosition tile) {
     Terrain terrain = map.getTerrainAt(tile);
-    selectionMenu.addLabelSprite(terrain.getDesc() + " (" + tile.x + ", " + tile.y + ")",
-        screen.mapRenderer.getTexture(terrain), Color.WHITE);
+    String label = terrain.getDesc() + ' ' + terrain.moveCost() + " (" + tile.x + ", " + tile.y + ")";
+    selectionMenu.addLabelSprite(label, screen.mapRenderer.getTexture(terrain), Color.WHITE);
   }
 
   private void addDescription(Entity e) {
