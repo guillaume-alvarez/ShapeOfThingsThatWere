@@ -9,3 +9,6 @@ hammer icon from http://www.iconsdb.com/black-icons/hammer-icon.html
 clenched fist icon from http://www.iconsdb.com/black-icons/clenched-fist-icon.html
 finish flag icon from http://www.iconsdb.com/black-icons/finish-flag-icon.html
 skull icon from http://www.iconsdb.com/black-icons/skull-22-icon.html
+city icon from https://game-icons.net/1x1/delapouite/village.html
+village icon from https://game-icons.net/1x1/delapouite/hut.html
+camp icon from https://game-icons.net/1x1/delapouite/tipi.html
