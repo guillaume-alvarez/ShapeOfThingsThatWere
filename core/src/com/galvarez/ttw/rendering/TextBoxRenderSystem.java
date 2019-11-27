@@ -1,8 +1,5 @@
 package com.galvarez.ttw.rendering;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
@@ -19,6 +16,9 @@ import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.components.TextBox;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Wire
 public final class TextBoxRenderSystem extends AbstractRendererSystem {
@@ -72,7 +72,7 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
 
     GlyphLayout bounds = font.getCache().setText(box.text, 0, 0);
     Pixmap pm = new Pixmap((int) bounds.width + PAD * 2, (int) bounds.height + PAD * 2, Pixmap.Format.RGBA8888);
-    pm.setColor(empire.backColor);
+    pm.setColor(empire.backColor.r, empire.backColor.g, empire.backColor.b, 0.5f);
     pm.fill();
     pm.setColor(empire.color);
     pm.drawRectangle(0, 0, pm.getWidth(), pm.getHeight());
