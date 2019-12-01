@@ -12,3 +12,4 @@ skull icon from http://www.iconsdb.com/black-icons/skull-22-icon.html
 city icon from https://game-icons.net/1x1/delapouite/village.html
 village icon from https://game-icons.net/1x1/delapouite/hut.html
 camp icon from https://game-icons.net/1x1/delapouite/tipi.html
+hourglass icon from https://game-icons.net/1x1/lorc/empty-hourglass.html
