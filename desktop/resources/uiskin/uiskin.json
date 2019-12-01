@@ -32,7 +32,7 @@
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: default-font, fontColor: black,
       scrollStyle: { vScroll: scrollBar, vScrollKnob: scrollKnob, background: frame },
-      listStyle: { font: default-font, selection: menuTexture, background: menuTexture }
+      listStyle: { font: default-font, selection: big-marble-texture, background: big-marble-texture }
       }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
@@ -46,6 +46,6 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		default: {	titleFont: default-font,
-					background: menuTexture }
+					background: big-marble-texture }
 	}
 }

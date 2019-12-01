@@ -37,7 +37,7 @@ public class FramedDialog {
         fadeOut();
       }
     };
-    dialog.setBackground(skin.getTiledDrawable("menuTexture"));
+    dialog.setBackground(skin.getTiledDrawable("big-marble-texture"));
     dialog.getContentTable().defaults().expandX().fillX();
     dialog.getButtonTable().defaults().expandX().fillX();
 

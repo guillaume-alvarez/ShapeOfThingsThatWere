@@ -348,7 +348,7 @@ public class FramedMenu {
     // For now, no matter what, the width is set from constructor
     scrollPane.setWidth(width);
 
-    table.setBackground(skin.getTiledDrawable("menuTexture"));
+    table.setBackground(skin.getTiledDrawable("big-marble-texture"));
 
     // Move the table to the far left of the scrollPane
     table.left();
