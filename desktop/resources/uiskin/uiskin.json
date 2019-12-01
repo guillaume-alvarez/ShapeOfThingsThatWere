@@ -22,7 +22,6 @@
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		default: { font: default-font, fontColor: black },
 		colored: { font: colored-font, fontColor: white },
-		colored: { font: colored-font, fontColor: white },
 		inactive: { font: default-font, fontColor: gray }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
@@ -32,7 +31,8 @@
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: default-font, fontColor: black,
       scrollStyle: { vScroll: scrollBar, vScrollKnob: scrollKnob, background: frame },
-      listStyle: { font: default-font, selection: big-marble-texture, background: big-marble-texture }
+      listStyle: { font: default-font, fontColorSelected: black, fontColorUnselected: gray,
+		  selection: big-marble-texture, background: big-marble-texture }
       }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
