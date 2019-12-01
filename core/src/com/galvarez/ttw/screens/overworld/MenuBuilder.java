@@ -206,23 +206,39 @@ public class MenuBuilder {
     Influence influence = map.getInfluenceAt(tile);
     int mainSource = influence.getMainInfluenceSource();
     StringBuilder sb = new StringBuilder("[BLACK]Influence: ");
+    // print first the main influence on the tile if there is one
+    if (influence.hasMainInfluence()) {
+      Entity source = influence.getMainInfluenceSource(world);
+      addEntityInfluence(influence, sb, source, influence.getInfluence(source));
+      sb.append(" (main)");
+    }
+    // else how much is required to control it
+    else {
+      sb.append("\n ")
+              .append("No control, need ")
+              .append(100 * influence.terrain.moveCost() / InfluenceSystem.INITIAL_POWER).append('%');
+    }
+    // then all other empires
     for (IntIntMap.Entry e : influence) {
-      Entity source = world.getEntity(e.key);
-      Empire empire = source.getComponent(Empire.class);
-      sb.append("\n ").append(markup(empire.color)).append(source.getComponent(Name.class).name).append("[]: ")
-          .append(100 * e.value / InfluenceSystem.INITIAL_POWER).append('%').append(' ')
-          .append(number(100 * influence.getDelta(source) / InfluenceSystem.INITIAL_POWER)).append('%');
-      // ignore == 0
-      if (e.key == mainSource)
-        sb.append(" (main)");
+      if (e.key != influence.getMainInfluenceSource()) {
+        Entity source = world.getEntity(e.key);
+        addEntityInfluence(influence, sb, source, e.value);
+      }
     }
     selectionMenu.addColoredLabel(sb.toString());
     return influence;
   }
 
+  private void addEntityInfluence(Influence influence, StringBuilder sb, Entity source, int score) {
+    Empire empire = source.getComponent(Empire.class);
+    sb.append("\n ").append(markup(empire.color)).append(source.getComponent(Name.class).name).append("[]: ")
+            .append(100 * score / InfluenceSystem.INITIAL_POWER).append('%').append(' ')
+            .append(number(100 * influence.getDelta(source) / InfluenceSystem.INITIAL_POWER)).append('%');
+  }
+
   private void addTileDescription(MapPosition tile) {
     Terrain terrain = map.getTerrainAt(tile);
-    String label = terrain.getDesc() + ' ' + terrain.moveCost() + " (" + tile.x + ", " + tile.y + ")";
+    String label = terrain.getDesc() + " (" + tile.x + ", " + tile.y + ")";
     selectionMenu.addLabelSprite(label, screen.mapRenderer.getTexture(terrain), Color.WHITE);
   }
 
