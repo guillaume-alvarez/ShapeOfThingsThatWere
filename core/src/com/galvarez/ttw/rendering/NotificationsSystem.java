@@ -1,15 +1,15 @@
 package com.galvarez.ttw.rendering;
 
-import static java.lang.String.format;
+import com.artemis.annotations.Wire;
+import com.artemis.systems.VoidEntitySystem;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.artemis.annotations.Wire;
-import com.artemis.systems.VoidEntitySystem;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import static java.lang.String.format;
 
 /**
  * Store notifications until processed.
@@ -75,17 +75,21 @@ public final class NotificationsSystem extends VoidEntitySystem {
       this.msg = msg;
     }
 
+    public boolean requiresAction() {
+      return discard != null && !discard.canDiscard();
+    }
+
   }
 
   public boolean canFinishTurn() {
     for (Notification n : current)
-      if (n.discard != null && !n.discard.canDiscard())
+      if (n.requiresAction())
         return false;
     return true;
   }
 
   public void discard(Notification n) {
-    if (n.discard == null || n.discard.canDiscard())
+    if (!n.requiresAction())
       current.remove(n);
   }
 

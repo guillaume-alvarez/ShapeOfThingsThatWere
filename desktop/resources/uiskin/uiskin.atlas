@@ -27,7 +27,7 @@ check-off
   index: -1
 check-on
   rotate: false
-  xy: 582, 240
+  xy: 582, 174
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -53,9 +53,16 @@ disease-skull
   orig: 64, 64
   offset: 0, 0
   index: -1
-finish-flag
+empty-hourglass
   rotate: false
   xy: 516, 59
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+finish-flag
+  rotate: false
+  xy: 582, 323
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -70,7 +77,7 @@ frame
   index: -1
 military-swords
   rotate: false
-  xy: 582, 323
+  xy: 582, 257
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -84,7 +91,7 @@ parch-texture
   index: -1
 revolt-clenched-fist
   rotate: false
-  xy: 582, 257
+  xy: 582, 191
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

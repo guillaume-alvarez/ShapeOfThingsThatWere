@@ -26,6 +26,7 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
+import com.galvarez.ttw.rendering.IconsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Notification;
 import com.galvarez.ttw.rendering.components.Description;
@@ -37,6 +38,7 @@ import com.galvarez.ttw.screens.overworld.controls.InputManager;
 
 import java.util.List;
 
+import static com.galvarez.ttw.rendering.IconsSystem.Type.END_TURN;
 import static com.galvarez.ttw.utils.Colors.markup;
 import static java.lang.Math.min;
 import static java.lang.String.format;
@@ -67,6 +69,8 @@ public class MenuBuilder {
 
   private final NotificationsSystem notifications;
 
+  private final IconsSystem icons;
+
   public MenuBuilder(Stage stage, World world, GameMap map, OverworldScreen screen, InputManager inputManager) {
     this.stage = stage;
     this.world = world;
@@ -74,6 +78,7 @@ public class MenuBuilder {
     this.screen = screen;
     this.inputManager = inputManager;
     this.notifications = world.getSystem(NotificationsSystem.class);
+    this.icons = world.getSystem(IconsSystem.class);
 
     skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
 
@@ -308,24 +313,31 @@ public class MenuBuilder {
 
   public void buildNotificationMenu() {
     List<Notification> notifs = notifications.getNotifications();
+    boolean canEndTurn = true; // can always end if there is no notification
     notifMenu.clear();
-    if (notifs.isEmpty())
-      notifMenu.addLabel("No notifications");
-    else
-      for (Notification n : notifs) {
-        Button b = notifMenu.addButtonSprite(n.type, n.msg, () -> {
+
+    for (Notification n : notifs) {
+      canEndTurn &= !n.requiresAction();
+      Button b = notifMenu.addButtonSprite(n.type, n.msg, () -> {
+        inputManager.reloadMenus();
+        if (n.action != null)
+          n.action.run();
+      }, true);
+      b.addListener(new ClickListener(Buttons.RIGHT) {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+          notifications.discard(n);
           inputManager.reloadMenus();
-          if (n.action != null)
-            n.action.run();
-        }, true);
-        b.addListener(new ClickListener(Buttons.RIGHT) {
-          @Override
-          public void clicked(InputEvent event, float x, float y) {
-            notifications.discard(n);
-            inputManager.reloadMenus();
-          }
-        });
-      }
+        }
+      });
+    }
+
+    // let user end turn from the same point as notifications
+    if (canEndTurn) {
+      notifMenu.addButtonSprite(icons.get(END_TURN), "End turn (year " + screen.getCurrentYear() + ")",
+              screen::endTurn, screen.canFinishTurn());
+    }
+
     notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
   }
 

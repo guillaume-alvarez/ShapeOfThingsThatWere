@@ -44,8 +44,10 @@
 					down: scrollBar,
 					up: frame }
 	},
+	com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+		default: {label: {font: default-font}, background: big-marble-texture, wrapWidth: 300}
+	},
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-		default: {	titleFont: default-font,
-					background: big-marble-texture }
+		default: {	titleFont: default-font, background: big-marble-texture }
 	}
 }

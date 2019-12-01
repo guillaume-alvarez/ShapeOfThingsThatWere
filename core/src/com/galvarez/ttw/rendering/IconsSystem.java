@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public final class IconsSystem extends VoidEntitySystem {
 
   public enum Type {
-    DISCOVERY, DIPLOMACY, BUILDINGS, REVOLT, FLAG, MILITARY, DISEASE;
+    DISCOVERY, DIPLOMACY, BUILDINGS, REVOLT, FLAG, MILITARY, DISEASE, END_TURN;
   }
 
   private final EnumMap<Type, Drawable> drawables;
@@ -35,6 +35,7 @@ public final class IconsSystem extends VoidEntitySystem {
     addIcon(Type.FLAG, "finish-flag");
     addIcon(Type.MILITARY, "military-swords");
     addIcon(Type.DISEASE, "disease-skull");
+    addIcon(Type.END_TURN, "empty-hourglass");
   }
 
   private void addIcon(Type type, String name) {
