@@ -11,12 +11,15 @@ import com.galvarez.ttw.rendering.SpriteAnimationSystem;
 import com.galvarez.ttw.screens.CustomizeGameMenuScreen;
 import com.galvarez.ttw.screens.MainMenuScreen;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+import com.galvarez.ttw.utils.Assets;
 
 public class ThingsThatWereGame extends Game {
 
   public int windowWidth;
 
   public int windowHeight;
+
+  public Assets assets;
 
   private World world;
 
@@ -42,6 +45,7 @@ public class ThingsThatWereGame extends Game {
 
   @Override
   public void create() {
+    assets = new Assets();
     settings = new SessionSettings();
 
     startGame();

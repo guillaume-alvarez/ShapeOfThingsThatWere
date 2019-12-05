@@ -5,6 +5,7 @@ import static java.lang.Math.min;
 import java.util.Iterator;
 import java.util.List;
 
+import com.galvarez.ttw.utils.Assets.Icon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,6 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Counter;
 import com.galvarez.ttw.rendering.components.Description;
@@ -34,7 +34,7 @@ import com.galvarez.ttw.utils.RomanNumbers;
 
 /**
  * Moves the entities being armies across the map.
- * 
+ *
  * @author Guillaume Alvarez
  */
 @Wire
@@ -87,7 +87,7 @@ public final class ArmiesSystem extends EntitySystem {
         if (onOtherInfluence(city, s)) {
           army.currentPower--;
           if (!ai.has(city))
-            notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
+            notifications.addNotification(() -> screen.select(s, true), null, Icon.MILITARY,
                 "%s is depleting in other empire!", names.get(s));
         } else {
           if (army.currentPower < army.maxPower)
@@ -103,13 +103,13 @@ public final class ArmiesSystem extends EntitySystem {
           if (newPos != null) {
             destinationSystem.moveTo(s, newPos);
             if (!ai.has(city))
-              notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
+              notifications.addNotification(() -> screen.select(s, true), null, Icon.MILITARY,
                   "Depleted %s moved to capital.", names.get(s));
           } else {
             s.deleteFromWorld();
             it.remove();
             if (!ai.has(city))
-              notifications.addNotification(() -> screen.select(s, true), null, Type.MILITARY,
+              notifications.addNotification(() -> screen.select(s, true), null, Icon.MILITARY,
                   "Depleted %s destroyed.", names.get(s));
           }
         }

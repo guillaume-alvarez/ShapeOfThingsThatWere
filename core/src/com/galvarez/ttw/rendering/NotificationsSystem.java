@@ -3,6 +3,7 @@ package com.galvarez.ttw.rendering;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.galvarez.ttw.utils.Assets;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,9 +26,10 @@ public final class NotificationsSystem extends VoidEntitySystem {
   /** Notifications for current turn. */
   private final List<Notification> current = new ArrayList<>();
 
-  private IconsSystem icons;
+  private final Assets icons;
 
-  public NotificationsSystem() {
+  public NotificationsSystem(Assets icons) {
+    this.icons = icons;
   }
 
   @Override
@@ -46,11 +48,11 @@ public final class NotificationsSystem extends VoidEntitySystem {
     return Collections.unmodifiableList(current);
   }
 
-  public void addNotification(Runnable action, Condition discard, IconsSystem.Type type, String msg, Object ... args) {
+  public void addNotification(Runnable action, Condition discard, Assets.Icon type, String msg, Object ... args) {
     if (args == null || args.length == 0)
-      notifications.add(new Notification(icons.get(type), action, discard, msg));
+      notifications.add(new Notification(icons.getDrawable(type), action, discard, msg));
     else
-      notifications.add(new Notification(icons.get(type), action, discard, format(msg, args)));
+      notifications.add(new Notification(icons.getDrawable(type), action, discard, format(msg, args)));
   }
 
   @FunctionalInterface

@@ -18,6 +18,7 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.components.SpriteAnimation;
+import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
@@ -36,13 +37,12 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
   private final BitmapFont font;
 
-  public SpriteRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
+  public SpriteRenderSystem(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
     super(with(MapPosition.class, Sprite.class), camera, batch);
 
     atlas = new TextureAtlas(Gdx.files.internal("textures/characters.atlas"), Gdx.files.internal("textures"));
 
-    font = Font.IRIS_UPC.get();
-    font.setUseIntegerPositions(false);
+    font = assets.getFont(16);
   }
 
   @Override

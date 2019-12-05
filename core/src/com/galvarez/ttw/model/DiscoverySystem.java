@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
+import com.galvarez.ttw.utils.Assets.Icon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,6 @@ import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -311,7 +311,7 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
     if (!ai.has(empire)) {
       Research last = discovery.last;
-      notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Type.DISCOVERY,
+      notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Icon.DISCOVERY,
           "We can make a new discovery!");
     } else
       aiSystem.selectNewDiscovery(empire, discovery);
@@ -330,8 +330,8 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
       Set<Policy> policies = PoliciesSystem.getPolicies(target);
       if (policies != null) {
         for (Policy policy : policies)
-          notifications
-              .addNotification(screen::policiesMenu, null, Type.DISCOVERY, "New %s policy: %s", policy, target);
+          notifications.addNotification(screen::policiesMenu, null, Icon.DISCOVERY,
+                  "New %s policy: %s", policy, target);
       }
     }
 

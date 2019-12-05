@@ -13,3 +13,5 @@ city icon from https://game-icons.net/1x1/delapouite/village.html
 village icon from https://game-icons.net/1x1/delapouite/hut.html
 camp icon from https://game-icons.net/1x1/delapouite/tipi.html
 hourglass icon from https://game-icons.net/1x1/lorc/empty-hourglass.html
+
+Romanica font from https://www.dafont.com/romanica.font

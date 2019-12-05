@@ -10,13 +10,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Align;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.components.FadingMessage;
 import com.galvarez.ttw.rendering.components.MutableMapPosition;
+import com.galvarez.ttw.utils.Assets;
+import com.galvarez.ttw.utils.Assets.Icon;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
@@ -27,7 +27,7 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
 
   private ComponentMapper<FadingMessage> fmm;
 
-  private IconsSystem icons;
+  private final Assets assets;
 
   private final SpriteBatch batch;
 
@@ -38,17 +38,17 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   private final GlyphLayout layout  = new GlyphLayout();
 
   @SuppressWarnings("unchecked")
-  public FadingMessageRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
+  public FadingMessageRenderSystem(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
     super(Aspect.getAspectForAll(MutableMapPosition.class, FadingMessage.class));
+    this.assets = assets;
     this.batch = batch;
     this.camera = camera;
 
-    font = Font.IRIS_UPC.get();
-    font.setUseIntegerPositions(false);
+    this.font = assets.getFont(14);
   }
 
-  public void createFadingIcon(Type icon, Color color, MapPosition pos, float duration) {
-    EntityFactory.createFadingTileIcon(world, icons.getTexture(icon), color, pos.x, pos.y, duration);
+  public void createFadingIcon(Icon icon, Color color, MapPosition pos, float duration) {
+    EntityFactory.createFadingTileIcon(world, assets.getTexture(icon), color, pos.x, pos.y, duration);
   }
 
   @Override

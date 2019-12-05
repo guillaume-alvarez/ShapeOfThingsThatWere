@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.galvarez.ttw.rendering.SpriteRenderSystem;
-import com.galvarez.ttw.rendering.components.Sprite;
+import com.galvarez.ttw.utils.Assets.Icon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,6 @@ import com.galvarez.ttw.model.components.Discoveries;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -127,7 +126,7 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
     log.info("{} is now known as '{}'", name, desc);
     // notify only player empire, avoid spamming
     if (!ai.has(empire) || relations.get(empire).hasRelationWith(screen.player))
-      notifications.addNotification(() -> screen.select(empire, false), null, Type.BUILDINGS,
+      notifications.addNotification(() -> screen.select(empire, false), null, Icon.BUILDINGS,
           "%s is now known as '%s'", name, desc);
   }
 

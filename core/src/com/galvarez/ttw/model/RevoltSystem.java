@@ -20,11 +20,11 @@ import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools.Border;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+import com.galvarez.ttw.utils.Assets.Icon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +142,7 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
                 () -> reduceInstability(empire, instability));
         notifications.addNotification(
                 () -> screen.askEvent("Our people are revolting, what should we do?", choices),
-                () -> getInstability(empire) <= 0, Type.REVOLT, "Revolt is sprawling!");
+                () -> getInstability(empire) <= 0, Icon.REVOLT, "Revolt is sprawling!");
         // TODO display choice screen asking what to do
         // - lose power but keep tiles
         // - create revoltee
@@ -155,7 +155,7 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
       log.warn("Found no tile to revolt for {} with instability at {}%, decrease power to {}",
           empire.getComponent(Name.class), instability, source.power());
       if (!ai.has(empire))
-        notifications.addNotification(() -> screen.select(empire, false), null, Type.REVOLT,
+        notifications.addNotification(() -> screen.select(empire, false), null, Icon.REVOLT,
             "Instability decrease %s power to %s!", empire.getComponent(Description.class), source.power());
       return true;
     }
@@ -228,9 +228,9 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
     // notify player
     log.info("{} revolted from {} (instability={})", revoltee.getComponent(Description.class),
         empire.getComponent(Description.class), instability);
-    fadingSystem.createFadingIcon(Type.REVOLT, empires.get(revoltee).color, positions.get(revoltee), 3f);
+    fadingSystem.createFadingIcon(Icon.REVOLT, empires.get(revoltee).color, positions.get(revoltee), 3f);
     if (!ai.has(empire))
-      notifications.addNotification(() -> screen.select(revoltee, false), null, Type.REVOLT, "%s revolted from %s!",
+      notifications.addNotification(() -> screen.select(revoltee, false), null, Icon.REVOLT, "%s revolted from %s!",
           revoltee.getComponent(Description.class), empire.getComponent(Description.class));
   }
 

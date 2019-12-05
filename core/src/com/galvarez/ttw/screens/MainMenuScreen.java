@@ -28,7 +28,7 @@ public final class MainMenuScreen extends AbstractScreen {
 
     stage = new Stage(new ScreenViewport(), batch);
 
-    Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
+    Skin skin = game.assets.getSkin();
     menu = new FramedMenu(skin, 800, 600);
 
     initMenu();

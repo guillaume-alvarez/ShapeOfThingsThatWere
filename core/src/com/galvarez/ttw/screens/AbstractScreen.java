@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
+import com.galvarez.ttw.utils.Assets;
 
 public abstract class AbstractScreen extends ScreenAdapter implements Screen {
 
@@ -42,5 +43,4 @@ public abstract class AbstractScreen extends ScreenAdapter implements Screen {
     game.windowWidth = width;
     game.windowHeight = height;
   }
-
 }

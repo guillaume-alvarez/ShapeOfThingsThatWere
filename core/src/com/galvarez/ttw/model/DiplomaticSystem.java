@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import com.galvarez.ttw.utils.Assets.Icon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,6 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.rendering.IconsSystem.Type;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -155,11 +155,11 @@ public final class DiplomaticSystem extends EntitySystem {
     log.info("Relation between {} and {} is now {}/{}", entity.getComponent(Name.class),
         target.getComponent(Name.class), diplo.getRelationWith(target), targetDiplo.getRelationWith(entity));
     if (!ai.has(entity))
-      notifications.addNotification(screen::diplomacyMenu, null, Type.DIPLOMACY, "Your relation with %s is now %s!",
-          target.getComponent(Name.class), action.afterMe);
+      notifications.addNotification(screen::diplomacyMenu, null, Icon.DIPLOMACY,
+              "Your relation with %s is now %s!", target.getComponent(Name.class), action.afterMe);
     else if (!ai.has(target))
-      notifications.addNotification(screen::diplomacyMenu, null, Type.DIPLOMACY, "Your relation with %s is now %s!",
-          entity.getComponent(Name.class), action.afterYou);
+      notifications.addNotification(screen::diplomacyMenu, null, Icon.DIPLOMACY,
+              "Your relation with %s is now %s!", entity.getComponent(Name.class), action.afterYou);
   }
 
   public void clearRelations(Entity empire, Diplomacy diplo) {

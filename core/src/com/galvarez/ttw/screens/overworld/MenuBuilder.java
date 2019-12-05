@@ -26,7 +26,6 @@ import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.Terrain;
-import com.galvarez.ttw.rendering.IconsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem.Notification;
 import com.galvarez.ttw.rendering.components.Description;
@@ -35,10 +34,11 @@ import com.galvarez.ttw.rendering.components.Sprite;
 import com.galvarez.ttw.rendering.ui.FramedDialog;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
+import com.galvarez.ttw.utils.Assets;
+import com.galvarez.ttw.utils.Assets.Icon;
 
 import java.util.List;
 
-import static com.galvarez.ttw.rendering.IconsSystem.Type.END_TURN;
 import static com.galvarez.ttw.utils.Colors.markup;
 import static java.lang.Math.min;
 import static java.lang.String.format;
@@ -69,18 +69,18 @@ public class MenuBuilder {
 
   private final NotificationsSystem notifications;
 
-  private final IconsSystem icons;
+  private final Assets assets;
 
-  public MenuBuilder(Stage stage, World world, GameMap map, OverworldScreen screen, InputManager inputManager) {
+  public MenuBuilder(Assets assets, Stage stage, World world, GameMap map, OverworldScreen screen, InputManager inputManager) {
     this.stage = stage;
     this.world = world;
     this.map = map;
     this.screen = screen;
     this.inputManager = inputManager;
     this.notifications = world.getSystem(NotificationsSystem.class);
-    this.icons = world.getSystem(IconsSystem.class);
+    this.assets = assets;
 
-    skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
+    skin = assets.getSkin();
 
     turnMenu = new FramedMenu(skin, 256, 256);
     indicationMenu = new FramedMenu(skin, 512, 512);
@@ -334,7 +334,7 @@ public class MenuBuilder {
 
     // let user end turn from the same point as notifications
     if (canEndTurn) {
-      notifMenu.addButtonSprite(icons.get(END_TURN), "End turn (year " + screen.getCurrentYear() + ")",
+      notifMenu.addButtonSprite(assets.getDrawable(Icon.END_TURN), "End turn (year " + screen.getCurrentYear() + ")",
               screen::endTurn, screen.canFinishTurn());
     }
 

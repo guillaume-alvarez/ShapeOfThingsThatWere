@@ -14,6 +14,7 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.components.TextBox;
+import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
@@ -35,11 +36,10 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
 
   private final BitmapFont font;
 
-  public TextBoxRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
+  public TextBoxRenderSystem(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
     super(with(MapPosition.class, TextBox.class), camera, batch);
 
-    font = Font.IRIS_UPC.get();
-    font.setUseIntegerPositions(false);
+    font = assets.getFont(16);
   }
 
   @Override

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.galvarez.ttw.utils.Assets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,6 @@ import com.galvarez.ttw.rendering.CounterRenderSystem;
 import com.galvarez.ttw.rendering.DestinationRenderSystem;
 import com.galvarez.ttw.rendering.DiplomacyRenderSystem;
 import com.galvarez.ttw.rendering.FadingMessageRenderSystem;
-import com.galvarez.ttw.rendering.IconsSystem;
 import com.galvarez.ttw.rendering.InfluenceRenderSystem;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.SpriteRenderSystem;
@@ -71,8 +71,6 @@ public final class OverworldScreen extends AbstractScreen {
   private static final Logger log = LoggerFactory.getLogger(OverworldScreen.class);
 
   public final GameMap map;
-
-  private final IconsSystem iconsSystem;
 
   private final SpriteRenderSystem spriteRenderSystem;
 
@@ -174,8 +172,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     map = new GameMap(settings.mapType.get().algo.getMapData(settings.map), settings.empires);
 
-    iconsSystem = world.setSystem(new IconsSystem(), true);
-    notificationsSystem = world.setSystem(new NotificationsSystem(), true);
+    notificationsSystem = world.setSystem(new NotificationsSystem(game.assets), true);
     eventsSystem = world.setSystem(new EventsSystem(), true);
     effectsSystem = world.setSystem(new EffectsSystem(), true);
     world.setSystem(new SpecialDiscoveriesSystem(this), true);
@@ -195,11 +192,11 @@ public final class OverworldScreen extends AbstractScreen {
     aiArmies = world.setSystem(new AIArmyMovementSystem(map, this), true);
     influenceRenderSystem = world.setSystem(new InfluenceRenderSystem(camera, batch, map), true);
     diplomacyRenderSystem = world.setSystem(new DiplomacyRenderSystem(camera, batch), true);
-    textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(camera, batch), true);
+    textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(game.assets, camera, batch), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
-    spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
-    counterRenderSystem = world.setSystem(new CounterRenderSystem(camera, batch), true);
-    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(camera, batch), true);
+    spriteRenderSystem = world.setSystem(new SpriteRenderSystem(game.assets, camera, batch), true);
+    counterRenderSystem = world.setSystem(new CounterRenderSystem(game.assets, camera, batch), true);
+    fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(game.assets, camera, batch), true);
 
     world.initialize();
     empires = fillWorldWithEntities();
@@ -215,11 +212,10 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyRenderSystem.preprocess();
     influenceRenderSystem.preprocess();
     textBoxRenderSystem.preprocess();
-    iconsSystem.process();
     notificationsSystem.process();
     log.info("The world is initialized");
 
-    inputManager = new InputManager(camera, world, this, stage, map);
+    inputManager = new InputManager(game.assets, camera, world, this, stage, map);
     inputManager.menuBuilder.buildTurnMenu();
     inputManager.menuBuilder.buildNotificationMenu();
     inputManager.menuBuilder.buildEmpireMenu();
@@ -227,7 +223,7 @@ public final class OverworldScreen extends AbstractScreen {
     world.setManager(new PlayerManager());
 
     mapRenderer = new MapRenderer(camera, batch, map);
-    mapHighlighter = new MapHighlighter(camera, batch);
+    mapHighlighter = new MapHighlighter(game.assets, camera, batch);
 
     renderHighlighter = false;
 

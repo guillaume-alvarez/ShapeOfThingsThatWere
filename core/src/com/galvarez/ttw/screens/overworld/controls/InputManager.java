@@ -1,5 +1,6 @@
 package com.galvarez.ttw.screens.overworld.controls;
 
+import com.galvarez.ttw.utils.Assets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ public class InputManager {
 
   Entity selectedEntity;
 
-  public InputManager(OrthographicCamera camera, World world, OverworldScreen screen, Stage stage, GameMap map) {
+  public InputManager(Assets assets, OrthographicCamera camera, World world, OverworldScreen screen, Stage stage, GameMap map) {
     this.world = world;
     this.screen = screen;
     this.stage = stage;
@@ -56,7 +57,7 @@ public class InputManager {
 
     manager = new InputMultiplexer(stage, drag, select);
 
-    menuBuilder = new MenuBuilder(stage, world, map, screen, this);
+    menuBuilder = new MenuBuilder(assets, stage, world, map, screen, this);
 
     Gdx.input.setInputProcessor(manager);
   }

@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.rendering.components.Counter;
+import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
@@ -35,10 +36,10 @@ public final class CounterRenderSystem extends AbstractRendererSystem {
   private final Map<Color, Texture> textures = new HashMap<>();
 
   @SuppressWarnings("unchecked")
-  public CounterRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
+  public CounterRenderSystem(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
     super(Aspect.getAspectForAll(MapPosition.class, Counter.class), camera, batch);
 
-    font = Font.IRIS_UPC.get();
+    font = assets.getFont(14);
     font.setUseIntegerPositions(false);
   }
 

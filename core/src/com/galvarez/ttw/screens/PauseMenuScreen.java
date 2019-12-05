@@ -4,6 +4,7 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
+import com.galvarez.ttw.screens.overworld.OverworldScreen;
 
 /**
  * This screen appears when user tries to pause or escape from the main game
@@ -15,7 +16,7 @@ public final class PauseMenuScreen extends AbstractPausedScreen<AbstractScreen> 
 
   private final FramedMenu menu;
 
-  public PauseMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, AbstractScreen gameScreen) {
+  public PauseMenuScreen(ThingsThatWereGame game, World world, SpriteBatch batch, OverworldScreen gameScreen) {
     super(game, world, batch, gameScreen);
 
     menu = new FramedMenu(skin, 800, 600);

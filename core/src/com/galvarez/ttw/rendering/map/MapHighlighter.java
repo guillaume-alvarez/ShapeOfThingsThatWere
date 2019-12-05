@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
+import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
@@ -26,12 +27,12 @@ public class MapHighlighter extends AbstractRenderer {
 
   private final BitmapFont font;
 
-  public MapHighlighter(OrthographicCamera camera, SpriteBatch batch) {
+  public MapHighlighter(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
     super(camera, batch);
 
     TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("textures/maptiles.atlas"), Gdx.files.internal("textures"));
     highlight = atlas.findRegion("hex_blank");
-    font = Font.IRIS_UPC.get();
+    font = assets.getFont(10);
     font.setColor(Color.BLACK);
 
     t = 0;
