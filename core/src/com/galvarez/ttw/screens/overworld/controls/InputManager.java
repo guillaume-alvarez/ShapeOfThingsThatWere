@@ -87,12 +87,12 @@ public class InputManager {
   }
 
   public void appendInputSystems(InputProcessor ... processors) {
-    for (int i = 0; i < processors.length; i++)
-      manager.addProcessor(processors[i]);
+    for (InputProcessor p : processors)
+      manager.addProcessor(p);
   }
 
   public void setInputSystems(InputProcessor ... processors) {
-    manager.setProcessors(new Array<InputProcessor>(processors));
+    manager.setProcessors(new Array<>(processors));
   }
 
   public void prependInputSystems(InputProcessor ... processors) {
@@ -103,8 +103,8 @@ public class InputManager {
   }
 
   public void removeInputSystems(InputProcessor ... processors) {
-    for (int i = 0; i < processors.length; i++)
-      manager.removeProcessor(processors[i]);
+    for (InputProcessor p : processors)
+      manager.removeProcessor(p);
   }
 
   public void select(MapPosition coords, Entity entity, boolean flagIfMoveable) {

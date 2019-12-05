@@ -1,10 +1,5 @@
 package com.galvarez.ttw.screens;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ListIterator;
-import java.util.function.Consumer;
-
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,15 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.ThingsThatWereGame;
@@ -30,6 +20,10 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.MapGenerator.Generator;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
+
+import java.util.ListIterator;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * This screen presents the user with a menu to launch the game.
@@ -81,12 +75,9 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
   private void updateMenu() {
     map.clear();
-    map.addSelectBox("Map type:", settings.mapType.get(), Generator.values(), new Consumer<Generator>() {
-      @Override
-      public void accept(Generator t) {
-        settings.mapType.set(t);
-        updateMenu();
-      }
+    map.addSelectBox("Map type:", settings.mapType.get(), Generator.values(), g -> {
+      settings.mapType.set(g);
+      updateMenu();
     });
     for (String prop : settings.map.stringPropertyNames())
       map.addTextField(prop, settings.map.get(prop),
@@ -118,7 +109,7 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     i.setColor(empire.color);
     table.add(i).minHeight(i.getMinHeight()).prefHeight(i.getPrefHeight());
 
-    SelectBox<Culture> sb = new SelectBox<Culture>(skin.get(SelectBoxStyle.class));
+    SelectBox<Culture> sb = new SelectBox<>(skin.get(SelectBoxStyle.class));
     sb.setItems(settings
         .getCultures()
         .stream()

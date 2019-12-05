@@ -1,25 +1,5 @@
 package com.galvarez.ttw.model;
 
-import static java.lang.Math.min;
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-
-import com.galvarez.ttw.utils.Assets.Icon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -31,11 +11,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.model.EventsSystem.EventHandler;
-import com.galvarez.ttw.model.components.AIControlled;
-import com.galvarez.ttw.model.components.Diplomacy;
-import com.galvarez.ttw.model.components.Discoveries;
-import com.galvarez.ttw.model.components.InfluenceSource;
-import com.galvarez.ttw.model.components.Research;
+import com.galvarez.ttw.model.components.*;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.Policy;
@@ -47,6 +23,14 @@ import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+import com.galvarez.ttw.utils.Assets.Icon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+
+import static java.lang.Math.min;
+import static java.util.stream.Collectors.toList;
 
 /**
  * For every empire, compute the new discovery.
@@ -201,13 +185,10 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
         continue;
       }
 
-      Collections.sort(possible, new Comparator<Research>() {
-        @Override
-        public int compare(Research d1, Research d2) {
-          // reverse order: greatest first
-          return -Float.compare(d1.factions.get(f, 0f), d2.factions.get(f, 0f));
-        }
-      });
+      possible.sort((Research d1, Research d2) -> -Float.compare(
+              d1.factions.get(f, 0f),
+              d2.factions.get(f, 0f)
+      ));
 
       Research selected = null;
       for (int i = rand.nextInt(min(2, possible.size())); i >= 0 && selected == null; i--)

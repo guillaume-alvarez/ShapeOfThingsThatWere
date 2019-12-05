@@ -1,6 +1,7 @@
 package com.galvarez.ttw.rendering;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.artemis.ComponentMapper;
@@ -22,6 +23,8 @@ import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
 import com.galvarez.ttw.utils.Font;
 
+import static java.util.Comparator.comparing;
+
 @Wire
 public final class SpriteRenderSystem extends AbstractRendererSystem {
 
@@ -33,7 +36,7 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
   private final TextureAtlas atlas;
 
-  private final List<Entity> sortedEntities = new ArrayList<Entity>();
+  private final List<Entity> sortedEntities = new ArrayList<>();
 
   private final BitmapFont font;
 
@@ -75,8 +78,8 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
       sprite.region.setRegion(sprite.x, sprite.y, width, height);
 
       FloatPair drawPosition = MapTools.world2window(position);
-      float posX = drawPosition.x - (spriteRegion.getRegionWidth() / 2 * sprite.scaleX);
-      float posY = drawPosition.y - (spriteRegion.getRegionHeight() / 2 * sprite.scaleY);
+      float posX = drawPosition.x - ((spriteRegion.getRegionWidth() / 2) * sprite.scaleX);
+      float posY = drawPosition.y - ((spriteRegion.getRegionHeight() / 2) * sprite.scaleY);
 
       batch.draw(spriteRegion, posX, posY, 0, 0, spriteRegion.getRegionWidth(), spriteRegion.getRegionHeight(),
           sprite.scaleX, sprite.scaleY, sprite.rotation);
@@ -84,12 +87,12 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
   }
 
   @Override
-  protected void inserted(Entity e) {
-    sortedEntities.add(e);
-    Sprite sprite = sprites.get(e);
+  protected void inserted(Entity entity) {
+    sortedEntities.add(entity);
+    Sprite sprite = sprites.get(entity);
     initSprite(sprite);
 
-    sortedEntities.sort((e1, e2) -> sprites.get(e1).layer.compareTo(sprites.get(e2).layer));
+    sortedEntities.sort(comparing(e -> sprites.get(e).layer));
   }
 
   public void setSprite(Entity e, String spriteName) {

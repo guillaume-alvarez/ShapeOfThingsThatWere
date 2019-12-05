@@ -200,11 +200,11 @@ public class MenuBuilder {
   }
 
   private static String number(int i) {
-    return i >= 0 ? "+" + Integer.toString(i) : Integer.toString(i);
+    return i >= 0 ? "+" + i : Integer.toString(i);
   }
 
   private static String number(float f) {
-    return f >= 0 ? "+" + Float.toString(f) : Float.toString(f);
+    return f >= 0 ? "+" + f : Float.toString(f);
   }
 
   private Influence addInfluences(MapPosition tile) {

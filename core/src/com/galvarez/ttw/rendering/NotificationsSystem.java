@@ -40,11 +40,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
   }
 
   public List<Notification> getNotifications() {
-    for (Iterator<Notification> i = current.iterator(); i.hasNext();) {
-      Notification n = i.next();
-      if (n.discard != null && n.discard.canDiscard())
-        i.remove();
-    }
+    current.removeIf(n -> n.discard != null && n.discard.canDiscard());
     return Collections.unmodifiableList(current);
   }
 

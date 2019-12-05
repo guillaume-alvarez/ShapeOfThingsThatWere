@@ -1,8 +1,5 @@
 package com.galvarez.ttw.rendering.map;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,7 +12,9 @@ import com.galvarez.ttw.model.map.MapPosition;
 import com.galvarez.ttw.model.map.MapTools;
 import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.FloatPair;
-import com.galvarez.ttw.utils.Font;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class MapHighlighter extends AbstractRenderer {
 
@@ -57,7 +56,9 @@ public class MapHighlighter extends AbstractRenderer {
       if (tile.x < x0 || tile.x > x1 || tile.y < y0 || tile.y > y1)
         continue;
       FloatPair coords = MapTools.world2window(tile);
-      batch.draw(highlight, coords.x - highlight.getRegionWidth() / 2, coords.y - highlight.getRegionHeight() / 2);
+      batch.draw(highlight,
+              coords.x - (highlight.getRegionWidth() / 2),
+              coords.y - (highlight.getRegionHeight() / 2));
 
       // then draw the remaining cost for each cell
       String msg = e.getValue();

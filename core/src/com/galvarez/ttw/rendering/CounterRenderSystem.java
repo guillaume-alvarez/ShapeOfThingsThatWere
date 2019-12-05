@@ -84,8 +84,8 @@ public final class CounterRenderSystem extends AbstractRendererSystem {
     Counter counter = counters.get(e);
 
     FloatPair drawPosition = MapTools.world2window(position);
-    float posX = drawPosition.x - SIZE / 2;
-    float posY = drawPosition.y - SIZE / 2;
+    float posX = drawPosition.x - (SIZE / 2);
+    float posY = drawPosition.y - (SIZE / 2);
 
     batch.setColor(Color.WHITE);
     batch.draw(counter.background, posX, posY);

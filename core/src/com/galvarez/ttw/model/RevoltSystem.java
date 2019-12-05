@@ -135,7 +135,7 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
         revolt(empire, instability, source, tile);
         return true;
       } else {
-        Map<String, Runnable> choices = new HashMap<String, Runnable>();
+        Map<String, Runnable> choices = new HashMap<>();
         choices.put("Let them revolt!",
                 () -> revolt(empire, instability, source, tile));
         choices.put("Try to ease the tension, losing up to " + instability + " power...",

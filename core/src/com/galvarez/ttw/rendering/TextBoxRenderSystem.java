@@ -111,7 +111,7 @@ public final class TextBoxRenderSystem extends AbstractRendererSystem {
       batch.draw(texture, posX, posY);
 
       posX += PAD;
-      posY += texture.getHeight() - PAD / 2;
+      posY += texture.getHeight() - (PAD / 2);
 
       font.setColor(box.color);
       font.draw(batch, box.text, posX, posY);

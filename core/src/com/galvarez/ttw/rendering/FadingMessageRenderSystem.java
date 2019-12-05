@@ -89,7 +89,7 @@ public final class FadingMessageRenderSystem extends EntityProcessingSystem {
   }
 
   private void drawIcon(FloatPair drawPosition, FadingMessage message) {
-    float posX = drawPosition.x - message.icon.getRegionWidth() / 2;
+    float posX = drawPosition.x - (message.icon.getRegionWidth() / 2);
     float posY = drawPosition.y;
 
     Color color = message.color;

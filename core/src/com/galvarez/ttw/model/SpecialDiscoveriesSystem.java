@@ -31,7 +31,7 @@ import com.galvarez.ttw.screens.overworld.OverworldScreen;
 /**
  * Contains 'special discoveries', having special effects not covered by
  * {@link EffectsSystem}.
- * 
+ *
  * @author Guillaume Alvarez
  */
 @Wire
@@ -75,45 +75,53 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
 
   public SpecialDiscoveriesSystem(OverworldScreen screen) {
     this.screen = screen;
-    effects.put(VILLAGE, new Special() {
-      @Override
-      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
-        if (!discoveries.done.contains(CITY)) {
-          String name = names.get(empire).name;
-          String desc = "Village of " + name;
-          setDescription(empire, name, desc);
-          sprites.setSprite(empire, "village");
-          cannotMove(empire);
-        }
-      }
-    });
-    effects.put(CITY, new Special() {
-      @Override
-      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+    effects.put(VILLAGE, new VillageDiscovery());
+    effects.put(CITY, new CityDiscovery());
+    effects.put(RAFT, new RaftDiscovery());
+    effects.put(BOAT, new BoatDiscovery());
+  }
+
+  private class VillageDiscovery implements Special {
+    @Override
+    public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+      if (!discoveries.done.contains(CITY)) {
         String name = names.get(empire).name;
-        String desc = "City of " + name;
+        String desc = "Village of " + name;
         setDescription(empire, name, desc);
-        sprites.setSprite(empire, "city");
+        sprites.setSprite(empire, "village");
         cannotMove(empire);
       }
-    });
-    effects.put(RAFT, new Special() {
-      @Override
-      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
-        for (Entity army : sources.get(empire).secondarySources)
-          destinations.get(army).forbiddenTiles.add(Terrain.SHALLOW_WATER);
-        commanders.get(empire).forbiddenTiles.add(Terrain.SHALLOW_WATER);
-      }
-    });
-    effects.put(BOAT, new Special() {
-      @Override
-      public void apply(Entity empire, Discovery d, Discoveries discoveries) {
-        List<Terrain> list = asList(Terrain.DEEP_WATER, Terrain.SHALLOW_WATER);
-        for (Entity army : sources.get(empire).secondarySources)
-          destinations.get(army).forbiddenTiles.addAll(list);
-        commanders.get(empire).forbiddenTiles.addAll(list);
-      }
-    });
+    }
+  }
+
+  private class CityDiscovery implements Special {
+    @Override
+    public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+      String name = names.get(empire).name;
+      String desc = "City of " + name;
+      setDescription(empire, name, desc);
+      sprites.setSprite(empire, "city");
+      cannotMove(empire);
+    }
+  }
+
+  private class RaftDiscovery implements Special {
+    @Override
+    public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+      for (Entity army : sources.get(empire).secondarySources)
+        destinations.get(army).forbiddenTiles.add(Terrain.SHALLOW_WATER);
+      commanders.get(empire).forbiddenTiles.add(Terrain.SHALLOW_WATER);
+    }
+  }
+
+  private class BoatDiscovery implements Special {
+    @Override
+    public void apply(Entity empire, Discovery d, Discoveries discoveries) {
+      List<Terrain> list = asList(Terrain.DEEP_WATER, Terrain.SHALLOW_WATER);
+      for (Entity army : sources.get(empire).secondarySources)
+        destinations.get(army).forbiddenTiles.addAll(list);
+      commanders.get(empire).forbiddenTiles.addAll(list);
+    }
   }
 
   @Override
@@ -145,5 +153,4 @@ public final class SpecialDiscoveriesSystem extends VoidEntitySystem {
     if (effect != null)
       effect.apply(empire, d, discoveries);
   }
-
 }
