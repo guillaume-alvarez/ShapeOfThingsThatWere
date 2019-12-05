@@ -56,7 +56,14 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
                     return false;
             }
         };
-        Gdx.input.setInputProcessor(new InputMultiplexer(escape, stage));
+        InputAdapter mapClick = new InputAdapter() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                resumeGame();
+                return true;
+            }
+        };
+        Gdx.input.setInputProcessor(new InputMultiplexer(escape, stage, mapClick));
     }
 
     @Override
