@@ -38,14 +38,10 @@ public final class SpriteRenderSystem extends AbstractRendererSystem {
 
   private final List<Entity> sortedEntities = new ArrayList<>();
 
-  private final BitmapFont font;
-
-  public SpriteRenderSystem(Assets assets, OrthographicCamera camera, SpriteBatch batch) {
+  public SpriteRenderSystem(OrthographicCamera camera, SpriteBatch batch) {
     super(with(MapPosition.class, Sprite.class), camera, batch);
 
     atlas = new TextureAtlas(Gdx.files.internal("textures/characters.atlas"), Gdx.files.internal("textures"));
-
-    font = assets.getFont(16);
   }
 
   @Override

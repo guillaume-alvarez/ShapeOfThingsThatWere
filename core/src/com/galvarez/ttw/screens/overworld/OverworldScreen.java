@@ -194,7 +194,7 @@ public final class OverworldScreen extends AbstractScreen {
     diplomacyRenderSystem = world.setSystem(new DiplomacyRenderSystem(camera, batch), true);
     textBoxRenderSystem = world.setSystem(new TextBoxRenderSystem(game.assets, camera, batch), true);
     destinationRenderSystem = world.setSystem(new DestinationRenderSystem(camera, batch), true);
-    spriteRenderSystem = world.setSystem(new SpriteRenderSystem(game.assets, camera, batch), true);
+    spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera, batch), true);
     counterRenderSystem = world.setSystem(new CounterRenderSystem(game.assets, camera, batch), true);
     fadingMessageRenderSystem = world.setSystem(new FadingMessageRenderSystem(game.assets, camera, batch), true);
 
