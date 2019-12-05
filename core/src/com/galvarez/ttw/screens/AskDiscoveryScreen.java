@@ -1,7 +1,5 @@
 package com.galvarez.ttw.screens;
 
-import java.util.Map.Entry;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +11,8 @@ import com.galvarez.ttw.model.components.Research;
 import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.OverworldScreen;
+
+import java.util.Map.Entry;
 
 /**
  * This screen appears when player must choose his next discovery.
@@ -48,9 +48,10 @@ public final class AskDiscoveryScreen extends AbstractPausedScreen<OverworldScre
       choices.addButton("No discoveries to combine!", this::resumeGame);
     } else {
       choices.addLabel("Which faction do you choose to make new discoveries?");
-      for (Entry<Faction, Research> next : empire.nextPossible.entrySet())
-        choices.addButton(action(next.getKey()), previousString(next.getValue()), () -> newDiscovery(next.getValue()),
-            true);
+      for (Entry<Faction, Research> next : empire.nextPossible.entrySet()) {
+        String label = action(next.getKey()) + previousString(next.getValue());
+        choices.addButton(label, () -> newDiscovery(label, next.getValue()));
+      }
 
       choices.addLabel(" ");
       choices.addButton("Choose later...", this::resumeGame);
@@ -83,7 +84,7 @@ public final class AskDiscoveryScreen extends AbstractPausedScreen<OverworldScre
     }
   }
 
-  private void newDiscovery(Research next) {
+  private void newDiscovery(String label, Research next) {
     discoverySystem.discoverNew(player, empire, next);
 
     choices.clear();
@@ -91,6 +92,7 @@ public final class AskDiscoveryScreen extends AbstractPausedScreen<OverworldScre
     StringBuilder sb = new StringBuilder("We discovered " + next.target.name + "!");
     for (String effect : discoverySystem.effectsStrings(empire.last.target))
       sb.append("\n - " + effect);
+    choices.addLabel(label + "...");
     choices.addButton(sb.toString(), this::resumeGame);
 
     choices.addToStage(stage, -1, -1, true);
