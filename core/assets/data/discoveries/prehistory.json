@@ -417,6 +417,12 @@
 {
   name: Beliefs,
   previous: [[Death, Sky, Underworld]],
+  effects: {discovery: 1, stability: 1}
+},
+{
+  name: Myths,
+  previous: [[Beliefs]],
+  effects: {stability: 1}
 },
 {
   name: Art,
