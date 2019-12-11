@@ -77,11 +77,13 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
     @Override
     public boolean execute(Entity e) {
         InfluenceSource source = sources.get(e);
+        int old = source.power();
         source.setPower(source.health / 2);
+        int delta = old - source.power();
 
         fadingSystem.createFadingIcon(Icon.DISEASE, empires.get(e).color, positions.get(e), 3f);
-        notifications.addNotification(() -> screen.select(e, false), null,
-                Icon.DISEASE, "Mortal disease strikes %s!", e.getComponent(Description.class));
+        notifications.addNotification(() -> screen.select(e, false), null, Icon.DISEASE,
+                "Mortal disease strikes %s!\nLost %d power...", e.getComponent(Description.class), delta);
 
         return true;
     }
