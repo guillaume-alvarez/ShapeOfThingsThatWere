@@ -7,7 +7,7 @@ import com.galvarez.ttw.utils.Assets;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -19,6 +19,22 @@ import static java.lang.String.format;
  */
 @Wire
 public final class NotificationsSystem extends VoidEntitySystem {
+
+  private static final Comparator<Notification> INFO_FIRST = new Comparator<Notification>() {
+    @Override
+    public int compare(Notification o1, Notification o2) {
+      if (o1.requiresAction()) {
+        if (o2.requiresAction())
+          return o1.msg.compareTo(o2.msg);
+        else
+          return 1;
+      } else {
+        if (o2.requiresAction()) return -1;
+        else
+          return o1.msg.compareTo(o2.msg);
+      }
+    }
+  };
 
   /** Notifications registered for next turn. */
   private final List<Notification> notifications = new ArrayList<>();
@@ -41,6 +57,7 @@ public final class NotificationsSystem extends VoidEntitySystem {
 
   public List<Notification> getNotifications() {
     current.removeIf(n -> n.discard != null && n.discard.canDiscard());
+    current.sort(INFO_FIRST);
     return Collections.unmodifiableList(current);
   }
 
