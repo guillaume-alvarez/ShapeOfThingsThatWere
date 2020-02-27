@@ -75,6 +75,17 @@ public final class DisasterSystem extends EntitySystem implements EventHandler {
     }
 
     @Override
+    public String getReason(Entity e) {
+        InfluenceSource source = sources.get(e);
+        int power = source.power();
+        int health = source.health;
+        if (health >= power)
+            return "Health (" + health + ") >= Power (" + power + ")";
+        else
+            return "Health (" + health + ") < Power (" + power + ")";
+    }
+
+    @Override
     public boolean execute(Entity e) {
         InfluenceSource source = sources.get(e);
         int old = source.power();

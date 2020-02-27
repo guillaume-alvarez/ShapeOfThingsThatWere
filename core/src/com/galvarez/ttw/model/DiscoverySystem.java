@@ -280,6 +280,12 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
   }
 
   @Override
+  public String getReason(Entity e) {
+    InfluenceSource influence = influences.get(e);
+    return influence.influencedTiles.size() + " tiles";
+  }
+
+  @Override
   public boolean execute(Entity e) {
     return discoverNext(e, empires.get(e));
   }

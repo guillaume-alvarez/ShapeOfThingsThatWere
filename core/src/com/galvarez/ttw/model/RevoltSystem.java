@@ -106,6 +106,15 @@ public final class RevoltSystem extends EntitySystem implements EventHandler {
     return max(0, getInstability(empire) / 2);
   }
 
+  @Override
+  public String getReason(Entity e) {
+    int instability = getInstability(e);
+    if (instability <= 0)
+      return "Instability (" + instability + ") <= 0";
+    else
+      return "Instability (" + instability + ") > 0";
+  }
+
   public int getInstability(Entity empire) {
     InfluenceSource source = sources.get(empire);
     Policies empirePolicies = policies.get(empire);

@@ -19,6 +19,9 @@ public final class EventsSystem extends EntitySystem {
     /** Get the score progress toward next event of this type. */
     int getProgress(Entity e);
 
+    /** Get the reason for this event. */
+    String getReason(Entity e);
+
     /**
      * Execute the event on the entity.
      * 
@@ -50,6 +53,7 @@ public final class EventsSystem extends EntitySystem {
     EventsCount count = counts.get(e);
     for (EventHandler type : types) {
       count.scores.put(type, 0);
+      count.reasons.put(type, type.getReason(e));
     }
     count.increment.putAll(count.scores);
     count.display.putAll(count.scores);
@@ -71,6 +75,7 @@ public final class EventsSystem extends EntitySystem {
       count.increment.put(type, progress);
       count.display.put(type, newScore);
       count.scores.put(type, newScore);
+      count.reasons.put(type, type.getReason(e));
       if (newScore > maxScore) {
         selected = type;
         maxScore = newScore;

@@ -7,10 +7,8 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -71,6 +69,8 @@ public class MenuBuilder {
 
   private final Assets assets;
 
+  private final TooltipManager tooltips;
+
   public MenuBuilder(Assets assets, Stage stage, World world, GameMap map, OverworldScreen screen, InputManager inputManager) {
     this.stage = stage;
     this.world = world;
@@ -79,6 +79,11 @@ public class MenuBuilder {
     this.inputManager = inputManager;
     this.notifications = world.getSystem(NotificationsSystem.class);
     this.assets = assets;
+
+    this.tooltips = new TooltipManager();
+    tooltips.initialTime = 0;
+    tooltips.maxWidth = 300;
+    tooltips.animations = false;
 
     skin = assets.getSkin();
 
@@ -304,8 +309,12 @@ public class MenuBuilder {
     EventsCount events = e.getComponent(EventsCount.class);
     if (events != null) {
       eventsMenu.addLabel("Possible events in " + e.getComponent(Name.class));
-      for (Entry<EventHandler> evt : events.display)
-        eventsMenu.addLabel(format(" %s: %d (+%d)", evt.key.getType(), evt.value, events.increment.get(evt.key, 0)));
+      for (Entry<EventHandler> evt : events.display) {
+        Label l = eventsMenu.addLabel(format(" %s: %d (+%d)", evt.key.getType(), evt.value, events.increment.get(evt.key, 0)));
+        String reason = events.reasons.get(evt.key);
+        if (reason != null)
+          l.addListener(new TextTooltip(reason, tooltips, skin));
+      }
 
       eventsMenu.addToStage(stage, stage.getWidth() - 256, stage.getHeight() - MENU_PADDING, false);
     }
