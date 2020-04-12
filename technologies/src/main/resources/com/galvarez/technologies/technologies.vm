@@ -12,21 +12,28 @@
 
 <body>
 
-  <script>
-  const nodes = [
-    #foreach( $t in $technologies.values() )
-    { id:"$t.name", group:"1", name:"$t.name", text:`$t.text` },
-    #end
-  ]
-  const links = [
-    #foreach( $tech in $technologies.values() )
-    #foreach( $previous in $tech.previous )
-    { source:"$previous.name", target:"$tech.name" },
-    #end
-    #end
-  ]
-  </script>
-  <script src="/technologies.js"></script>
+<script>
+const nodes = [
+  #foreach( $t in $technologies.values() )
+  { id:"$t.name", group:"1", name:"$t.name", text:`$t.text` },
+  #end
+]
+const links = [
+  #foreach( $tech in $technologies.values() )
+  #foreach( $previous in $tech.previous )
+  { source:"$previous.name", target:"$tech.name", strong:true },
+  #end
+  #end
+
+  #foreach( $tech in $technologies.values() )
+  #foreach( $previous in $tech.help )
+  { source:"$previous.name", target:"$tech.name", strong:false },
+  #end
+  #end
+]
+</script>
+
+<script src="/technologies.js"></script>
 </body>
 
 </html>

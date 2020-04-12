@@ -60,9 +60,12 @@ final class PlantumlParser {
     private boolean parseLink(String line) {
         Matcher matcher = LINK.matcher(line);
         if (matcher.matches()) {
-            String source = matcher.group(1);
-            String target = matcher.group(3);
-            technologies.get(target).addPrevious(technologies.get(source));
+            Technology source = technologies.get(matcher.group(1));
+            Technology target = technologies.get(matcher.group(3));
+            if (matcher.group(2).contains("-->"))
+                target.addPrevious(source);
+            else
+                target.addHelp(source);
             return true;
         }
         return false;

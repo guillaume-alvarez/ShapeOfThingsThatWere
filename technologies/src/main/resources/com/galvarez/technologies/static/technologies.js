@@ -41,22 +41,27 @@ var tooltip = d3.select("body").append("div")
 var index = new Map(nodes.map(d => [d.id, d]));
 var edges = links.map(d => Object.assign(Object.create(d), {
     source: index.get(d.source),
-    target: index.get(d.target)
+    target: index.get(d.target),
+    string: d.strong
 }));
 
 var d3cola = cola.d3adaptor(d3)
     .avoidOverlaps(true)
     .convergenceThreshold(1e-3)
-    .flowLayout('x', 150)
+    .flowLayout('x', 300)
+    .avoidOverlaps(true)
     .size([width, height])
     .nodes(nodes)
     .links(edges)
-    .jaccardLinkLengths(150);
+    .symmetricDiffLinkLengths(50);
 
 var link = vis.selectAll(".link")
     .data(edges)
     .enter().append("path")
-    .attr("class", "link");
+    .attr("class", "link")
+    .attr("class", function (d) {
+            return d.strong ? "link strong": "link light";
+        });
 
 var margin = 10, pad = 12;
 var node = vis.selectAll(".node")
@@ -80,7 +85,7 @@ var label = vis.selectAll(".label")
         d.height = b.height + extra;
     });
 
-// Add the scatterplot
+// Add the tooltip
 vis.selectAll(".label")
     .on("mouseover", function(d) {
         tooltip.transition()
@@ -103,18 +108,7 @@ var lineFunction = d3.line()
 var routeEdges = function () {
     d3cola.prepareEdgeRouting();
     link.attr("d", function (d) {
-        return lineFunction(d3cola.routeEdge(d
-         // show visibility graph
-            //, function (g) {
-            //    if (d.source.id === 10 && d.target.id === 11) {
-            //    g.E.forEach(function (e) {
-            //        vis.append("line").attr("x1", e.source.p.x).attr("y1", e.source.p.y)
-            //            .attr("x2", e.target.p.x).attr("y2", e.target.p.y)
-            //            .attr("stroke", "green");
-            //    });
-            //    }
-            //}
-));
+        return lineFunction(d3cola.routeEdge(d));
     });
 }
 d3cola.start(50, 100, 200).on("tick", function () {

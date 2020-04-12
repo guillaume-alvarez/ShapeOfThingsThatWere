@@ -23,6 +23,14 @@ svg {
     marker-end: url(#end-arrow);
 }
 
+.link.strong {
+    stroke-width: 4px;
+}
+
+.link.light {
+    stroke-width: 1px;
+}
+
 .label {
     fill: black;
     font-family: Verdana;
