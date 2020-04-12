@@ -524,6 +524,22 @@ Percussion
 ]
 Tribe ..> Music
 
+node Tools [
+<b>Tools
++2 prod +1 tech
+---
+Stick
+Hammer
+]
+
+node Wheel [
+<b>Wheel
++1 prod
+---
+Cart
+]
+Tools --> Wheel
+
 node Pottery [
 <b>Pottery
 +1 food
@@ -535,6 +551,7 @@ Bricks
 ]
 Firewood ..> Pottery
 Cultivation ..> Pottery
+Wheel ..> Pottery
 
 node Earthenware [
 <b>Earthenware
@@ -587,5 +604,6 @@ Soldiers
 ]
 Band --> Army
 City ..> Army
+
 
 @enduml

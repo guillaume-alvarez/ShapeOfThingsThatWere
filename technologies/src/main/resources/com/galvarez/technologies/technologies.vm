@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="http://marvl.infotech.monash.edu/webcola/cola.js"></script>
+<link rel="stylesheet" href="/technologies.css">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Technologies graph</title>
+</head>
+
+<body>
+
+  <script>
+  const nodes = [
+    #foreach( $t in $technologies.values() )
+    { id:"$t.name", group:"1", name:"$t.name", text:`$t.text` },
+    #end
+  ]
+  const links = [
+    #foreach( $tech in $technologies.values() )
+    #foreach( $previous in $tech.previous )
+    { source:"$previous.name", target:"$tech.name" },
+    #end
+    #end
+  ]
+  </script>
+  <script src="/technologies.js"></script>
+</body>
+
+</html>
