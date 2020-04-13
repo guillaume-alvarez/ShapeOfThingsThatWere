@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="width:100%;height:100%;">
 
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="http://marvl.infotech.monash.edu/webcola/cola.js"></script>
@@ -10,12 +10,12 @@
   <title>Technologies graph</title>
 </head>
 
-<body>
+<body style="width:100%;height:100%;">
 
 <script>
 const nodes = [
   #foreach( $t in $technologies.values() )
-  { id:"$t.name", group:"1", name:"$t.name", text:`$t.text` },
+  { id:"$t.name", group:"1", name:"$t.name", text:`$t.text`, rank:$t.rank, root:$t.root },
   #end
 ]
 const links = [

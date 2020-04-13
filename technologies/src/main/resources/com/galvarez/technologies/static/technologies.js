@@ -1,7 +1,7 @@
 var width = 960, height = 700;
 var outer = d3.select("body").append("svg")
-    .attr('width',width)
-    .attr('height',height)
+    .attr('width','100%')
+    .attr('height','100%')
     .attr('pointer-events',"all");
 
 outer.append('rect')
@@ -39,20 +39,70 @@ var tooltip = d3.select("body").append("div")
 
 
 var index = new Map(nodes.map(d => [d.id, d]));
+var toIndex = new Map(nodes.map((d, i) => [d.id, i]));
 var edges = links.map(d => Object.assign(Object.create(d), {
     source: index.get(d.source),
     target: index.get(d.target),
-    string: d.strong
+    strong: d.strong
 }));
 
+// needed to index children on same level
+parentNodes = new Map();
+edges.forEach(function(edge) {
+  if (edge.strong) {
+      var sourceIndex = toIndex.get(edge.source.id);
+      var targetIndex = toIndex.get(edge.target.id);
+      if (parentNodes.get(sourceIndex) == null) {
+        parentNodes.set(sourceIndex, []);
+      }
+      parentNodes.get(sourceIndex).push(targetIndex);
+  }
+});
+
+var constraints = [];
+parentNodes.forEach(function(children, parent, map) {
+    // if there is a single child, keep it on same row
+    if (children.length == 1) {
+        constraints.push({
+             'type': 'alignment',
+             'axis': 'y',
+             'offsets': [{node: parent, offset: 0}, {node: children[0], offset: 0}]
+        });
+    }
+    // else all children is on the same level
+    else {
+        var constraint = {
+                'type': 'alignment',
+                'axis': 'x',
+                'offsets': []};
+        children.forEach(function(child) {
+            constraint.offsets.push({node: child, offset: 0});
+        });
+        constraints.push(constraint);
+    }
+    // in any case keep children on the right of parents
+    children.forEach(function(child) {
+        constraints.push({"axis":"x", "left":parent, "right":child, "gap":25});
+    });
+});
+
+// also set all root techs on same level
+constraints.push({
+    'type': 'alignment',
+    'axis': 'x',
+    'offsets': nodes.filter(n => n.root).map(function(n) { return {node: toIndex.get(n.id), offset: 0}; }),
+});
+
+size = outer.node().getBBox();
 var d3cola = cola.d3adaptor(d3)
     .avoidOverlaps(true)
     .convergenceThreshold(1e-3)
     .flowLayout('x', 300)
     .avoidOverlaps(true)
-    .size([width, height])
+    .size([size.width, size.height])
     .nodes(nodes)
     .links(edges)
+    .constraints(constraints)
     .symmetricDiffLinkLengths(50);
 
 var link = vis.selectAll(".link")

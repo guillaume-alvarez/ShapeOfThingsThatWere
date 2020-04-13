@@ -87,6 +87,7 @@ node Monotheism [
 ---
 God
 Saints
+Marturs
 Rituals
 Cults
 Temple
@@ -94,6 +95,17 @@ Clergy
 Missionaries
 ]
 Polytheism --> Monotheism
+
+node Nationalism [
+<b>Nationalism
++4 social
+---
+Nation
+Leader
+Rituals
+Soldiers
+]
+Monotheism --> Nationalism
 
 node Firewood [
 <b>Firewood
@@ -103,7 +115,6 @@ Oak
 Birch
 Poplar
 ]
-Gathering ..> Firewood
 
 node Taming [
 <b>Taming
@@ -174,6 +185,14 @@ Sorghum
 Cultivation --> Irrigation
 Cattle ..> Irrigation
 
+node Tools [
+<b>Tools
++2 prod +1 tech
+---
+Stick
+Hammer
+]
+
 node Woodworking [
 <b>Woodworking
 +1 prod
@@ -188,17 +207,7 @@ Pine
 Chestnut
 Aspen
 ]
-Firewood ..> Woodworking
-
-node Stonecraft [
-<b>Stonecraft
-+1 prod
----
-Flint
-Limestone
-Granite
-]
-Gathering ..> Stonecraft
+Tools --> Woodworking
 
 node Clothes [
 <b>Clothes
@@ -238,17 +247,17 @@ Iron
 Lead
 Furnace
 ]
-Firewood ..> Metallurgy
+Woodworking --> Metallurgy
 
-node Jewels [
-<b>Jewels
+node Jewelry [
+<b>Jewelry
 +3 social
 ---
 Rings
 Collars
 ]
-Ornaments --> Jewels
-Metallurgy ..> Jewels
+Ornaments --> Jewelry
+Metallurgy ..> Jewelry
 
 node Bronze [
 <b>Bronze
@@ -303,7 +312,7 @@ Sword
 Bow
 Arrows
 ]
-Hunting ..> Weapons
+Hunting --> Weapons
 
 node Archery [
 <b>Archery
@@ -348,28 +357,6 @@ Weapons --> Armor
 Bronze ..> Armor
 Iron ..> Armor
 Clothes ..> Armor
-
-node Chariot [
-<b>Chariot
-+3 strength
----
-Horse
-Bow
-Spear
-]
-Weapons --> Chariot
-Cattle ..> Chariot
-
-node Cavalry [
-<b>Chariot
-+4 strength
----
-Horse
-Sword
-Spear
-Shield
-]
-Chariot --> Cavalry
 
 node Plastic [
 <b>Plastic
@@ -463,6 +450,16 @@ House
 ]
 Village --> Construction
 
+node Stonecraft [
+<b>Stonecraft
++1 prod
+---
+Flint
+Limestone
+Granite
+]
+Construction --> Stonecraft
+
 node Architecture [
 <b>Architecture
 +2 social
@@ -472,8 +469,7 @@ Beams
 Hut
 House
 ]
-Construction --> Architecture
-Stonecraft ..> Architecture
+Stonecraft --> Architecture
 
 node City [
 <b>City
@@ -524,21 +520,13 @@ Percussion
 ]
 Tribe ..> Music
 
-node Tools [
-<b>Tools
-+2 prod +1 tech
----
-Stick
-Hammer
-]
-
 node Wheel [
 <b>Wheel
 +1 prod
 ---
 Cart
 ]
-Tools --> Wheel
+Tools ..> Wheel
 
 node Pottery [
 <b>Pottery
@@ -551,7 +539,7 @@ Bricks
 ]
 Firewood ..> Pottery
 Cultivation ..> Pottery
-Wheel ..> Pottery
+Wheel --> Pottery
 
 node Earthenware [
 <b>Earthenware
@@ -584,6 +572,29 @@ Plates
 Stoneware --> Porcelain
 Coal ..> Porcelain
 
+node Chariot [
+<b>Chariot
++3 strength
+---
+Horse
+Bow
+Spear
+]
+Weapons --> Chariot
+Cattle ..> Chariot
+Wheel ..> Chariot
+
+node Cavalry [
+<b>Chariot
++4 strength
+---
+Horse
+Sword
+Spear
+Shield
+]
+Chariot --> Cavalry
+
 node Band [
 <b>Band
 +1 strength
@@ -604,6 +615,13 @@ Soldiers
 ]
 Band --> Army
 City ..> Army
+
+
+Animism -[hidden]left-> Hunting
+Animism -[hidden]left-> Gathering
+Animism -[hidden]left-> Firewood
+Animism -[hidden]left-> Tools
+Animism -[hidden]left-> Tribe
 
 
 @enduml

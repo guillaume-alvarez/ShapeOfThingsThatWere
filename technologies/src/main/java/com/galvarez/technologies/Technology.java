@@ -12,6 +12,8 @@ public class Technology {
     private final List<Technology> previous = new ArrayList<>();
     private final List<Technology> help = new ArrayList<>();
 
+    private int rank = -1;
+
     Technology(String name) {
         this.name = name;
     }
@@ -44,6 +46,25 @@ public class Technology {
 
     void addHelp(Technology t) {
         help.add(t);
+    }
+
+    /**
+     * Return the card rank: 0 for the first ones without any previous, then 1 for the next, etc.
+     */
+    public int getRank() {
+        if (rank < 0) {
+            if (previous.isEmpty())
+                rank = 0;
+            else {
+                for (Technology t : previous)
+                    rank = Math.max(t.getRank() + 1, rank);
+            }
+        }
+        return rank;
+    }
+
+    public boolean isRoot() {
+        return previous.isEmpty() && help.isEmpty();
     }
 
     @Override
