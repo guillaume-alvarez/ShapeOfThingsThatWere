@@ -36,7 +36,14 @@ application {
 }
 
 runtime {
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages', '--add-modules=jdk.unsupported']
+    options = [
+            '--strip-debug',
+            '--compress', '2',
+            '--no-header-files',
+            '--no-man-pages',
+            '--add-modules=jdk.unsupported' // required by lwjgl for sun.misc.Unsafe
+    ]
+    imageZip = file("$buildDir/TheShapeOfThingsThatWere.zip")
 }
 
 tasks.runtime.doLast {
@@ -44,4 +51,8 @@ tasks.runtime.doLast {
         from('resources')
         into("$buildDir/image/bin")
     }
+    new File("$buildDir/image/", "start.bat").text = """
+cd bin
+TheShapeOfThingsThatWere.bat
+"""
 }
