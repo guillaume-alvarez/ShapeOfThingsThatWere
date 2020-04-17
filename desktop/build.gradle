@@ -31,7 +31,7 @@ dist.dependsOn classes
 
 application {
     mainClassName = project.mainClassName
-    applicationName = 'TheShapeOfThingsThatWere'
+    applicationName = 'ShapeOfThingsThatWere'
     applicationDefaultJvmArgs = [ ]
 }
 
@@ -43,7 +43,7 @@ runtime {
             '--no-man-pages',
             '--add-modules=jdk.unsupported' // required by lwjgl for sun.misc.Unsafe
     ]
-    imageZip = file("$buildDir/TheShapeOfThingsThatWere.zip")
+    imageZip = file("$buildDir/ShapeOfThingsThatWere.zip")
 }
 
 tasks.runtime.doLast {

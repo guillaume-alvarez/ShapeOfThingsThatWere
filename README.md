@@ -66,7 +66,7 @@ To create an zip with embedded game:
  * checkout github repository
  * execute `gradlew.bat desktop:runtimeZip` (windows)
  * execute `gradlew desktop:runtimeZip` (linux/cygwin)
- * zip is built in directory `desktop/build/TheShapeOfThingsThatWere.zip`
+ * zip is built in directory `desktop/build/ShapeOfThingsThatWere.zip`
  * a ``start.sh`` script is embedded to start it
 
 To start the game in Eclipse:
