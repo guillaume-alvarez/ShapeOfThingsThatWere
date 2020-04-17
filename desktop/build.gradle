@@ -1,25 +1,18 @@
-apply plugin: "java"
+plugins {
+    id "java"
+    id "org.beryx.runtime" version "1.8.1"
+}
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["resources/"]
 
 project.ext.mainClassName = "com.galvarez.ttw.desktop.DesktopLauncher"
-project.ext.assetsDir = file("../core/assets")
-
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-}
 
 task debug(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
-    workingDir = project.assetsDir
     ignoreExitValue = true
     debug = true
 }
@@ -34,6 +27,21 @@ task dist(type: Jar) {
     with jar
 }
 
-
 dist.dependsOn classes
 
+application {
+    mainClassName = project.mainClassName
+    applicationName = 'TheShapeOfThingsThatWere'
+    applicationDefaultJvmArgs = [ ]
+}
+
+runtime {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages', '--add-modules=jdk.unsupported']
+}
+
+tasks.runtime.doLast {
+    copy {
+        from('resources')
+        into("$buildDir/image/bin")
+    }
+}

@@ -62,6 +62,12 @@ To create an executable jar:
  * execute `gradlew :desktop:dist` (linux/cygwin)
  * jar is built in directory `desktop/build/libs/`
 
+To create an zip with embedded game:
+ * checkout github repository
+ * execute `gradlew.bat :desktop:dist` (windows)
+ * execute `gradlew :desktop:dist` (linux/cygwin)
+ * jar is built in directory `desktop/build/libs/`
+
 To start the game in Eclipse:
  * checkout github repository
  * execute `gradlew.bat eclipse` and import projects (windows, for linux remove `.bat`)
