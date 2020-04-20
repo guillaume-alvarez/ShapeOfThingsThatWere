@@ -53,6 +53,6 @@ tasks.runtime.doLast {
     }
     new File("$buildDir/image/", "start.bat").text = """
 cd bin
-TheShapeOfThingsThatWere.bat
+ShapeOfThingsThatWere.bat
 """
 }
