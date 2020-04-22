@@ -23,7 +23,7 @@ In few words: it must be a chaotic system, logical but impredictible.
 
 ## Current status
 
-PRE-ALPHA.
+Prototype
 
  * Map display is nice.
  * Menu API is working.
