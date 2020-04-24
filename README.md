@@ -3,6 +3,8 @@ Shape Of Things That Were
 
 Open source strategy game
 
+![screenshot](https://github.com/guillaume-alvarez/ShapeOfThingsThatWere/blob/master/screenshot.png?raw=true)
+
 ## Design objectives
 
 The goal is to produce a strategy video game. It should emphasize macro over micro management and chaos over stability.
