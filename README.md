@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/ShapeOfThingsThatWere/community.svg)](https://gitter.im/ShapeOfThingsThatWere/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Shape Of Things That Were
 =========================
 
