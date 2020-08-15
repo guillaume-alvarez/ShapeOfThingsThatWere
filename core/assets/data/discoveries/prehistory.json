@@ -127,7 +127,7 @@
 },
 {
   name: Agriculture,
-  previous: [[Grassland, Gathering], [Animal, Gathering]],
+  previous: [[Grassland, Gathering], [Animal, Gathering], [Grassland, Banana], [Gathering, Banana]],
   terrains: [GRASSLAND, PLAIN],
   effects: {growth: 2}
 },
@@ -310,6 +310,13 @@
   previous: [[Village, Fire], [Village, Family, Equality]],
   groups: [GOVERNMENT],
   effects: {growth: 1, stability: 1}
+},
+{
+  name: Banana,
+  previous: [[Grassland], [Hills], [Forest]],
+  groups: [FOOD],
+  terrains: [GRASSLAND, FOREST, HILLS],
+  effects: {growth: 1}
 },
 {
   name: Wheat,
