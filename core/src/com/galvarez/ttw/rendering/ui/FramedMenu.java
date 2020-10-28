@@ -10,20 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -33,8 +24,6 @@ import com.badlogic.gdx.utils.Scaling;
 public class FramedMenu {
 
   private int nbColumns = 2;
-
-  private Image frame;
 
   private ScrollPane scrollPane;
 
@@ -287,12 +276,11 @@ public class FramedMenu {
    * <p>
    * If x or y coordinate is negative, center the menu in the corresponding
    * dimension.
-   * 
+   *
    * @param canEscape if true pressing on ESC key will close the menu
    */
   public void addToStage(final Stage stage, float x, float y, boolean canEscape) {
     scrollPane = new ScrollPane(table, skin);
-    frame = new Image(skin.getPatch("frame"));
 
     if (canEscape) {
       // If the user presses "ESC", close this menu and focus on the "parent"
@@ -302,7 +290,7 @@ public class FramedMenu {
         public boolean keyDown(InputEvent event, int keycode) {
           if (keycode == Keys.ESCAPE) {
             // If this menu is invisible, don't do anything
-            if (!frame.isVisible())
+            if (!scrollPane.isVisible())
               return false;
 
             // If there is a parent, get rid of this
@@ -324,7 +312,6 @@ public class FramedMenu {
 
     // Go ahead and add them to the stage
     stage.addActor(scrollPane);
-    stage.addActor(frame);
 
     // having a background in the table would prevent us from using the correct
     // preferred size as the table is at least as big as its background
@@ -348,6 +335,8 @@ public class FramedMenu {
     // For now, no matter what, the width is set from constructor
     scrollPane.setWidth(width);
 
+    // so we can set the background
+    // (cannot define it in skin because we want it to be tiled)
     table.setBackground(skin.getTiledDrawable("big-marble-texture"));
 
     // Move the table to the far left of the scrollPane
@@ -368,19 +357,8 @@ public class FramedMenu {
     else
       scrollPane.setX(x);
 
-    // Make sure we can't touch the frame - that would make the scrollPane
-    // inaccessible
-    frame.setTouchable(Touchable.disabled);
-
-    // Now set the Frame's position and size based on the scrollPane's stuff
-    frame.setX(scrollPane.getX() - 1);
-    frame.setY(scrollPane.getY() - 3);
-    frame.setWidth(scrollPane.getWidth() + 4);
-    frame.setHeight(scrollPane.getHeight() + 4);
-
     // In case they became invisible earlier, make them visible now
     scrollPane.setVisible(true);
-    frame.setVisible(true);
   }
 
   public void setWidth(float width) {
@@ -393,8 +371,6 @@ public class FramedMenu {
     table.defaults().expandX().fillX().left();
     if (scrollPane != null)
       scrollPane.remove();
-    if (frame != null)
-      frame.remove();
   }
 
   public float getY() {
@@ -427,10 +403,8 @@ public class FramedMenu {
 
   /** Make invisible or visible */
   public void setVisible(boolean visible) {
-    if (frame == null)
-      return;
-    frame.setVisible(visible);
-    scrollPane.setVisible(visible);
+    if (scrollPane != null)
+      scrollPane.setVisible(visible);
   }
 
   /** Let someone else know who your parent is - currently used in MenuBuilder */

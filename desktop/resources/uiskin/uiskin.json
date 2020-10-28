@@ -6,7 +6,7 @@
     	red: { a: 1, b: 0, g: 0, r: 1 }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-		default: { vScroll: scrollBar, vScrollKnob: scrollKnob }
+		default: { vScroll: scrollBar, vScrollKnob: scrollKnob, background: frame }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		default: { font: default-font,
