@@ -19,9 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Scaling;
+import com.galvarez.ttw.model.RevoltSystem;
+import com.galvarez.ttw.utils.MyMath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FramedMenu {
+
+  private static final Logger log = LoggerFactory.getLogger(FramedMenu.class);
 
   private int nbColumns = 2;
 
@@ -126,7 +133,6 @@ public class FramedMenu {
     table.row();
   }
 
-  /** Adds a button to the menu */
   public void addButton(String label, Runnable action) {
     addButton(label, null, action, true);
   }
@@ -177,7 +183,6 @@ public class FramedMenu {
 
     b.add(new Image(icon, Scaling.fit)).left();
     Label l = new Label(label, style);
-    l.setWrap(true);
     b.add(l).padLeft(8).right().expandX().fillX();
 
     table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
@@ -207,7 +212,6 @@ public class FramedMenu {
   public Label addLabel(String label) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
-    l.setWrap(true);
     l.setWidth(width);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
@@ -236,7 +240,6 @@ public class FramedMenu {
    */
   public Label addColoredLabel(String label) {
     Label l = new Label(label, skin.get("colored", LabelStyle.class));
-    l.setWrap(true);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
     table.row();
@@ -269,6 +272,44 @@ public class FramedMenu {
     table.row();
   }
 
+  public Actor buildMenu() {
+    scrollPane = new ScrollPane(table, skin);
+
+    TiledDrawable background = skin.getTiledDrawable("big-marble-texture");
+    // the table use the background minimal size as its minimal size,
+    // even though it is usually smaller than our big image
+    background.setMinSize(0, 0);
+    table.setBackground(background);
+
+    // If the table does not fill our maximum size, resize it to our
+    // estimated height, and disable scrolling both x and y
+    if (table.getPrefHeight() < maxHeight) {
+      scrollPane.setScrollingDisabled(true, true);
+      scrollPane.setHeight(table.getPrefHeight());
+    }
+
+    // Otherwise, it's bigger than our maximum size, so we need to
+    // enable vertical scrolling, and set the height to our max.
+    else {
+      scrollPane.setScrollingDisabled(true, false);
+      scrollPane.setHeight(maxHeight);
+    }
+
+    // For now, no matter what, the width is set from constructor
+    scrollPane.setWidth(width);
+    table.setWidth(width);
+
+    // Move the table to the far left of the scrollPane
+    table.left();
+
+    // Prevent the scrollPane from scrolling (and snapping back) beyond the
+    // scroll limits
+    scrollPane.setOverscroll(false, false);
+    scrollPane.setFillParent(false);
+
+    return scrollPane;
+  }
+
   /**
    * Adds the frame and scrollpane to the specified stage at the specified
    * location. Sizes the scrollpane to the (estimated) table size, up to a
@@ -280,7 +321,7 @@ public class FramedMenu {
    * @param canEscape if true pressing on ESC key will close the menu
    */
   public void addToStage(final Stage stage, float x, float y, boolean canEscape) {
-    scrollPane = new ScrollPane(table, skin);
+    buildMenu();
 
     if (canEscape) {
       // If the user presses "ESC", close this menu and focus on the "parent"
@@ -313,39 +354,6 @@ public class FramedMenu {
     // Go ahead and add them to the stage
     stage.addActor(scrollPane);
 
-    // having a background in the table would prevent us from using the correct
-    // preferred size as the table is at least as big as its background
-    // TODO avoid this shit
-    table.setBackground((Drawable) null);
-
-    // If the table does not fill our maximum size, resize it to our
-    // estimated height, and disable scrolling both x and y
-    if (table.getPrefHeight() < maxHeight) {
-      scrollPane.setScrollingDisabled(true, true);
-      scrollPane.setHeight(table.getPrefHeight());
-    }
-
-    // Otherwise, it's bigger than our maximum size, so we need to
-    // enable vertical scrolling, and set the height to our max.
-    else {
-      scrollPane.setScrollingDisabled(true, false);
-      scrollPane.setHeight(maxHeight);
-    }
-
-    // For now, no matter what, the width is set from constructor
-    scrollPane.setWidth(width);
-
-    // so we can set the background
-    // (cannot define it in skin because we want it to be tiled)
-    table.setBackground(skin.getTiledDrawable("big-marble-texture"));
-
-    // Move the table to the far left of the scrollPane
-    table.left();
-
-    // Prevent the scrollPane from scrolling (and snapping back) beyond the
-    // scroll limits
-    scrollPane.setOverscroll(false, false);
-    scrollPane.setFillParent(false);
     // If y is negative, center the scrollPane vertically on the stage
     if (y < 0)
       scrollPane.setY((stage.getHeight() - scrollPane.getHeight()) / 2f);

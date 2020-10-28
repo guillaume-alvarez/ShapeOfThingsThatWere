@@ -312,8 +312,11 @@ public class MenuBuilder {
       for (Entry<EventHandler> evt : events.display) {
         Label l = eventsMenu.addLabel(format(" %s: %d (+%d)", evt.key.getType(), evt.value, events.increment.get(evt.key, 0)));
         String reason = events.reasons.get(evt.key);
-        if (reason != null)
-          l.addListener(new TextTooltip(reason, tooltips, skin));
+        if (reason != null) {
+          FramedMenu tooltip = new FramedMenu(skin, 256, 256);
+          tooltip.addLabel(reason);
+          l.addListener(new Tooltip(tooltip.buildMenu(), tooltips));
+        }
       }
 
       eventsMenu.addToStage(stage, stage.getWidth() - 256, stage.getHeight() - MENU_PADDING, false);
