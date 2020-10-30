@@ -280,6 +280,7 @@ public class FramedMenu {
     // even though it is usually smaller than our big image
     background.setMinSize(0, 0);
     table.setBackground(background);
+    table.pad(3, 1, 2, 1);
 
     // If the table does not fill our maximum size, resize it to our
     // estimated height, and disable scrolling both x and y
