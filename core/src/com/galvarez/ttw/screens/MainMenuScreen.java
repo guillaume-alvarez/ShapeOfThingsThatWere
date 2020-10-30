@@ -42,13 +42,7 @@ public final class MainMenuScreen extends AbstractScreen {
 
   private void initMenu() {
     title.clear();
-    LabelStyle style = new LabelStyle(game.assets.getSkin().get(LabelStyle.class));
-    style.font = game.assets.getFont(32);
-    Label l = new Label("The Shape of Things that Were", style);
-    l.setAlignment(Align.center);
-    title.getTable().add(l).left().colspan(1).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
-    title.getTable().row();
-
+    title.addTitle("The Shape of Things that Were", game.assets.getFont(32));
     title.addLabel("Growth of ancient civilizations").setAlignment(Align.center);
     title.addToStage(stage, 30, stage.getHeight() - 30, false);
 

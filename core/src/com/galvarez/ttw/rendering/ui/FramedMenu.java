@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.galvarez.ttw.model.RevoltSystem;
 import com.galvarez.ttw.utils.MyMath;
@@ -210,9 +212,30 @@ public class FramedMenu {
 
   /** Adds a label to the menu. */
   public Label addLabel(String label) {
+    return addLabel(label, false);
+  }
+
+  /** Adds a label to the menu. */
+  public Label addLabel(String label, boolean wrap) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
     l.setWidth(width);
+    l.setWrap(wrap);
+
+    table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+    table.row();
+
+    return l;
+  }
+
+  /** Add a title to the menu. */
+  public Label addTitle(String title, BitmapFont font) {
+    LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
+    style.font = font;
+
+    Label l = new Label(title, style);
+    l.setWidth(width);
+    l.setAlignment(Align.center);
 
     table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
     table.row();

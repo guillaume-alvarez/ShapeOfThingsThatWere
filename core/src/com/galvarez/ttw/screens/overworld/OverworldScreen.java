@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.galvarez.ttw.screens.*;
 import com.galvarez.ttw.utils.Assets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,15 +56,6 @@ import com.galvarez.ttw.rendering.TextBoxRenderSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.map.MapHighlighter;
 import com.galvarez.ttw.rendering.map.MapRenderer;
-import com.galvarez.ttw.screens.AbstractScreen;
-import com.galvarez.ttw.screens.ArmiesMenuScreen;
-import com.galvarez.ttw.screens.AskDiscoveryScreen;
-import com.galvarez.ttw.screens.AskEventScreen;
-import com.galvarez.ttw.screens.DiplomacyMenuScreen;
-import com.galvarez.ttw.screens.DiscoveryMenuScreen;
-import com.galvarez.ttw.screens.PauseMenuScreen;
-import com.galvarez.ttw.screens.PoliciesMenuScreen;
-import com.galvarez.ttw.screens.ScoresMenuScreen;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
 
 public final class OverworldScreen extends AbstractScreen {
@@ -157,6 +149,8 @@ public final class OverworldScreen extends AbstractScreen {
 
   private final ArmiesMenuScreen armiesScreen;
 
+  private final TutorialMenuScreen tutorialScreen;
+
   private final NotificationsSystem notificationsSystem;
 
   public Entity player;
@@ -227,6 +221,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     renderHighlighter = false;
 
+    tutorialScreen = new TutorialMenuScreen(game, world, batch, this);
     pauseScreen = new PauseMenuScreen(game, world, batch, this);
     diplomacyScreen = new DiplomacyMenuScreen(game, world, batch, this, empires, player, diplomaticSystem);
     discoveryScreen = new DiscoveryMenuScreen(game, world, batch, this, player, discoverySystem);
@@ -478,6 +473,10 @@ public final class OverworldScreen extends AbstractScreen {
 
   public void scoresMenu() {
     game.setScreen(scoresScreen);
+  }
+
+  public void tutorialMenu() {
+    game.setScreen(tutorialScreen);
   }
 
   public void select(Entity e, boolean flagIfMoveable) {

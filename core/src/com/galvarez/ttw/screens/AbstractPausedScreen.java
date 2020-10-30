@@ -26,6 +26,8 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
 
     protected boolean canEscape = true;
 
+    protected boolean paused = true;
+
     public AbstractPausedScreen(ThingsThatWereGame game, World world, SpriteBatch batch, Screen gameScreen) {
         super(game, world, batch);
         this.gameScreen = gameScreen;
@@ -68,8 +70,12 @@ public abstract class AbstractPausedScreen<Screen extends AbstractScreen> extend
 
     @Override
     public void render(float delta) {
-        // don't want game screen animations to continue, just display as background
-        gameScreen.render(0);
+        if (paused) {
+            // don't want game screen animations to continue, just display as background
+            gameScreen.render(0);
+        } else {
+            gameScreen.render(delta);
+        }
 
         // default rendering would draw a black background
         // super.render(delta);

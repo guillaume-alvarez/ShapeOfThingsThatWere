@@ -82,10 +82,14 @@ public class ThingsThatWereGame extends Game {
 
   /** Start a game. */
   public void startGame(boolean resetSettings) {
-    setScreen(new OverworldScreen(this, batch, world,
-    // copy settings because we want to keep for next game only the ones that
-    // were customized in dedicated screen
-        resetSettings ? new SessionSettings() : new SessionSettings(settings)));
+    OverworldScreen worldScreen = new OverworldScreen(this, batch, world,
+            // copy settings because we want to keep for next game only the ones that
+            // were customized in dedicated screen
+            resetSettings ? new SessionSettings() : new SessionSettings(settings));
+    setScreen(worldScreen);
+
+    // show tutorial when starting a new game
+    worldScreen.tutorialMenu();
   }
 
   @Override
