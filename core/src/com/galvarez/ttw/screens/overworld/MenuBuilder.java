@@ -224,9 +224,12 @@ public class MenuBuilder {
     }
     // else how much is required to control it
     else {
-      sb.append("\n ")
-              .append("No control, need ")
-              .append(100 * influence.terrain.moveCost() / InfluenceSystem.INITIAL_POWER).append('%');
+      InfluenceSource source = screen.player.getComponent(InfluenceSource.class);
+      int terrainCost = influence.terrain.moveCost() - source.modifiers.terrainBonus.get(influence.terrain);
+      StringBuilder append = sb.append("\n ")
+              .append("No control, you need ")
+              .append(100 * terrainCost / InfluenceSystem.INITIAL_POWER)
+              .append('%');
     }
     // then all other empires
     for (IntIntMap.Entry e : influence) {
