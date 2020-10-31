@@ -135,20 +135,20 @@ public class FramedMenu {
     table.row();
   }
 
-  public void addButton(String label, Runnable action) {
-    addButton(label, null, action, true);
+  public Button addButton(String label, Runnable action) {
+    return addButton(label, null, action, true);
   }
 
   /**
    * Adds a button to the menu, with a secondary label (like MP cost) aligned to
    * the right
    */
-  public void addButton(String label, String secondaryLabel, Runnable action, boolean active) {
-    addButton(active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class), label, secondaryLabel,
-        action, active);
+  public Button addButton(String label, String secondaryLabel, Runnable action, boolean active) {
+    return addButton(active ? skin.get(LabelStyle.class) : skin.get("inactive", LabelStyle.class), label, secondaryLabel,
+            action, active);
   }
 
-  public void addButton(LabelStyle style, String label, String secondaryLabel, Runnable action, boolean active) {
+  public Button addButton(LabelStyle style, String label, String secondaryLabel, Runnable action, boolean active) {
     Button b = new Button(skin.get(ButtonStyle.class));
     if (action != null)
       b.addListener(new ChangeListener() {
@@ -163,8 +163,10 @@ public class FramedMenu {
     if (secondaryLabel != null && !secondaryLabel.isEmpty())
       b.add(new Label(secondaryLabel, style)).padRight(15f);
 
-    table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
+    table.add(b).left().colspan(nbColumns).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight());
     table.row();
+
+    return b;
   }
 
   /**
@@ -187,7 +189,7 @@ public class FramedMenu {
     Label l = new Label(label, style);
     b.add(l).padLeft(8).right().expandX().fillX();
 
-    table.add(b).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight()).left().padLeft(1f).colspan(nbColumns);
+    table.add(b).left().colspan(nbColumns).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight());
     table.row();
 
     return b;
@@ -380,12 +382,12 @@ public class FramedMenu {
 
     // If y is negative, center the scrollPane vertically on the stage
     if (y < 0)
-      scrollPane.setY((stage.getHeight() - scrollPane.getHeight()) / 2f);
+      scrollPane.setY((int) ((stage.getHeight() - scrollPane.getHeight()) / 2f));
     else
       scrollPane.setY(y - scrollPane.getHeight());
     // If x is negative, do likewise
     if (x < 0)
-      scrollPane.setX((stage.getWidth() - scrollPane.getWidth()) / 2f);
+      scrollPane.setX((int) ((stage.getWidth() - scrollPane.getWidth()) / 2f));
     else
       scrollPane.setX(x);
 

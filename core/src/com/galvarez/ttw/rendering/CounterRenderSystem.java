@@ -40,7 +40,7 @@ public final class CounterRenderSystem extends AbstractRendererSystem {
     super(Aspect.getAspectForAll(MapPosition.class, Counter.class), camera, batch);
 
     font = assets.getFont(14);
-    font.setUseIntegerPositions(false);
+    //font.setUseIntegerPositions(false);
   }
 
   @Override
