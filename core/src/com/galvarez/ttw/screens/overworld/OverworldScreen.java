@@ -213,6 +213,7 @@ public final class OverworldScreen extends AbstractScreen {
     inputManager.menuBuilder.buildTurnMenu();
     inputManager.menuBuilder.buildNotificationMenu();
     inputManager.menuBuilder.buildEmpireMenu();
+    inputManager.menuBuilder.buildCardsMenu();
 
     world.setManager(new PlayerManager());
 
