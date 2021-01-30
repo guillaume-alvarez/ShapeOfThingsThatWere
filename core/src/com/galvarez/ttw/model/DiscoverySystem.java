@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  * Every turn a certain progress is made toward discovery is made, depending on
  * its capital power and influence.
  * </p>
- * 
+ *
  * @author Guillaume Alvarez
  */
 @Wire
@@ -46,14 +46,18 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
   private static final Logger log = LoggerFactory.getLogger(DiscoverySystem.class);
 
-  /** Increase to speed progress up. */
+  /**
+   * Increase to speed progress up.
+   */
   private static final int PROGRESS_PER_TILE = 1;
 
   private final OverworldScreen screen;
 
   private final Map<String, Discovery> discoveries;
 
-  /** Discoveries free to be discovered by any empire. */
+  /**
+   * Discoveries free to be discovered by any empire.
+   */
   private final Map<String, Discovery> toDiscover;
 
   private final GameMap map;
@@ -143,11 +147,11 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     // progress toward next discovery is triggered by EventsSystem
   }
 
-  /**
-   * Compute the possible discoveries for the empire, associated to the faction
-   * that recommends them.
-   */
-  private Map<Faction, Research> possibleDiscoveries(Entity empire, Discoveries labs) {
+  public List<Research> getPossibleDiscoveries(Entity empire) {
+    return getPossibleDiscoveries(empire, empires.get(empire));
+  }
+
+  private List<Research> getPossibleDiscoveries(Entity empire, Discoveries labs) {
     // collect current state
     Set<String> done = new HashSet<>();
     Map<String, List<String>> groups = new HashMap<>();
@@ -176,7 +180,16 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
 
     // select new possible discoveries
     List<Research> possible = toDiscover.stream().filter(d -> !done.contains(d.name) && hasTerrain(empire, d.terrains))
-        .map(d -> toResearch(d, done, groups)).filter(Objects::nonNull).collect(toList());
+            .map(d -> toResearch(d, done, groups)).filter(Objects::nonNull).collect(toList());
+    return possible;
+  }
+
+  /**
+   * Compute the possible discoveries for the empire, associated to the faction
+   * that recommends them.
+   */
+  private Map<Faction, Research> possibleDiscoveries(Entity empire, Discoveries labs) {
+    List<Research> possible = getPossibleDiscoveries(empire, labs);
 
     Map<Faction, Research> res = new EnumMap<>(Faction.class);
     for (Faction f : Faction.values()) {
@@ -242,8 +255,8 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     for (MapPosition p : influences.get(empire).influencedTiles)
       for (Entry inf : map.getInfluenceAt(p))
         if (inf.key != empire.getId() && !neighbors.containsKey(inf.key)
-        // may be pending insertion into world if just revolted
-            && world.getEntityManager().isActive(inf.key))
+                // may be pending insertion into world if just revolted
+                && world.getEntityManager().isActive(inf.key))
           neighbors.put(inf.key, world.getEntity(inf.key));
 
     return neighbors.values();
@@ -299,14 +312,16 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     if (!ai.has(empire)) {
       Research last = discovery.last;
       notifications.addNotification(screen::askDiscovery, () -> discovery.last != last, Icon.DISCOVERY,
-          "We can make a new discovery!");
+              "We can make a new discovery!");
     } else
       aiSystem.selectNewDiscovery(empire, discovery);
 
     return true;
   }
 
-  /** Called when the next discovery is chosen. */
+  /**
+   * Called when the next discovery is chosen.
+   */
   public void discoverNew(Entity empire, Discoveries discovery, Research research) {
     Discovery target = research.target;
     log.info("{} discovered {} from {}.", empire.getComponent(Name.class), target, research.previous);

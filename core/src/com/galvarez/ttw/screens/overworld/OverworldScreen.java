@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.galvarez.ttw.model.*;
 import com.galvarez.ttw.screens.*;
 import com.galvarez.ttw.utils.Assets;
 import org.slf4j.Logger;
@@ -21,23 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.EntityFactory;
 import com.galvarez.ttw.ThingsThatWereGame;
-import com.galvarez.ttw.model.AIArmyCommandSystem;
-import com.galvarez.ttw.model.AIArmyMovementSystem;
-import com.galvarez.ttw.model.AIDiplomaticSystem;
-import com.galvarez.ttw.model.AIDiscoverySystem;
-import com.galvarez.ttw.model.AISourceDestinationSystem;
-import com.galvarez.ttw.model.ArmiesSystem;
-import com.galvarez.ttw.model.DestinationSystem;
-import com.galvarez.ttw.model.DiplomaticSystem;
-import com.galvarez.ttw.model.DisasterSystem;
-import com.galvarez.ttw.model.DiscoverySystem;
-import com.galvarez.ttw.model.EffectsSystem;
-import com.galvarez.ttw.model.EventsSystem;
-import com.galvarez.ttw.model.InfluenceSystem;
-import com.galvarez.ttw.model.PoliciesSystem;
-import com.galvarez.ttw.model.RevoltSystem;
-import com.galvarez.ttw.model.ScoreSystem;
-import com.galvarez.ttw.model.SpecialDiscoveriesSystem;
 import com.galvarez.ttw.model.components.InfluenceSource;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
@@ -83,6 +67,8 @@ public final class OverworldScreen extends AbstractScreen {
   private final EventsSystem eventsSystem;
 
   private final DiscoverySystem discoverySystem;
+
+  private final CardsSystem cardsSystem;
 
   private final PoliciesSystem policiesSystem;
 
@@ -171,6 +157,7 @@ public final class OverworldScreen extends AbstractScreen {
     effectsSystem = world.setSystem(new EffectsSystem(), true);
     world.setSystem(new SpecialDiscoveriesSystem(this), true);
     discoverySystem = world.setSystem(new DiscoverySystem(settings, map, this), true);
+    cardsSystem = world.setSystem(new CardsSystem(settings, map, this), true);
     policiesSystem = world.setSystem(new PoliciesSystem(), true);
     diplomaticSystem = world.setSystem(new DiplomaticSystem(this, settings.startWithDiplomacy.get()), true);
     influenceSystem = world.setSystem(new InfluenceSystem(map), true);
@@ -194,6 +181,7 @@ public final class OverworldScreen extends AbstractScreen {
 
     world.initialize();
     empires = fillWorldWithEntities();
+    cardsSystem.process();
     discoverySystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
@@ -213,6 +201,7 @@ public final class OverworldScreen extends AbstractScreen {
     inputManager.menuBuilder.buildTurnMenu();
     inputManager.menuBuilder.buildNotificationMenu();
     inputManager.menuBuilder.buildEmpireMenu();
+    inputManager.menuBuilder.buildCardsMenu();
 
     world.setManager(new PlayerManager());
 
@@ -366,6 +355,7 @@ public final class OverworldScreen extends AbstractScreen {
     // make sure armies created by command are assigned a destination
     aiArmies.process();
 
+    cardsSystem.process();
     discoverySystem.process();
     policiesSystem.process();
     diplomaticSystem.process();
