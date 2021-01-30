@@ -16,9 +16,11 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.ObjectIntMap.Entry;
 import com.galvarez.ttw.model.DiplomaticSystem;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
+import com.galvarez.ttw.model.EffectsSystem;
 import com.galvarez.ttw.model.EventsSystem.EventHandler;
 import com.galvarez.ttw.model.InfluenceSystem;
 import com.galvarez.ttw.model.components.*;
+import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.map.GameMap;
 import com.galvarez.ttw.model.map.Influence;
@@ -35,6 +37,7 @@ import com.galvarez.ttw.screens.overworld.controls.InputManager;
 import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.Assets.Icon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.galvarez.ttw.utils.Colors.markup;
@@ -50,6 +53,8 @@ public class MenuBuilder {
   private final Skin skin;
 
   private final FramedMenu turnMenu, indicationMenu, empireMenu, notifMenu;
+
+  private final List<FramedMenu> cards = new ArrayList<>(5);
 
   private final FramedMenu selectionMenu;
 
@@ -67,6 +72,8 @@ public class MenuBuilder {
 
   private final NotificationsSystem notifications;
 
+  private final EffectsSystem effects;
+
   private final Assets assets;
 
   private final TooltipManager tooltips;
@@ -78,6 +85,7 @@ public class MenuBuilder {
     this.screen = screen;
     this.inputManager = inputManager;
     this.notifications = world.getSystem(NotificationsSystem.class);
+    this.effects = world.getSystem(EffectsSystem.class);
     this.assets = assets;
 
     this.tooltips = new TooltipManager();
@@ -111,12 +119,12 @@ public class MenuBuilder {
 
     // EndTurn button
     turnMenu.addButton("End turn (year " + screen.getCurrentYear() + ")",//
-        null, screen::endTurn, screen.canFinishTurn());
+            null, screen::endTurn, screen.canFinishTurn());
 
     // Access to score ladder
     Score score = screen.player.getComponent(Score.class);
     turnMenu.addButton("#" + score.rank + " " + score.totalScore + " (+" + score.lastTurnPoints + ")",
-        screen::scoresMenu);
+            screen::scoresMenu);
 
     // access to map options
     turnMenu.addButton("Map options", () -> displayMapMenu(turnMenu));
@@ -129,7 +137,7 @@ public class MenuBuilder {
       mapMenu = new FramedMenu(skin, 256, 128, turnMenu);
       mapMenu.clear();
       mapMenu.addCheckBox("Display colored influence?", screen.displayColoredInfluence(),
-          screen::displayColoredInfluence);
+              screen::displayColoredInfluence);
       mapMenu.addToStage(stage, parent.getX() + parent.getWidth(), parent.getY() + 10, true);
     } else {
       mapMenu.clear();
@@ -148,7 +156,7 @@ public class MenuBuilder {
         indicationMenu.addLabel(i);
 
       indicationMenu.addToStage(stage, MENU_PADDING + turnMenu.getX() + turnMenu.getWidth(), stage.getHeight()
-          - MENU_PADDING, false);
+              - MENU_PADDING, false);
     }
   }
 
@@ -163,7 +171,7 @@ public class MenuBuilder {
     // here present a new screen with army preferences
     ArmyCommand command = screen.player.getComponent(ArmyCommand.class);
     empireMenu.addButton("Army (power=" + (command.militaryPower - command.usedPower) + "/" + command.militaryPower
-        + ")", screen::armiesMenu);
+            + ")", screen::armiesMenu);
 
     // here present a sub-menu to see current discovery and be able to change it
     empireMenu.addButton("Discoveries", screen::discoveryMenu);
@@ -174,8 +182,8 @@ public class MenuBuilder {
       empireMenu.addButton("Policies (instability " + instability + ")", screen::policiesMenu);
     else {
       empireMenu.addButton(empireMenu.getSkin().get("colored", LabelStyle.class), //
-          "[BLACK]Policies (instability [RED]" + instability + "[])", //
-          null, screen::policiesMenu, true);
+              "[BLACK]Policies (instability [RED]" + instability + "[])", //
+              null, screen::policiesMenu, true);
     }
 
     empireMenu.addToStage(stage, MENU_PADDING, turnMenu.getY() - MENU_PADDING, false);
@@ -192,7 +200,7 @@ public class MenuBuilder {
       InfluenceSource source = e.getComponent(InfluenceSource.class);
       if (source != null)
         selectionMenu.addLabel("Power: " + source.power() + " (" + number(source.growth / 10f) + "%/turn, health="
-            + source.health + ")");
+                + source.health + ")");
     }
 
     Entity source = influence.getMainInfluenceSource(world);
@@ -276,7 +284,7 @@ public class MenuBuilder {
     Diplomacy selectedDiplo = selected.getComponent(Diplomacy.class);
     selectionMenu.addLabel(" relations are " + playerDiplo.getRelationWith(selected));
     selectionMenu.addButton(" we want ", playerDiplo.getProposalTo(selected).str,
-        () -> displayDiplomaticActionMenu(selectionMenu, playerDiplo, selected), true);
+            () -> displayDiplomaticActionMenu(selectionMenu, playerDiplo, selected), true);
     selectionMenu.addLabel(" they want " + selectedDiplo.getProposalTo(player).str);
   }
 
@@ -356,7 +364,7 @@ public class MenuBuilder {
     notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
   }
 
-  public void buildDialog(String title, int minWidth, int minHeight, String message, Button ... buttons) {
+  public void buildDialog(String title, int minWidth, int minHeight, String message, Button... buttons) {
     FramedDialog fd = new FramedDialog(skin, title, message);
     for (Button b : buttons) {
       b.align(Align.center);
@@ -365,11 +373,30 @@ public class MenuBuilder {
     fd.addToStage(stage, minWidth, minHeight);
   }
 
-  public TextButton getTextButton(String text, ChangeListener listener) {
-    TextButton button = new TextButton(text, skin);
-    if (listener != null)
-      button.addListener(listener);
-    return button;
+
+  public void buildCardsMenu() {
+    cards.forEach(FramedMenu::clear);
+    cards.clear();
+    Discoveries discoveries = screen.player.getComponent(Discoveries.class);
+    for (Research research : discoveries.nextPossible.values()) {
+      addCard(research.target);
+    }
+  }
+
+  private void addCard(Discovery discovery) {
+    FramedMenu card = new FramedMenu(skin, 128, 512);
+    // TODO take inspiration from https://gamedev.stackexchange.com/questions/139041/how-to-create-card-layout-in-a-trading-card-game-libgdx
+    card.addLabel(discovery.name);
+    for (String effect : effects.toString(discovery.effects))
+      card.addLabel(effect);
+    float y = MENU_PADDING + card.getTable().getPrefHeight();
+    float x = MENU_PADDING;
+    if (!cards.isEmpty()) {
+      FramedMenu previous = cards.get(cards.size() - 1);
+      x = previous.getX() + previous.getWidth();
+    }
+    card.addToStage(stage, x, y, false);
+    cards.add(card);
   }
 
 }
