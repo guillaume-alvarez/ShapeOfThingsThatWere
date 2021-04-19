@@ -27,9 +27,9 @@ public class OverworldDragController extends InputAdapter {
   }
 
   @Override
-  public boolean scrolled(int amount) {
-    if ((camera.zoom > 0.2f || amount == 1) && (camera.zoom < 8 || amount == -1))
-      camera.zoom += amount * 0.1;
+  public boolean scrolled(float amountX, float amountY) {
+    if ((camera.zoom > 0.2f || amountY == 1) && (camera.zoom < 8 || amountY == -1))
+      camera.zoom += amountY * 0.1;
     return true;
   }
 
