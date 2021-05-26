@@ -1,1 +1,3 @@
 include 'desktop', 'core'
+include 'technologies'
+

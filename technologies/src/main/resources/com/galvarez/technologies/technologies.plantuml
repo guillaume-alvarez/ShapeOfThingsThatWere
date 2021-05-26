@@ -1,0 +1,627 @@
+@startuml
+
+'left to right direction
+
+/'
+General idea:
+the player can draw technologies and inventions
+- technologies are generic (Weapons) and discovered for science
+- invention are more specific (Sword) and exploited by population (that required food, prod and social not to revolt)
+
+Technologies can be replaced by more specific ones (flagged by -->).
+Having related technologies (flagged by ..>) make them lest costly to discover.
+
+When replacing a technology...
+The player can choose to keep it in 'Traditions', keeping the workers on its inventions.
+He can also choose to move the inventions that apply to the new technology.
+Else it goes to the  'Past' and scores fame/culture/points of some sort.
+
+The available technologies/discoveries are sorted by historical date.
+Whenever a new one must be presented it is chosen among the 10(?) most ancient ones.
+
+
+the screen is split horizontally like a timeline:
+- the past containing old technologies/inventions
+- the present containing active ones
+- the future to draw from
+All are linked by arrows to show a clear progression to player.
+
+'/
+
+node Hunting  [
+<b>Hunting
++1 prod +1 food +1 strength
+---
+Mammoths
+Aurochs
+Sheep
+]
+
+node Gathering [
+<b>Gathering
++1 prod +1 food +1 tech
+---
+Wheat
+Barley
+Sorghum
+Stones
+Copper
+Gold
+]
+
+node Animism [
+<b>Animism
++1 tech +1 social
+---
+Shaman
+Spirits
+Rituals
+]
+
+node Pantheism [
+<b>Pantheism
++1 social
+---
+Gods
+Spirits
+Rituals
+]
+Animism --> Pantheism
+
+node Polytheism [
+<b>Polytheism
++2 social
+---
+Gods
+Spirits
+Rituals
+Cults
+Temple
+Clergy
+]
+Pantheism --> Polytheism
+
+node Monotheism [
+<b>Monotheism
++3 social
+---
+God
+Saints
+Marturs
+Rituals
+Cults
+Temple
+Clergy
+Missionaries
+]
+Polytheism --> Monotheism
+
+node Nationalism [
+<b>Nationalism
++4 social
+---
+Nation
+Leader
+Rituals
+Soldiers
+]
+Monotheism --> Nationalism
+
+node Firewood [
+<b>Firewood
++1 prod
+---
+Oak
+Birch
+Poplar
+]
+
+node Taming [
+<b>Taming
++1 food
+---
+Wheat
+Barley
+Sorghum
+Dog
+Cat
+Cow
+Camel
+Horse
+Llama
+Goat
+Sheep
+]
+Gathering --> Taming
+
+node Domestication [
+<b>Domestication
++1 food
+---
+Wheat
+Barley
+Sorghum
+Dog
+Cow
+Camel
+Horse
+Llama
+Goat
+Sheep
+]
+Taming --> Domestication
+
+node Cultivation [
+<b>Cultivation
++2 food
+---
+Wheat
+Barley
+Sorghum
+]
+Domestication --> Cultivation
+
+node Cattle [
+<b>Cattle
++2 food
+---
+Cow
+Camel
+Horse
+Goat
+Sheep
+Llama
+]
+Domestication --> Cattle
+
+node Irrigation [
+<b>Irrigation
++3 food
+---
+Wheat
+Barley
+Sorghum
+]
+Cultivation --> Irrigation
+Cattle ..> Irrigation
+
+node Tools [
+<b>Tools
++2 prod +1 tech
+---
+Stick
+Hammer
+]
+
+node Woodworking [
+<b>Woodworking
++1 prod
+---
+Cedar
+Oak
+Birch
+Fir
+Cherry
+Mapple
+Pine
+Chestnut
+Aspen
+]
+Tools --> Woodworking
+
+node Clothes [
+<b>Clothes
++1 social +1 strength
+---
+Cape
+Sewing
+Leather
+Flax
+Silk
+]
+Gathering ..> Clothes
+Hunting ..> Clothes
+Cultivation ..> Clothes
+
+node Ornaments [
+<b>Ornaments
++2 social
+---
+Copper
+Flowers
+Gold
+Bones
+Wood
+]
+Clothes --> Ornaments
+
+node Metallurgy [
+<b>Metallurgy
++2 prod
+---
+Copper
+Gold
+Silver
+Tin
+Iron
+Lead
+Furnace
+]
+Woodworking --> Metallurgy
+
+node Jewelry [
+<b>Jewelry
++3 social
+---
+Rings
+Collars
+]
+Ornaments --> Jewelry
+Metallurgy ..> Jewelry
+
+node Bronze [
+<b>Bronze
++2 prod
+---
+Arsenical Bronze
+Furnace
+]
+Metallurgy --> Bronze
+Woodworking ..> Bronze
+
+node Iron [
+<b>Iron
++3 prod
+---
+Furnace
+]
+Bronze --> Iron
+
+node Coal [
+<b>Coal
++3 prod
+---
+]
+Firewood --> Coal
+
+node Steel [
+<b>Steel
++4 prod
+---
+]
+Iron --> Steel
+Coal ..> Steel
+
+node Oil [
+<b>Oil
++4 prod
+---
+]
+Coal --> Oil
+
+node Weapons [
+<b>Weapons
++1 strength
+---
+Club
+Stones
+Javelin
+Spear
+Knife
+Sword
+Bow
+Arrows
+]
+Hunting --> Weapons
+
+node Archery [
+<b>Archery
++2 strength
+---
+Bow
+Arrows
+]
+Weapons --> Archery
+Woodworking ..> Archery
+
+node Swordsmanship [
+<b>Swordsmanship
++2 strength
+---
+Sword
+Dagger
+Shield
+Scabbard
+Point
+Edge
+Pommel
+Hilt
+Guard
+]
+Weapons --> Swordsmanship
+Bronze ..> Swordsmanship
+Iron ..> Swordsmanship
+
+node Armor [
+<b>Armor
++2 strength
+---
+Helmet
+Cuirasse
+Shield
+Leather
+Plates
+Chainmail
+]
+Weapons --> Armor
+Bronze ..> Armor
+Iron ..> Armor
+Clothes ..> Armor
+
+node Plastic [
+<b>Plastic
++7 prod
+---
+Bakelite
+Nylon
+Vinyl
+]
+Steel --> Plastic
+Oil ..> Plastic
+
+node Tribe [
+<b>Tribe
++5 social
+---
+Tents
+Strongman
+Lineage
+Kinship
+Warriors
+]
+
+node Village [
+<b>Village
++2 social
+---
+Strongman
+Kinship
+Family
+Chief
+Warriors
+]
+Tribe --> Village
+
+node Chiefdom [
+<b>Chiefdom
++3 social
+---
+Chief
+King
+Family
+Warriors
+]
+Village --> Chiefdom
+
+node Monarchy [
+<b>Monarchy
++4 social
+---
+King
+Minister
+Lineage
+Laws
+Soldiers
+]
+Chiefdom --> Monarchy
+Monotheism ..> Monarchy
+
+node Theocracy [
+<b>Theocracy
++4 social +1 strength
+---
+Priest
+Clergy
+Inquisition
+]
+Monarchy --> Theocracy
+Monotheism ..> Theocracy
+
+node Empire [
+<b>Empire
++5 social
+---
+King
+Empire
+Laws
+Bureaucracy
+Soldiers
+]
+Monarchy --> Empire
+
+node Construction [
+<b>Construction
++1 social
+---
+Porch
+Beams
+Hut
+House
+]
+Village --> Construction
+
+node Stonecraft [
+<b>Stonecraft
++1 prod
+---
+Flint
+Limestone
+Granite
+]
+Construction --> Stonecraft
+
+node Architecture [
+<b>Architecture
++2 social
+---
+Porch
+Beams
+Hut
+House
+]
+Stonecraft --> Architecture
+
+node City [
+<b>City
++3 social
+---
+Forum
+Template
+Granary
+Citizens
+Family
+Laws
+]
+Village --> City
+Architecture ..> City
+
+node Republic [
+<b>Republic
++4 social
+---
+Forum
+Template
+Granary
+Citizens
+Laws
+Parliament
+]
+City --> Republic
+
+node Democracy [
+<b>Democracy
++4 social
+---
+Forum
+Template
+Granary
+Citizens
+Laws
+Parliament
+]
+Republic --> Democracy
+
+node Music [
+<b>Music
++2 social
+---
+Song
+Percussion
+]
+Tribe ..> Music
+
+node Wheel [
+<b>Wheel
++1 prod
+---
+Cart
+]
+Tools ..> Wheel
+
+node Pottery [
+<b>Pottery
++1 food
+---
+Clay
+Pots
+Kiln
+Bricks
+]
+Firewood ..> Pottery
+Cultivation ..> Pottery
+Wheel --> Pottery
+
+node Earthenware [
+<b>Earthenware
++2 food
+---
+Jugs
+Bottles
+Plates
+]
+Pottery --> Earthenware
+
+node Stoneware [
+<b>Stoneware
++3 food
+---
+Jugs
+Bottles
+Plates
+]
+Earthenware --> Stoneware
+
+node Porcelain [
+<b>Porcelain
++4 food
+---
+Jugs
+Bottles
+Plates
+]
+Stoneware --> Porcelain
+Coal ..> Porcelain
+
+node Chariot [
+<b>Chariot
++3 strength
+---
+Horse
+Bow
+Spear
+]
+Weapons --> Chariot
+Cattle ..> Chariot
+Wheel ..> Chariot
+
+node Cavalry [
+<b>Chariot
++4 strength
+---
+Horse
+Sword
+Spear
+Shield
+]
+Chariot --> Cavalry
+
+node Band [
+<b>Band
++1 strength
+---
+Chief
+Warriors
+]
+Tribe --> Band
+Weapons ..> Band
+
+node Army [
+<b>Army
++2 strength
+---
+Chief
+Leader
+Soldiers
+]
+Band --> Army
+City ..> Army
+
+
+Animism -[hidden]left-> Hunting
+Animism -[hidden]left-> Gathering
+Animism -[hidden]left-> Firewood
+Animism -[hidden]left-> Tools
+Animism -[hidden]left-> Tribe
+
+
+@enduml

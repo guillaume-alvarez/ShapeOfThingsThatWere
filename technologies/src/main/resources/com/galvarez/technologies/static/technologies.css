@@ -1,0 +1,51 @@
+svg {
+  font: 10px sans-serif;
+}
+
+.background {
+    stroke: white;
+    stroke-width: 1px;
+    fill: white;
+}
+
+.node {
+    stroke: black;
+    stroke-width: 1.5px;
+    cursor: move;
+    fill: lightcoral;
+}
+
+.link {
+    fill: none;
+    stroke: #000;
+    stroke-width: 3px;
+    opacity: 0.7;
+    marker-end: url(#end-arrow);
+}
+
+.link.strong {
+    stroke-width: 4px;
+}
+
+.link.light {
+    stroke-width: 1px;
+}
+
+.label {
+    fill: black;
+    font-family: Verdana;
+    font-size: 25px;
+    text-anchor: middle;
+    cursor: move;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
