@@ -39,15 +39,14 @@ public class ThingsThatWereGame extends Game {
      * the OverworldScreen.stage is resized automatically but the resize()
      * method is not called.
      */
-    windowWidth = width;
-    windowHeight = height;
+    this.windowWidth = width;
+    this.windowHeight = height;
   }
 
   @Override
   public void create() {
     assets = new Assets();
     settings = new SessionSettings();
-
     startGame();
   }
 
