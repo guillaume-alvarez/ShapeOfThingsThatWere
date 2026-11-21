@@ -48,12 +48,12 @@ Execute file `ShapeOfThingsThatWere.exe`.
 
 ## How to launch the game?
 
-The game needs [Java 8 SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html), all other dependencies can be downloaded by gradle or are embedded into the executable jar.
+The game needs [Java 25 SE Runtime Environment](https://www.oracle.com/java/technologies/downloads/#java25), all other dependencies can be downloaded by gradle or are embedded into the executable jar.
 
 To start from executable jar file:
  * Download jar file from [latest release, as of now v0.2.0](https://github.com/guillaume-alvarez/ShapeOfThingsThatWere/releases/tag/v0.2.0)
  * double click the file (windows)
- * execute `java jar [jar file path]` (linux/cygwin)
+ * execute `java -jar [jar file path]` (linux/cygwin)
 
 To start the game from sources:
  * checkout github repository
@@ -72,10 +72,3 @@ To create an zip with embedded game:
  * execute `gradlew desktop:runtimeZip` (linux/cygwin)
  * zip is built in directory `desktop/build/ShapeOfThingsThatWere.zip`
  * a ``start.sh`` script is embedded to start it
-
-To start the game in Eclipse:
- * checkout github repository
- * execute `gradlew.bat eclipse` and import projects (windows, for linux remove `.bat`)
- * or use Eclipse Gradle plugin to import projects
- * launch `desktop/ImagePacker.launch`
- * launch `desktop/Things That Were.launch`

@@ -1,14 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
-    dependencies {
-    }
-}
-
 allprojects {
-    apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '0.3.0'
@@ -29,35 +19,37 @@ allprojects {
     }
 }
 
-project(":desktop") {
+subprojects {
     apply plugin: "java"
 
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+}
 
+project(":desktop") {
     dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     }
 }
 
 project(":core") {
-    apply plugin: "java"
-
-
     dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
-        compile "org.slf4j:slf4j-api:$slf4jVersion"
-        compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jBindingsVersion"
-        compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+        implementation "org.slf4j:slf4j-api:$slf4jVersion"
+        implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jBindingsVersion"
+        implementation "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
     }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
-}
