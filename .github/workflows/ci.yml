@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +34,9 @@ jobs:
           path: core/build/reports/tests/test/
 
   smoke-test:
+    name: Smoke Test
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - uses: actions/checkout@v5
