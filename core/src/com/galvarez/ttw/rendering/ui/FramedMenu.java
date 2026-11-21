@@ -2,10 +2,13 @@ package com.galvarez.ttw.rendering.ui;
 
 import java.util.function.Consumer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -47,6 +50,19 @@ public class FramedMenu {
 
   /** The parent menu is the one we will focus on if the user closes this one */
   private final FramedMenu parent;
+
+  private static BitmapFont smallFont = null;
+
+  private static BitmapFont getSmallFont() {
+    if (smallFont == null) {
+      FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Romanica.ttf"));
+      FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+      parameter.size = 12;
+      smallFont = generator.generateFont(parameter);
+      generator.dispose();
+    }
+    return smallFont;
+  }
 
   public FramedMenu(Skin skin, float width, float maxHeight) {
     this(skin, width, maxHeight, null);
@@ -159,11 +175,25 @@ public class FramedMenu {
       });
     b.setDisabled(!active);
 
-    b.add(new Label(label, style)).left();
-    if (secondaryLabel != null && !secondaryLabel.isEmpty())
-      b.add(new Label(secondaryLabel, style)).padRight(15f);
+    // Use a table inside the button to stack label and description vertically
+    Table buttonTable = new Table();
+    Label mainLabel = new Label(label, style);
+    mainLabel.setAlignment(Align.center);
+    buttonTable.add(mainLabel).center();
+    buttonTable.row();
+    if (secondaryLabel != null && !secondaryLabel.isEmpty()) {
+      LabelStyle descStyle = new LabelStyle(style);
+      descStyle.font = getSmallFont();
+      descStyle.fontColor = style.fontColor;
+      Label descLabel = new Label(secondaryLabel, descStyle);
+      descLabel.setWidth(width - 16);
+      descLabel.setWrap(true);
+      descLabel.setAlignment(Align.center);
+      buttonTable.add(descLabel).center().width(width - 16);
+    }
+    b.add(buttonTable).fillX().left();
 
-    table.add(b).left().colspan(nbColumns).minHeight(b.getMinHeight()).prefHeight(b.getPrefHeight());
+    table.add(b).left().colspan(nbColumns).width(width - 6);
     table.row();
 
     return b;
@@ -221,10 +251,24 @@ public class FramedMenu {
   public Label addLabel(String label, boolean wrap) {
     LabelStyle style = skin.get(LabelStyle.class);
     Label l = new Label(label, style);
-    l.setWidth(width);
+    l.setWidth(width - 6);
     l.setWrap(wrap);
 
-    table.add(l).left().colspan(nbColumns).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+    table.add(l).left().colspan(nbColumns).width(width - 6).minHeight(l.getMinHeight()).prefHeight(l.getPrefHeight());
+    table.row();
+
+    return l;
+  }
+
+  /** Adds a label with a smaller font (12px) to the menu, always wrapped. */
+  public Label addSmallLabel(String label) {
+    LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
+    style.font = getSmallFont();
+    Label l = new Label(label, style);
+    l.setWidth(width - 6);
+    l.setWrap(true);
+
+    table.add(l).left().colspan(nbColumns).width(width - 6);
     table.row();
 
     return l;
@@ -307,6 +351,10 @@ public class FramedMenu {
     table.setBackground(background);
     table.pad(3, 1, 2, 1);
 
+    // Calculate the actual preferred width from content, but cap at our max width
+    float contentWidth = Math.min(table.getPrefWidth(), width);
+    table.setWidth(contentWidth);
+
     // If the table does not fill our maximum size, resize it to our
     // estimated height, and disable scrolling both x and y
     if (table.getPrefHeight() < maxHeight) {
@@ -321,9 +369,8 @@ public class FramedMenu {
       scrollPane.setHeight(maxHeight);
     }
 
-    // For now, no matter what, the width is set from constructor
-    scrollPane.setWidth(width);
-    table.setWidth(width);
+    // Set the scroll pane width to match the table width
+    scrollPane.setWidth(contentWidth);
 
     // Move the table to the far left of the scrollPane
     table.left();

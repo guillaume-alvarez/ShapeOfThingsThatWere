@@ -115,7 +115,7 @@ public final class DiplomaticSystem extends EntitySystem {
     log.debug("Remove {} from all empires relations.", removed.getComponent(Description.class));
     for (Entity e : getActives()) {
       Diplomacy diplo = relations.get(e);
-      diplo.lastChange.remove(removed, 0);
+      diplo.lastChange.remove(removed);
       diplo.proposals.remove(removed);
       diplo.relations.remove(removed);
     }
