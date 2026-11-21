@@ -90,7 +90,7 @@ public final class Assets implements Disposable {
     }
 
     private static BitmapFont createFont(int size, boolean markupEnabled) {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/romanica.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(FONTS_ROMANICA_TTF));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         try {
             parameter.size = size;
