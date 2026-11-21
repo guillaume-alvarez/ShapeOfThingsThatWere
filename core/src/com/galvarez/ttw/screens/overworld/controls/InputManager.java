@@ -84,6 +84,9 @@ public class InputManager {
 
     stage.setKeyboardFocus(keyboardFocus);
     stage.setScrollFocus(scrollFocus);
+
+    // end the turn automatically if that was the last action to perform (issue #49)
+    screen.maybeAutoEndTurn();
   }
 
   public void appendInputSystems(InputProcessor ... processors) {

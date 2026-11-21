@@ -131,6 +131,9 @@ public final class OverworldScreen extends AbstractScreen {
 
   private int turnNumber = 0;
 
+  /** Whether the turn started with actions the player still has to perform (issue #49). */
+  private boolean hadActionsToDo = false;
+
   public MapPosition selectedTile;
 
   private final PauseMenuScreen pauseScreen;
@@ -207,6 +210,7 @@ public final class OverworldScreen extends AbstractScreen {
     influenceRenderSystem.preprocess();
     textBoxRenderSystem.preprocess();
     notificationsSystem.process();
+    hadActionsToDo = !notificationsSystem.canFinishTurn();
     log.info("The world is initialized");
 
     inputManager = new InputManager(game.assets, camera, world, this, stage, map);
@@ -238,6 +242,9 @@ public final class OverworldScreen extends AbstractScreen {
     super.show();
 
     inputManager.setEnabled(true);
+
+    // returning from a sub-screen may have completed the turn's last action
+    maybeAutoEndTurn();
   }
 
   @Override
@@ -382,6 +389,7 @@ public final class OverworldScreen extends AbstractScreen {
     
     updateRendering();
     notificationsSystem.process();
+    hadActionsToDo = !notificationsSystem.canFinishTurn();
     turnNumber++;
 
     log.debug("Processed turn #{} in {}ms", turnNumber, System.currentTimeMillis() - start);
@@ -432,6 +440,16 @@ public final class OverworldScreen extends AbstractScreen {
     return notificationsSystem.canFinishTurn()
     // make sure no player action on map is waiting for input
         && !renderHighlighter;
+  }
+
+  /**
+   * End the turn automatically once all the actions the player had to perform
+   * this turn are done (issue #49). Only fires while the overworld is the active
+   * screen, so it never triggers behind an open sub-screen.
+   */
+  public void maybeAutoEndTurn() {
+    if (game.getScreen() == this && hadActionsToDo && canFinishTurn())
+      endTurn();
   }
 
   public void endTurn() {
