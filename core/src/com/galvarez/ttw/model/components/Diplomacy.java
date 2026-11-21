@@ -23,7 +23,17 @@ public final class Diplomacy extends Component {
 
   public final EnumSet<State> knownStates = EnumSet.of(State.NONE);
 
+  /** Numeric relationship scores per empire pair (-100 to +100). */
+  public final ObjectIntMap<Entity> scores = new ObjectIntMap<>();
+
   public Diplomacy() {
+  }
+
+  /** Returns the numeric relationship score with another empire, defaulting to 0. */
+  public int getScore(Entity other) {
+    if (other == null)
+      return 0;
+    return scores.get(other, 0);
   }
 
   public State getRelationWith(Entity other) {

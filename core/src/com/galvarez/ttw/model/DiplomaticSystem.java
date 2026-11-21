@@ -24,6 +24,8 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.galvarez.ttw.model.components.AIControlled;
 import com.galvarez.ttw.model.components.Diplomacy;
+import com.galvarez.ttw.model.components.Discoveries;
+import com.galvarez.ttw.model.data.Discovery;
 import com.galvarez.ttw.rendering.NotificationsSystem;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
@@ -91,9 +93,16 @@ public final class DiplomaticSystem extends EntitySystem {
 
   private ComponentMapper<AIControlled> ai;
 
+  private ComponentMapper<Discoveries> discoveries;
+
+  private DiscoverySystem discoverySystem;
+
   private final OverworldScreen screen;
 
   private final boolean startWithDiplomacy;
+
+  /** Discoveries that unlock diplomatic states. */
+  private static final String[] DIPLOMACY_DISCOVERIES = {"War", "Treaty", "Protectorate", "Tribute"};
 
   @SuppressWarnings("unchecked")
   public DiplomaticSystem(OverworldScreen screen, boolean startWithDiplomacy) {
@@ -105,8 +114,16 @@ public final class DiplomaticSystem extends EntitySystem {
   @Override
   protected void inserted(Entity e) {
     super.inserted(e);
-    if (startWithDiplomacy)
-      relations.get(e).knownStates.addAll(Arrays.asList(State.values()));
+    if (startWithDiplomacy) {
+      // Grant the actual diplomacy discoveries instead of just adding states
+      Discoveries disc = discoveries.get(e);
+      for (String name : DIPLOMACY_DISCOVERIES) {
+        Discovery d = discoverySystem.getDiscovery(name);
+        if (d != null && disc.done.add(d)) {
+          discoverySystem.applyEffects(d, e);
+        }
+      }
+    }
   }
 
   @Override
@@ -118,6 +135,7 @@ public final class DiplomaticSystem extends EntitySystem {
       diplo.lastChange.remove(removed, 0);
       diplo.proposals.remove(removed);
       diplo.relations.remove(removed);
+      diplo.scores.remove(removed, 0);
     }
   }
 
@@ -144,9 +162,24 @@ public final class DiplomaticSystem extends EntitySystem {
     }
   }
 
+  /** Maps diplomatic states to numeric relationship scores. */
+  private int stateToScore(State state) {
+    switch (state) {
+      case NONE: return 0;
+      case WAR: return -80;
+      case TREATY: return 70;
+      case PROTECTORATE: return 50;
+      case TRIBUTE: return -60;
+      default: return 0;
+    }
+  }
+
   void changeRelation(Entity entity, Diplomacy diplo, Entity target, Diplomacy targetDiplo, Action action) {
     diplo.relations.put(target, action.afterMe);
     targetDiplo.relations.put(entity, action.afterYou);
+    // Set numeric scores based on the new state
+    diplo.scores.put(target, stateToScore(action.afterMe));
+    targetDiplo.scores.put(entity, stateToScore(action.afterYou));
     targetDiplo.proposals.remove(entity);
     // prevent changing state for a few turns
     diplo.lastChange.put(target, screen.getTurnNumber());
@@ -164,8 +197,10 @@ public final class DiplomaticSystem extends EntitySystem {
 
   public void clearRelations(Entity empire, Diplomacy diplo) {
     diplo.proposals.clear();
+    diplo.scores.clear();
     for (Entity e : diplo.relations.keySet()) {
       relations.get(e).relations.remove(empire);
+      relations.get(e).scores.remove(empire, 0);
     }
     diplo.relations.clear();
   }
