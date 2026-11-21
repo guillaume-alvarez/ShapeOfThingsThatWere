@@ -1,25 +1,26 @@
 package com.galvarez.ttw;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 
-/**
- * Smoke test runner for the game. Extends the main game class and overrides
- * render() to validate startup, asset loading, and rendering after a fixed
- * number of frames, then exits cleanly.
- */
 public class ThingsThatWereGameTest extends ThingsThatWereGame {
 
   private int framesRendered = 0;
+  private final int expectedWidth;
+  private final int expectedHeight;
   private Throwable startupError;
   private Throwable renderError;
+  private int glErrorCount = 0;
 
   private static final int SMOKE_TEST_FRAMES = 60;
   private static final String SMOKE_TEST_SCREENSHOT = "smoke-test-screenshot.png";
 
   public ThingsThatWereGameTest(int width, int height) {
     super(width, height);
+    this.expectedWidth = width;
+    this.expectedHeight = height;
   }
 
   @Override
@@ -41,6 +42,9 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
       renderError = t;
       t.printStackTrace();
     }
+    if (Gdx.gl.glGetError() != GL20.GL_NO_ERROR) {
+      glErrorCount++;
+    }
     if (framesRendered >= SMOKE_TEST_FRAMES) {
       finishSmokeTest();
       return;
@@ -50,17 +54,23 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
   private void finishSmokeTest() {
     StringBuilder errors = new StringBuilder();
 
-    // Check for startup errors
     if (startupError != null) {
       errors.append("Startup error: ").append(startupError.getMessage()).append("\n");
     }
 
-    // Check for render errors
     if (renderError != null) {
       errors.append("Render error: ").append(renderError.getMessage()).append("\n");
     }
 
-    // Validate assets loaded
+    if (glErrorCount > 0) {
+      errors.append("OpenGL errors detected: ").append(glErrorCount).append("\n");
+    }
+
+    if (Gdx.graphics.getWidth() != expectedWidth || Gdx.graphics.getHeight() != expectedHeight) {
+      errors.append("Window size mismatch: expected ").append(expectedWidth).append("x").append(expectedHeight)
+          .append(" got ").append(Gdx.graphics.getWidth()).append("x").append(Gdx.graphics.getHeight()).append("\n");
+    }
+
     if (assets == null) {
       errors.append("Assets failed to load\n");
     } else {
@@ -72,17 +82,14 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
       }
     }
 
-    // Validate screen initialized
     if (getScreen() == null) {
       errors.append("No screen initialized\n");
     }
 
-    // Take screenshot and check it's not blank
     try {
       int width = Gdx.graphics.getWidth();
       int height = Gdx.graphics.getHeight();
 
-      // Capture once and check pixels
       Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
       Gdx.gl.glReadPixels(0, 0, width, height, Gdx.gl.GL_RGBA, Gdx.gl.GL_UNSIGNED_BYTE, pixmap.getPixels());
       java.nio.ByteBuffer pixels = pixmap.getPixels();
@@ -93,13 +100,12 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
         byte r = pixels.get();
         byte g = pixels.get();
         byte b = pixels.get();
-        pixels.get(); // skip alpha
+        pixels.get();
         if (r != 0 || g != 0 || b != 0) {
           nonBlackPixels++;
         }
       }
 
-      // Save screenshot
       PixmapIO.writePNG(Gdx.files.local(SMOKE_TEST_SCREENSHOT), pixmap);
       pixmap.dispose();
 
@@ -112,7 +118,6 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
       errors.append("Screenshot capture failed: ").append(t.getMessage()).append("\n");
     }
 
-    // Report results
     boolean passed = errors.length() == 0;
     if (!passed) {
       System.err.println("SMOKE TEST FAILED:");
@@ -122,7 +127,6 @@ public class ThingsThatWereGameTest extends ThingsThatWereGame {
       System.out.println("SMOKE TEST PASSED: All checks passed, screenshot saved.");
     }
 
-    // Write result to a file so CI can verify
     try {
       java.nio.file.Files.writeString(
         java.nio.file.Paths.get("smoke-test-result.txt"),
