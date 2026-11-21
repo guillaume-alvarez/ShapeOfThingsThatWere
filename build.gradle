@@ -4,7 +4,7 @@ allprojects {
     version = '0.3.0'
     ext {
         appName = 'ShapeOfThingsThatWere'
-        gdxVersion = '1.10.0'
+        gdxVersion = '1.14.2'
         artemisVersion = '0.7.1'
         slf4jVersion = '1.7.30'
         log4jBindingsVersion = '2.13.3'
@@ -32,7 +32,7 @@ subprojects {
 project(":desktop") {
     dependencies {
         implementation project(":core")
-        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"

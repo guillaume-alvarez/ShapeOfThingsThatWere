@@ -1,7 +1,7 @@
 package com.galvarez.ttw.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.galvarez.ttw.ThingsThatWereGame;
 import com.galvarez.ttw.ThingsThatWereGameTest;
 
@@ -23,20 +23,19 @@ public class DesktopLauncher {
 
     boolean smokeTest = isSmokeTest(args);
 
-    LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-    cfg.width = WIDTH;
-    cfg.height = HEIGHT;
-    cfg.title = "The Shape of Things that Were";
-    cfg.vSyncEnabled = !smokeTest;
-    cfg.resizable = true;
+    Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+    cfg.setWindowedMode(WIDTH, HEIGHT);
+    cfg.setTitle("The Shape of Things that Were");
+    cfg.useVsync(!smokeTest);
+    cfg.setResizable(true);
     // no audio implemented yet
     // for some unknown reason OpenAL init is very long (a few minutes) on some machines
-    LwjglApplicationConfiguration.disableAudio = true;
+    cfg.disableAudio(true);
 
     if (smokeTest) {
-      new LwjglApplication(new ThingsThatWereGameTest(WIDTH, HEIGHT), cfg);
+      new Lwjgl3Application(new ThingsThatWereGameTest(WIDTH, HEIGHT), cfg);
     } else {
-      new LwjglApplication(new ThingsThatWereGame(WIDTH, HEIGHT), cfg);
+      new Lwjgl3Application(new ThingsThatWereGame(WIDTH, HEIGHT), cfg);
     }
   }
 }
