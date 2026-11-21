@@ -5,8 +5,6 @@ import java.util.function.Consumer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -25,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
@@ -65,16 +62,6 @@ public class FramedMenu {
       generator.dispose();
     }
     return smallFont;
-  }
-
-  /** Creates a solid-color drawable from a 1x1 Pixmap texture. */
-  private static Drawable newDrawable(Color color) {
-    Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-    pixmap.setColor(color);
-    pixmap.fill();
-    Texture texture = new Texture(pixmap);
-    pixmap.dispose();
-    return new TextureRegionDrawable(new TextureRegion(texture));
   }
 
   public FramedMenu(Skin skin, float width, float maxHeight) {
@@ -285,66 +272,6 @@ public class FramedMenu {
     table.row();
 
     return l;
-  }
-
-  /**
-   * Adds a score bar to the menu, showing a numeric value from -100 to +100
-   * as a color gradient from red (hostile) through gray (neutral) to green (friendly).
-   */
-  public void addScoreBar(int score) {
-    score = Math.max(-100, Math.min(100, score));
-
-    Table barTable = new Table();
-    float scoreLabelWidth = 28f;
-    float barWidth = width - scoreLabelWidth - 6;
-    float barHeight = 8f;
-    float fillPercent = (score + 100f) / 200f;
-
-    // Background bar (dark gray)
-    Drawable backgroundBar = newDrawable(new Color(0.3f, 0.3f, 0.3f, 1f));
-    Image backgroundImage = new Image(backgroundBar);
-    backgroundImage.setSize(barWidth, barHeight);
-
-    // Fill bar (colored by score)
-    Color barColor = scoreBarColor(score);
-    Drawable fillBar = newDrawable(barColor);
-    Image fillImage = new Image(fillBar);
-    fillImage.setSize(barWidth * fillPercent, barHeight);
-
-    // Overlay fill on background using a stack table
-    Table barStack = new Table();
-    barStack.add(backgroundImage).size(barWidth, barHeight);
-    barStack.add(fillImage).size(barWidth * fillPercent, barHeight).left();
-    barStack.setFillParent(false);
-
-    barTable.add(barStack).left();
-    Label scoreLabel = new Label(String.valueOf(score), skin.get(LabelStyle.class));
-    scoreLabel.setAlignment(Align.center);
-    barTable.add(scoreLabel).width(scoreLabelWidth).height(barHeight).align(Align.center);
-
-    table.add(barTable).left().colspan(nbColumns).minHeight(barHeight + 2).prefHeight(barHeight + 2);
-    table.row();
-  }
-
-  /**
-   * Calculates the color for a score bar based on the relationship score.
-   * -100 = deep red, 0 = gray, +100 = deep green, with smooth gradients in between.
-   */
-  private static Color scoreBarColor(int score) {
-    Color color = new Color();
-    if (score < 0) {
-      float t = (score + 100f) / 100f;
-      color.r = 0.3f + t * 0.7f;
-      color.g = 0.3f;
-      color.b = 0.3f;
-    } else {
-      float t = score / 100f;
-      color.r = 0.3f * (1 - t);
-      color.g = 0.3f + t * 0.7f;
-      color.b = 0.3f * (1 - t);
-    }
-    color.a = 1f;
-    return color;
   }
 
   /** Add a title to the menu. */

@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 import com.artemis.Component;
 import com.artemis.Entity;
-import com.badlogic.gdx.utils.ObjectIntMap;
 import com.galvarez.ttw.model.DiplomaticSystem.Action;
 import com.galvarez.ttw.model.DiplomaticSystem.State;
 
@@ -17,23 +16,13 @@ public final class Diplomacy extends Component {
 
   public final Map<Entity, State> relations = new HashMap<>();
 
-  public final ObjectIntMap<Entity> lastChange = new ObjectIntMap<>();
+  public final Map<Entity, Integer> lastChange = new HashMap<>();
 
   public final Map<Entity, Action> proposals = new HashMap<>();
 
   public final EnumSet<State> knownStates = EnumSet.of(State.NONE);
 
-  /** Numeric relationship scores per empire pair (-100 to +100). */
-  public final ObjectIntMap<Entity> scores = new ObjectIntMap<>();
-
   public Diplomacy() {
-  }
-
-  /** Returns the numeric relationship score with another empire, defaulting to 0. */
-  public int getScore(Entity other) {
-    if (other == null)
-      return 0;
-    return scores.get(other, 0);
   }
 
   public State getRelationWith(Entity other) {

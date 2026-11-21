@@ -253,17 +253,6 @@ public final class DiscoverySystem extends EntitySystem implements EventHandler 
     return effects.toString(d.effects);
   }
 
-  /** Returns a discovery by name, or null if not found. */
-  public Discovery getDiscovery(String name) {
-    return discoveries.get(name);
-  }
-
-  /** Applies the effects of a discovery to an empire (without removing the 2x bonus). */
-  public void applyEffects(Discovery d, Entity empire) {
-    effects.apply(d.effects, empire, false);
-    special.apply(empire, d, empires.get(empire));
-  }
-
   public void copyDiscoveries(Entity from, Entity to) {
     Discoveries fromD = empires.get(from);
     Discoveries toD = empires.get(to);

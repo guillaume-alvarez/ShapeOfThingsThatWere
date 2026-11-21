@@ -101,10 +101,6 @@ public final class DiplomacyMenuScreen extends AbstractPausedScreen<AbstractScre
           menu.addButton(relation.toString(),
               () -> displayActionsMenu(menu, playerDiplo, empire));
 
-          // Add score bar
-          int score = playerDiplo.getScore(empire);
-          menu.addScoreBar(score);
-
           // Add effect description (wrapped to fit, smaller font)
           menu.addSmallLabel(stateEffectDescriptions[relation.ordinal()]);
         }
