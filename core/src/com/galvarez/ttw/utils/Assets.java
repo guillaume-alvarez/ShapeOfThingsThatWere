@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.VisUI;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -20,8 +22,10 @@ import java.util.Map;
 public final class Assets implements Disposable {
 
     public static final String FONTS_ROMANICA_TTF = "fonts/Romanica.ttf";
+    public static final String UISKIN_ATLAS = "uiskin/uiskin.atlas";
     public static final String UISKIN_JSON = "uiskin/uiskin.json";
-    private final Skin skin;
+
+    private final TextureAtlas uiAtlas;
 
     public enum Icon {
         DISCOVERY("discovery-bulb"),
@@ -50,13 +54,20 @@ public final class Assets implements Disposable {
 
     public Assets() {
         manager = loadAssets();
+        uiAtlas = manager.get(UISKIN_ATLAS, TextureAtlas.class);
 
         ObjectMap<String, Object> fonts = new ObjectMap<>();
         fonts.put("default-font", getFont(16));
         fonts.put("colored-font", getFont(16, true));
         manager.load(UISKIN_JSON, Skin.class, new SkinLoader.SkinParameter(fonts));
         manager.finishLoading();
-        skin = manager.get(UISKIN_JSON);
+
+        if (VisUI.isLoaded()) {
+            VisUI.dispose();
+        }
+        VisUI.load();
+        VisUI.getSkin().addRegions(uiAtlas);
+        VisSkinConfiguration.apply(manager.get(UISKIN_JSON));
 
         for (Icon icon : Icon.values())
             addIcon(icon, icon.name);
@@ -64,14 +75,16 @@ public final class Assets implements Disposable {
 
     private static AssetManager loadAssets() {
         AssetManager manager = new AssetManager();
+        manager.load(UISKIN_ATLAS, TextureAtlas.class);
         manager.finishLoading();
         return manager;
     }
 
-
     private void addIcon(Icon type, String name) {
-        drawables.put(type, skin.getDrawable(name));
-        regions.put(type, skin.getRegion(name));
+        if (VisUI.getSkin().has(name, TextureRegion.class)) {
+            drawables.put(type, VisUI.getSkin().getDrawable(name));
+            regions.put(type, VisUI.getSkin().getRegion(name));
+        }
     }
 
     public BitmapFont getFont(int size) {
@@ -111,12 +124,13 @@ public final class Assets implements Disposable {
     }
 
     public Skin getSkin() {
-        return skin;
+        return VisUI.getSkin();
     }
 
 
     @Override
     public void dispose() {
+        VisUI.dispose();
         manager.dispose();
     }
 }

@@ -207,6 +207,11 @@ public final class InfluenceSystem extends EntitySystem {
   private void delete(Entity entity) {
     log.info("{} ({}) is deleted", entity.getComponent(Description.class), entity);
     map.setEntity(null, positions.get(entity));
+    // remove influence right away: the entity is gone from the world but its id
+    // would otherwise stay in the tiles until the next world tick
+    for (int x = 0; x < map.width; x++)
+      for (int y = 0; y < map.height; y++)
+        map.getInfluenceAt(x, y).removeInfluence(entity);
     if (sources.has(entity))
       for (Entity s : sources.get(entity).secondarySources)
         delete(s);
@@ -221,6 +226,8 @@ public final class InfluenceSystem extends EntitySystem {
     for (IntIntMap.Entry e : tile.getDelta()) {
       if (e.value != 0) {
         Entity empire = world.getEntity(e.key);
+        if (empire == null)
+          continue;
         String text = abs(e.value) > 4 ? (e.value > 0 ? "+" + e.value : Integer.toString(e.value))
             : DELTA_STR[e.value + 4];
         EntityFactory.createFadingTileLabel(world, text, data.get(empire).color, x, y + shift, 1f);
@@ -252,6 +259,8 @@ public final class InfluenceSystem extends EntitySystem {
         // pass influence to protectorates
         for (Entry inf : tile) {
           Entity influencer = world.getEntity(inf.key);
+          if (influencer == null)
+            continue;
           if (relations.get(influencer).getRelationWith(e) == State.PROTECTORATE)
             tile.increaseTarget(influencer, target);
         }

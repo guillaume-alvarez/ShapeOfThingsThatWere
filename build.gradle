@@ -9,6 +9,7 @@ allprojects {
         slf4jVersion = '1.7.30'
         log4jBindingsVersion = '2.13.3'
         log4jCoreVersion = '2.13.3'
+        visuiVersion = '1.5.9'
     }
 
     repositories {
@@ -46,6 +47,7 @@ project(":core") {
         implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
         implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
         implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jBindingsVersion"

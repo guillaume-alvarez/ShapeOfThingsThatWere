@@ -8,10 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.galvarez.ttw.ThingsThatWereGame;
@@ -20,6 +16,14 @@ import com.galvarez.ttw.model.data.Empire;
 import com.galvarez.ttw.model.data.SessionSettings;
 import com.galvarez.ttw.model.map.MapGenerator.Generator;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisImage;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 import java.util.ListIterator;
 
@@ -86,9 +90,9 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
 
     empires.clear();
     LabelStyle style = new LabelStyle(empires.getSkin().get(LabelStyle.class));
-    empires.getTable().add(new Label("EMPIRE", style));
-    empires.getTable().add(new Label("CULTURE", style));
-    empires.getTable().add(new Label("CONTROL", style));
+    empires.getTable().add(new VisLabel("EMPIRE", style));
+    empires.getTable().add(new VisLabel("CULTURE", style));
+    empires.getTable().add(new VisLabel("CONTROL", style));
     empires.getTable().row();
     for (Empire e : settings.empires)
       displayEmpire(e, empires.getSkin(), empires.getTable());
@@ -104,12 +108,12 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     actions.addToStage(stage, 30, empires.getY() - 30, false);
   }
 
-  private void displayEmpire(Empire empire, Skin skin, Table table) {
-    Image i = new Image(square);
+  private void displayEmpire(Empire empire, Skin skin, VisTable table) {
+    VisImage i = new VisImage(square);
     i.setColor(empire.color);
     table.add(i).minHeight(i.getMinHeight()).prefHeight(i.getPrefHeight());
 
-    SelectBox<Culture> sb = new SelectBox<>(skin.get(SelectBoxStyle.class));
+    VisSelectBox<Culture> sb = new VisSelectBox<>(skin.get(com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle.class));
     sb.setItems(settings
         .getCultures()
         .stream()
@@ -126,10 +130,12 @@ public final class CustomizeGameMenuScreen extends AbstractScreen {
     });
     table.add(sb).minHeight(sb.getMinHeight()).prefHeight(sb.getMinHeight());
 
-    Button b = new Button(skin.get(ButtonStyle.class));
+    VisTextButton b = new VisTextButton(empire.isComputerControlled() ? "CPU" : "Player",
+        skin.get(com.kotcrab.vis.ui.widget.VisTextButton.VisTextButtonStyle.class));
     LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
     style.fontColor = empire.color;
-    b.add(new Label(empire.isComputerControlled() ? "CPU" : "Player", style));
+    b.clearChildren();
+    b.add(new VisLabel(empire.isComputerControlled() ? "CPU" : "Player", style));
     b.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
