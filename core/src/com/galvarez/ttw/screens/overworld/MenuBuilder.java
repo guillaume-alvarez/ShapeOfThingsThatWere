@@ -5,12 +5,17 @@ import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.ObjectIntMap.Entry;
@@ -29,16 +34,20 @@ import com.galvarez.ttw.rendering.NotificationsSystem.Notification;
 import com.galvarez.ttw.rendering.components.Description;
 import com.galvarez.ttw.rendering.components.Name;
 import com.galvarez.ttw.rendering.components.Sprite;
-import com.galvarez.ttw.rendering.ui.FramedDialog;
 import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
 import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.Assets.Icon;
+import com.kotcrab.vis.ui.widget.VisDialog;
+import com.kotcrab.vis.ui.widget.VisImage;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 import java.util.List;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.galvarez.ttw.utils.Colors.markup;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.String.format;
 
@@ -358,12 +367,59 @@ public class MenuBuilder {
   }
 
   public void buildDialog(String title, int minWidth, int minHeight, String message, VisTextButton... buttons) {
-    FramedDialog fd = new FramedDialog(skin, title, message);
+    VisDialog dialog = new VisDialog(title) {
+      @Override
+      protected void result(Object object) {
+        closeDialog(this, null);
+      }
+    };
+    dialog.setBackground(new TiledDrawable(skin.getRegion("big-marble-texture")));
+    dialog.getContentTable().defaults().expandX().fillX();
+
+    VisLabel label = new VisLabel(message, skin.get(LabelStyle.class));
+    label.setAlignment(Align.center);
+    label.setWrap(true);
+    dialog.text(label);
+
+    VisImage frame = new VisImage(skin.getPatch("frame"));
+
     for (VisTextButton b : buttons) {
       b.align(Align.center);
-      fd.addButton(b);
+      b.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          closeDialog(dialog, frame);
+        }
+      });
+      dialog.button(b);
     }
-    fd.addToStage(stage, minWidth, minHeight);
+
+    stage.addActor(dialog);
+    stage.addActor(frame);
+
+    int width = max(minWidth, (int) dialog.getPrefWidth());
+    int height = max(minHeight, (int) dialog.getPrefHeight());
+    dialog.setWidth(width);
+    dialog.setHeight(height);
+    int x = (int) (stage.getWidth() / 2 - width / 2);
+    int y = (int) (stage.getHeight() / 2 - height / 2);
+    dialog.setX(x);
+    dialog.setY(y);
+    frame.setX(x - 1);
+    frame.setY(y - 3);
+    frame.setWidth(width + 4);
+    frame.setHeight(height + 4);
+    frame.setTouchable(Touchable.disabled);
+  }
+
+  private void closeDialog(VisDialog dialog) {
+    closeDialog(dialog, null);
+  }
+
+  private void closeDialog(VisDialog dialog, VisImage frame) {
+    if (frame != null)
+      frame.addAction(sequence(Actions.fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
+    dialog.addAction(sequence(Actions.fadeOut(0.5f, Interpolation.fade), Actions.removeActor()));
   }
 
   public VisTextButton getTextButton(String text, ChangeListener listener) {
