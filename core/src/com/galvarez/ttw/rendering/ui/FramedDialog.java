@@ -9,39 +9,34 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisDialog;
+import com.kotcrab.vis.ui.widget.VisImage;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class FramedDialog {
 
-  private final Dialog dialog;
+  private final VisDialog dialog;
 
-  private final Image frame;
-
-  private final Skin skin;
+  private final VisImage frame;
 
   public FramedDialog(Skin skin, String title, String message) {
-    this.skin = skin;
+    frame = new VisImage(skin.getPatch("frame"));
 
-    frame = new Image(skin.getPatch("frame"));
-
-    // TODO find why title is outside the box
-    dialog = new Dialog(title, skin) {
+    dialog = new VisDialog(title) {
       @Override
       protected void result(Object object) {
         fadeOut();
       }
     };
-    dialog.setBackground(skin.getTiledDrawable("big-marble-texture"));
+    dialog.setBackground(new com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable(VisUI.getSkin().getRegion("big-marble-texture")));
     dialog.getContentTable().defaults().expandX().fillX();
-    dialog.getButtonTable().defaults().expandX().fillX();
 
-    Label label = new Label(message, skin);
+    VisLabel label = new VisLabel(message, VisUI.getSkin().get(com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle.class));
     label.setAlignment(Align.center);
     label.setWrap(true);
 
@@ -53,7 +48,8 @@ public class FramedDialog {
   }
 
   public void addButton(String text, Runnable listener) {
-    TextButton button = new TextButton(text, skin);
+    VisTextButton button = new VisTextButton(text,
+        VisUI.getSkin().get(VisTextButton.VisTextButtonStyle.class));
 
     button.addListener(new ChangeListener() {
       @Override

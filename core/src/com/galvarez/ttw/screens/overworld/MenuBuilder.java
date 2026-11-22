@@ -34,6 +34,7 @@ import com.galvarez.ttw.rendering.ui.FramedMenu;
 import com.galvarez.ttw.screens.overworld.controls.InputManager;
 import com.galvarez.ttw.utils.Assets;
 import com.galvarez.ttw.utils.Assets.Icon;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 import java.util.List;
 
@@ -356,17 +357,17 @@ public class MenuBuilder {
     notifMenu.addToStage(stage, Gdx.graphics.getWidth() - 400, min(512, notifMenu.getTable().getPrefHeight()), false);
   }
 
-  public void buildDialog(String title, int minWidth, int minHeight, String message, Button ... buttons) {
+  public void buildDialog(String title, int minWidth, int minHeight, String message, VisTextButton... buttons) {
     FramedDialog fd = new FramedDialog(skin, title, message);
-    for (Button b : buttons) {
+    for (VisTextButton b : buttons) {
       b.align(Align.center);
       fd.addButton(b);
     }
     fd.addToStage(stage, minWidth, minHeight);
   }
 
-  public TextButton getTextButton(String text, ChangeListener listener) {
-    TextButton button = new TextButton(text, skin);
+  public VisTextButton getTextButton(String text, ChangeListener listener) {
+    VisTextButton button = new VisTextButton(text, com.kotcrab.vis.ui.VisUI.getSkin().get(com.kotcrab.vis.ui.widget.VisTextButton.VisTextButtonStyle.class));
     if (listener != null)
       button.addListener(listener);
     return button;
